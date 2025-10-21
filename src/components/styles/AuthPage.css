@@ -1,0 +1,98 @@
+.authPage[data-theme='light'] {
+  --bg-color: #b8c0e2;
+  --text-color: #000;
+  --border-color: #a2a7c1;
+  --small-text-color: #666e89;
+}
+
+.authPage[data-theme='dark'] {
+  --bg-color: #0E1223;
+  --text-color: #fff;
+  --border-color: #384162;
+  --small-text-color: #8791B7;
+}
+
+.authPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100dvh;
+    overflow: hidden;
+    font-family: inherit;
+}
+
+.authBox {
+    border: none;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.mainInfo h2 {
+    font-size: 24px;
+    margin: 0;
+    text-align: center;
+}
+
+.mainInfo p {
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.authBox input {
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+}
+.authBox input:focus{
+    outline: none;
+}
+
+.authBox input::placeholder {
+    color: var(--border-color);
+}
+
+.authBox button {
+    background-color: #FF8811;
+    color: var(--text-color);
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.authBox button:hover {
+    background-color: #e65c00;
+}
+
+.authBox small {
+    font-size: 14px;
+    text-align: center;
+    color: var(--small-text-color);
+}
+
+.authBox small span {
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.switchLink {
+    font-size: 14px;
+    color: var(--text-color);
+    text-align: center;
+    margin-top: 12px;
+}
+
+.switchLink span {
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}

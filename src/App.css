@@ -1,0 +1,84 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100%;
+}
+.app {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Inter", sans-serif;
+}
+
+.main-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position:relative;
+}
+
+.posts {
+  margin-top: 30px;
+    width: 40%;
+}
+
+body[data-theme='light'] {
+  --bg-color: #d4d9f0;
+  --text-color: #000;
+}
+
+body[data-theme='dark'] {
+  --bg-color: #1B2037;
+  --text-color: #fff;
+}
+
+.app {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+
+@media(max-width: 960px){
+  .header{
+    padding: 5px 10px;
+    margin-bottom: 20px;
+  }
+  .header .logo{
+    width: 10%;
+  }
+
+  .sidebar{
+    display: none;
+  }
+  .posts, #addPostForm{
+    width: 100%;
+    margin: 0;
+  }
+  .post{
+    background-color: transparent;
+    font-size: smaller;
+    width: 100%;
+  }
+  .post .postButtons{
+    width: 100%;
+  }
+}
+
+@media(max-width: 600px){
+  .header{
+    padding: 2px 5px;
+    margin-bottom: 10px;
+  }
+  .header .logo{
+    width: 12%;
+  }
+}

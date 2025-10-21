@@ -1,0 +1,54 @@
+#addPostForm[data-theme='light'] {
+  --bg-color: #b8c0e2;
+  --text-color: #000;
+  --border-color: #a2a7c1;
+}
+#addPostForm[data-theme='dark'] {
+  --bg-color: #0E1223;
+  --text-color: #fff;
+  --border-color: #384162;
+}
+
+#addPostForm {
+  width: 40%;
+  height: 70px;
+  box-sizing: border-box;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  margin: auto;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#addPostForm div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#addPostForm .avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#addPostForm button {
+  outline: none;
+  border: none;
+  background-color: #FF8811;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 16px;
+  width: 200px;
+  padding: 10px 0;
+  transition: 0.2s ease-in;
+}
+#addPostForm button:hover {
+  background-color: #ff8811c3;
+  color: #ffffffc3;
+  transition: 0.2s ease-in;
+}
