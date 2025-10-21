@@ -15,30 +15,23 @@ export const AppProvider = ({ children }) => {
         if (!storedUsers || storedUsers.length === 0) {
             localStorage.setItem('users', JSON.stringify(initialUsers));
         }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+            document.body.setAttribute('data-theme', savedTheme);
+        }
+
+        const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (savedUser) {
+            setUser(savedUser);
+            setUserAuth(true);
+        }
     }, []);
 
-    const getUsers = () => JSON.parse(localStorage.getItem('users')) || [];
-    const saveUsers = (users) => localStorage.setItem('users', JSON.stringify(users));
+    const getUsers = () => [...initialUsers];
 
     const signUp = (email, username, password) => {
-        const users = getUsers();
-        const exists = users.find(u => u.email === email);
-        if (exists) return false;
-
-        const newUser = {
-            email,
-            password,
-            name: username,
-            bio: '',
-            avatar: '',
-            recPeople: [],
-            recCommunities: []
-        };
-
-        const updatedUsers = [...users, newUser];
-        saveUsers(updatedUsers);
-        setUser(newUser);
-        setUserAuth(true);
         return true;
     };
 
@@ -49,22 +42,24 @@ export const AppProvider = ({ children }) => {
 
         setUser(found);
         setUserAuth(true);
+        localStorage.setItem('currentUser', JSON.stringify(found));
         return true;
     };
 
     const logOut = () => {
         setUser(null);
         setUserAuth(false);
+        localStorage.removeItem('currentUser');
     };
 
     const toggleTheme = () => {
-        setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+        setTheme(prev => {
+            const newTheme = prev === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            document.body.setAttribute('data-theme', newTheme);
+            return newTheme;
+        });
     };
-
-    useEffect(() => {
-        localStorage.setItem('theme', theme);
-        document.body.setAttribute('data-theme', theme);
-    }, [theme]);
 
     return (
         <AppContext.Provider value={{
