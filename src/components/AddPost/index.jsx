@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
-import { AppContext } from '../../context/AppContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 const AddPost = ({ user }) => {
-    const { theme } = useContext(AppContext);
+    const { theme } = useContext(ThemeContext);
 
     return (
         <form action='#' id='addPostForm' data-theme={theme}>

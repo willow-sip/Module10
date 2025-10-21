@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { AppContext } from '../../context/AppContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 const Footer = () => {
-    const { theme } = useContext(AppContext);
+    const { theme } = useContext(ThemeContext);
     return (
         <header className="footer" data-theme={theme}>
             <p>© 2024 sidekick</p>

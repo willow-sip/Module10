@@ -1,10 +1,11 @@
-.post[data-theme='light'] {
+[data-theme='light'] .post {
   --bg-color: #b8c0e2;
   --text-color: #000;
   --border-color: #a2a7c1;
   --small-text-color: #666e89;
 }
-.post[data-theme='dark'] {
+
+[data-theme='dark'] .post {
   --bg-color: #0E1223;
   --text-color: #fff;
   --border-color: #384162;

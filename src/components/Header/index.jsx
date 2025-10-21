@@ -1,10 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AppContext } from '../../context/AppContext';
+import { AuthContext } from '../../context/AuthContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 const Header = ({ user }) => {
-    const { theme, toggleTheme, userAuth, logOut } = useContext(AppContext);
+    const { userAuth, logOut } = useContext(AuthContext);
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const navigate = useNavigate();
     const location = useLocation();
     const isMainPage = location.pathname === '/';

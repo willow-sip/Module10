@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { AppContext } from '../../context/AppContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 class Sidebar extends Component {
-    static contextType = AppContext;
+    static contextType = ThemeContext;
 
     render() {
         const { theme } = this.context;

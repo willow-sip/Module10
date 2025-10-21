@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import Comment from '../Comment/index';
-import { AppContext } from '../../context/AppContext';
+import Comment from '../Comment';
+import { AuthContext } from '../../context/AuthContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 class Post extends Component {
-    static contextType = AppContext;
+    static contextType = ThemeContext;
 
     constructor(props) {
         super(props);
@@ -21,7 +22,7 @@ class Post extends Component {
 
     calculatePublishTime = () => {
         const now = new Date();
-        const published = this.props.post.publishTime;
+        const published = new Date(this.props.post.publishTime);
         const diffMs = now - published;
 
         const seconds = Math.floor(diffMs / 1000);
@@ -43,56 +44,58 @@ class Post extends Component {
     render() {
         const { post } = this.props;
         const { showComments } = this.state;
-        const { theme } = this.context;
-        const { userAuth } = this.context;
+        const theme = this.context;
 
         return (
-            <div className="post" data-theme={theme}>
-                <div className="author">
-                    <img
-                        src={post.author.avatar || './imgs/default-avatar.jpg'}
-                        alt="Post author avatar"
-                        className="avatar"
-                    />
-                    <div className="authorInfo">
-                        <p>{post.author.name}</p>
-                        <small>{this.calculatePublishTime()}</small>
-                    </div>
-                </div>
+            <AuthContext.Consumer>
+                {({ userAuth }) => (
+                    <div className="post" data-theme={theme}>
+                        <div className="author">
+                            <img
+                                src={post.author.avatar || './imgs/default-avatar.jpg'}
+                                alt="Post author avatar"
+                                className="avatar"
+                            />
+                            <div className="authorInfo">
+                                <p>{post.author.name}</p>
+                                <small>{this.calculatePublishTime()}</small>
+                            </div>
+                        </div>
 
-                {post.image && <img src={post.image} alt="Post" />}
-                <h3>{post.caption}</h3>
+                        {post.image && <img src={post.image} alt="Post" />}
+                        <h3>{post.caption}</h3>
 
-                <div className="postButtons">
-                    <div className="likes">
-                        <i className="bi bi-suit-heart" /> {post.likes} likes
-                    </div>
-                    <div className="comments">
-                        <i className="bi bi-chat-left" />
-                        <span className="comment-text">
-                            {userAuth ? (
-                                <>{post.comments.length} comments</>
-                            ) : (
-                                <>You have to log in to see the comments</>
+                        <div className="postButtons">
+                            <div className="likes">
+                                <i className="bi bi-suit-heart" /> {post.likes} likes
+                            </div>
+                            <div className="comments">
+                                <i className="bi bi-chat-left" />
+                                <span className="comment-text">
+                                    {userAuth
+                                        ? `${post.comments.length} comments`
+                                        : 'You have to log in to see the comments'}
+                                </span>
+                            </div>
+                            {userAuth && (
+                                <button onClick={this.toggleShowComments}>
+                                    {showComments
+                                        ? <i className="bi bi-chevron-down" />
+                                        : <i className="bi bi-chevron-up" />}
+                                </button>
                             )}
-                        </span>
-                    </div>
-                    {userAuth &&
-                        <button onClick={this.toggleShowComments}>
-                            {showComments ? <i className="bi bi-chevron-down" /> : <i className="bi bi-chevron-up" />}
-                        </button>
-                    }
+                        </div>
 
-                </div>
-
-                {showComments && (
-                    <div className="commentSection">
-                        {post.comments.map((comment, index) => (
-                            <Comment key={index} comment={comment} />
-                        ))}
+                        {showComments && (
+                            <div className="commentSection">
+                                {post.comments.map((comment, index) => (
+                                    <Comment key={index} comment={comment} />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
-            </div>
+            </AuthContext.Consumer>
         );
     }
 }

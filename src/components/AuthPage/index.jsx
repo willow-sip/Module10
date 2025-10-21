@@ -1,10 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../context/AppContext';
+import { AuthContext } from '../../context/AuthContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 const AuthPage = ({ mode }) => {
-    const { theme, authMode, setAuthMode, signUp, signIn } = useContext(AppContext);
+    const { authMode, setAuthMode, signUp, signIn } = useContext(AuthContext);
+    const { theme } = useContext(ThemeContext);
+
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
