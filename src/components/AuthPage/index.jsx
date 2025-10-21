@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../context/AppContext';
-import './styles/AuthPage.css';
+import { AppContext } from '../../context/AppContext';
+import './style.css';
 
 const AuthPage = ({ mode }) => {
     const { theme, authMode, setAuthMode, signUp, signIn } = useContext(AppContext);

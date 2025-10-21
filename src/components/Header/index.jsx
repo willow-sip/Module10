@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AppContext } from '../context/AppContext';
-import './styles/Header.css';
+import { AppContext } from '../../context/AppContext';
+import './style.css';
 
 const Header = ({ user }) => {
     const { theme, toggleTheme, userAuth, logOut } = useContext(AppContext);

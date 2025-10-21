@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Comment from './Comment';
-import { AppContext } from '../context/AppContext';
-import './styles/Post.css';
+import Comment from '../Comment/index';
+import { AppContext } from '../../context/AppContext';
+import './style.css';
 
 class Post extends Component {
     static contextType = AppContext;

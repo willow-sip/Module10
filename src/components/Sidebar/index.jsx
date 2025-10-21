@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { AppContext } from '../context/AppContext';
-import './styles/Sidebar.css';
+import { AppContext } from '../../context/AppContext';
+import './style.css';
 
 class Sidebar extends Component {
     static contextType = AppContext;

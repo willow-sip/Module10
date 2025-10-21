@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 
-import AuthPage from './components/AuthPage';
-import NotFoundPage from './components/NotFoundPage';
-import UnauthorizedPage from './components/UnauthorizedPage'
+import AuthPage from './components/AuthPage/index';
+import NotFoundPage from './components/NotFoundPage/index';
+import UnauthorizedPage from './components/UnauthorizedPage/index'
 
-import Header from './components/Header';
-import AddPost from './components/AddPost'
-import Footer from './components/Footer';
-import Sidebar from './components/Sidebar';
-import Post from './components/Post';
+import Header from './components/Header/index';
+import AddPost from './components/AddPost/index'
+import Footer from './components/Footer/index';
+import Sidebar from './components/Sidebar/index';
+import Post from './components/Post/index';
 
 import { AppContext } from './context/AppContext';
 import './App.css';

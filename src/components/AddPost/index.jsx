@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import { AppContext } from '../context/AppContext';
-import './styles/AddPost.css';
+import { AppContext } from '../../context/AppContext';
+import './style.css';
 
 const AddPost = ({ user }) => {
     const { theme } = useContext(AppContext);
