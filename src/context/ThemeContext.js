@@ -8,22 +8,22 @@ export const ThemeProvider = ({ children }) => {
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
-            setTheme(savedTheme);
-            document.body.setAttribute('data-theme', savedTheme);
+            updateTheme(savedTheme);
         }
     }, []);
 
+    const updateTheme = (newTheme) => {
+        setTheme(newTheme);
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    };
+
     const toggleTheme = () => {
-        setTheme(prev => {
-            const newTheme = prev === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', newTheme);
-            document.body.setAttribute('data-theme', newTheme);
-            return newTheme;
-        });
+        updateTheme(theme === 'light' ? 'dark' : 'light');
     };
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ theme, updateTheme, toggleTheme }}>
             {children}
         </ThemeContext.Provider>
     );

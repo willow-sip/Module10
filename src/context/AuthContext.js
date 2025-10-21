@@ -11,10 +11,22 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const savedUser = JSON.parse(localStorage.getItem('currentUser'));
         if (savedUser) {
-            setUser(savedUser);
-            setUserAuth(true);
+            updateUser(savedUser);
+            updateUserAuth(true);
         }
     }, []);
+
+    const updateUser = (newUser) => {
+        setUser(newUser);
+    };
+
+    const updateUserAuth = (status) => {
+        setUserAuth(status);
+    };
+
+    const updateAuthMode = (mode) => {
+        setAuthMode(mode);
+    };
 
     const signUp = (email, username, password) => {
         return true;
@@ -25,24 +37,25 @@ export const AuthProvider = ({ children }) => {
         const found = users.find(u => u.email === email && u.password === password);
         if (!found) return false;
 
-        setUser(found);
-        setUserAuth(true);
+        updateUser(found);
+        updateUserAuth(true);
         localStorage.setItem('currentUser', JSON.stringify(found));
         return true;
     };
 
     const logOut = () => {
-        setUser(null);
-        setUserAuth(false);
+        updateUser(null);
+        updateUserAuth(false);
         localStorage.removeItem('currentUser');
     };
 
     return (
         <AuthContext.Provider value={{
-            user, userAuth, signUp, signIn, logOut,
-            authMode, setAuthMode
+            user, userAuth, authMode,
+            updateUser, updateUserAuth, updateAuthMode,
+            signUp, signIn, logOut
         }}>
             {children}
         </AuthContext.Provider>
     );
-}
+};

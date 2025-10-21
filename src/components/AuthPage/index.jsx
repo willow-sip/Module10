@@ -5,18 +5,18 @@ import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 const AuthPage = ({ mode }) => {
-    const { authMode, setAuthMode, signUp, signIn } = useContext(AuthContext);
+    const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
     const { theme } = useContext(ThemeContext);
 
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    setAuthMode(mode);
+    updateAuthMode(mode);
     const navigate = useNavigate();
 
     useEffect(() => {
-        setAuthMode(mode);
-    }, [mode, setAuthMode]);
+        updateAuthMode(mode);
+    }, [mode, updateAuthMode]);
 
 
     const handleSubmit = () => {
@@ -31,7 +31,7 @@ const AuthPage = ({ mode }) => {
             alert('Invalid credentials or user already exists');
             return;
         }
-        setAuthMode(null);
+        updateAuthMode(null);
         navigate('/');
     };
 
@@ -93,7 +93,7 @@ const AuthPage = ({ mode }) => {
 
                 <p className="switchLink" onClick={() => {
                     navigate(authMode === 'signup' ? '/sign-in' : '/sign-up');
-                    setAuthMode(authMode === 'signup' ? 'signin' : 'signup')
+                    updateAuthMode(authMode === 'signup' ? 'signin' : 'signup')
                 }}>
                     {authMode === 'signup' ? <>Already have an account? <span>Sign in</span></> : <>Forgot to create an account? <span>Sign up</span></>}
                 </p>

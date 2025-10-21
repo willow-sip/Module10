@@ -1,14 +1,5 @@
-.footer[data-theme='light'] {
-  --bg-color: #b8c0e2;
-  --text-color: #a95b0c;
-}
-.footer[data-theme='dark'] {
-  --bg-color: #0E1223;
-  --text-color: #ff8000;
-}
-
 .footer{
-    background-color: var(--bg-color);
+    background-color: var(--comp-bg-color);
     display: flex;
     justify-content: center;
     padding: 20px;
@@ -16,7 +7,7 @@
 }
 
 .footer p{
-    color: var(--text-color);
+    color: var(--footer-text-color);
     font-size: 16px;
     margin: 0 auto;
 }

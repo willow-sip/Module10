@@ -4,6 +4,27 @@
   box-sizing: border-box;
 }
 
+[data-theme='dark'] *{
+  --bg-color: #1B2037;
+  --comp-bg-color: #0E1223;
+  --drawer-bg-color: #1B2037;
+  --text-color: #fff;
+  --border-color: #384162;
+  --small-text-color: #8791B7;
+  --footer-text-color: #ff8000;
+
+}
+[data-theme='light'] *{
+  --bg-color: #d4d9f0;
+  --comp-bg-color: #b8c0e2;
+  --drawer-bg-color: #d4d9f0;
+  --text-color: #000;
+  --border-color: #a2a7c1;
+  --small-text-color: #666e89;
+  --footer-text-color: #a95b0c;
+  
+}
+
 html,
 body {
     margin: 0;
@@ -29,16 +50,6 @@ body {
 .posts {
   margin-top: 30px;
     width: 40%;
-}
-
-body[data-theme='light'] {
-  --bg-color: #d4d9f0;
-  --text-color: #000;
-}
-
-body[data-theme='dark'] {
-  --bg-color: #1B2037;
-  --text-color: #fff;
 }
 
 .app {
