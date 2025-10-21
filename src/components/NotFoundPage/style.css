@@ -1,14 +1,4 @@
-.error-page[data-theme='light'] {
-  --bg-color: #b8c0e2;
-  --text-color: #000;
-}
-.error-page[data-theme='dark'] {
-  --bg-color: #0E1223;
-  --text-color: #fff;
-}
-
 .error-page{
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
