@@ -1,4 +1,23 @@
-export const defaultPosts = [
+export interface Comment {
+  user: string;
+  text: string;
+}
+
+export interface Author {
+  name: string;
+  avatar?: string;
+}
+
+export interface Post {
+  author: Author;
+  publishTime: Date;
+  image?: string;
+  caption: string;
+  likes: number;
+  comments: Comment[];
+}
+
+export const defaultPosts: Post[] = [
   {
     author: { name: 'Helena Hills', avatar: '' },
     publishTime: new Date('2025-10-13T08:42:17'),

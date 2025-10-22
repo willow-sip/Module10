@@ -4,7 +4,16 @@ import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-const Header = ({ user }) => {
+interface User {
+    name: string;
+    avatar?: string;
+}
+
+interface HeaderProps {
+    user: User | null;
+}
+
+const Header: React.FC<HeaderProps> = ({ user }) => {
     const { userAuth, logOut } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -12,8 +21,8 @@ const Header = ({ user }) => {
     const location = useLocation();
     const isMainPage = location.pathname === '/';
 
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -35,25 +44,22 @@ const Header = ({ user }) => {
                         </button>
                         {drawerOpen && <div className="drawer-overlay" onClick={() => setDrawerOpen(false)} />}
                         <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
-
                             <div className="drawer-header">
                                 <img className="drawer-logo" src="./imgs/logo.png" alt="Sidekick-logo" />
                                 {userAuth && (
                                     <div className="drawer-user">
                                         <img
-                                            src={user.avatar || './imgs/default-avatar.jpg'}
+                                            src={user?.avatar || './imgs/default-avatar.jpg'}
                                             alt="User avatar"
                                             className="drawer-avatar"
                                         />
                                         <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
                                     </div>
                                 )}
-
                                 <button onClick={toggleTheme} className="theme-toggle">
                                     {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
                                 </button>
                             </div>
-
 
                             {!userAuth ? (
                                 <>
@@ -67,7 +73,6 @@ const Header = ({ user }) => {
                                 </>
                             )}
                         </div>
-
                     </>
                 ) : (
                     !userAuth ? (
@@ -83,8 +88,8 @@ const Header = ({ user }) => {
                             <button onClick={toggleTheme} className="theme-toggle">
                                 {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
                             </button>
-                            <img src={user.avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
-                            <p>{user.name}</p>
+                            <img src={user?.avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
+                            <p>{user?.name}</p>
                             <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
                         </div>
                     )

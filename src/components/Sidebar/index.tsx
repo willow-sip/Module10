@@ -2,8 +2,26 @@ import React, { Component } from 'react';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-class Sidebar extends Component {
+interface Person {
+    name: string;
+    nickname: string;
+    avatar?: string;
+}
+
+interface Community {
+    name: string;
+    members: number;
+    avatar?: string;
+}
+
+interface SidebarProps {
+    recPeople: Person[];
+    recCommunities: Community[];
+}
+
+class Sidebar extends Component<SidebarProps> {
     static contextType = ThemeContext;
+    context!: React.ContextType<typeof ThemeContext>;
 
     render() {
         const { theme } = this.context;

@@ -4,10 +4,38 @@ import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-class Post extends Component {
-    static contextType = ThemeContext;
+interface CommentType {
+    user: string;
+    text: string;
+}
 
-    constructor(props) {
+interface Author {
+    name: string;
+    avatar?: string;
+}
+
+interface PostData {
+    author: Author;
+    caption: string;
+    image?: string;
+    likes: number;
+    comments: CommentType[];
+    publishTime: Date;
+}
+
+interface PostProps {
+    post: PostData;
+}
+
+interface PostState {
+    showComments: boolean;
+}
+
+class Post extends Component<PostProps, PostState> {
+    static contextType = ThemeContext;
+    context!: React.ContextType<typeof ThemeContext>;
+
+    constructor(props: PostProps) {
         super(props);
         this.state = {
             showComments: false
@@ -20,10 +48,10 @@ class Post extends Component {
         }));
     };
 
-    calculatePublishTime = () => {
+    calculatePublishTime = (): string => {
         const now = new Date();
-        const published = new Date(this.props.post.publishTime);
-        const diffMs = now - published;
+        const published = this.props.post.publishTime;
+        const diffMs = now.getTime() - published.getTime();
 
         const seconds = Math.floor(diffMs / 1000);
         const minutes = Math.floor(seconds / 60);
