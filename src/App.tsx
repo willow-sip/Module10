@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const { user, userAuth } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 
-  const posts: PostType[] = [...defaultPosts];
+  const posts: PostType[] = defaultPosts;
 
   return (
     <div className={`app ${theme}`}>
