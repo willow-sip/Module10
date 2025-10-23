@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { BrowserRouter } from 'react-router-dom';
+import ErrorHandler from './components/ErrorHandler'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
@@ -12,7 +13,9 @@ root.render(
   <BrowserRouter>
     <AuthProvider>
       <ThemeProvider>
-        <App />
+        <ErrorHandler>
+          <App />
+        </ErrorHandler>
       </ThemeProvider>
     </AuthProvider>
   </BrowserRouter>
