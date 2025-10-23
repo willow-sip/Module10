@@ -24,7 +24,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`app ${theme}`}>
-      <Header user={user} />
+      <Header name={user?.name} avatar={user?.avatar} />
       <Routes>
         <Route
           path="/"

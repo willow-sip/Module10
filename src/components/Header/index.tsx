@@ -5,15 +5,11 @@ import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
 interface User {
-    name: string;
+    name?: string;
     avatar?: string;
 }
 
-interface HeaderProps {
-    user: User | null;
-}
-
-const Header: React.FC<HeaderProps> = ({ user }) => {
+const Header = ({ name, avatar }: User ) => {
     const { userAuth, logOut } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -49,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
                                 {userAuth && (
                                     <div className="drawer-user">
                                         <img
-                                            src={user?.avatar || './imgs/default-avatar.jpg'}
+                                            src={avatar || './imgs/default-avatar.jpg'}
                                             alt="User avatar"
                                             className="drawer-avatar"
                                         />
@@ -88,8 +84,8 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
                             <button onClick={toggleTheme} className="theme-toggle">
                                 {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
                             </button>
-                            <img src={user?.avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
-                            <p>{user?.name}</p>
+                            <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
+                            <p>{name}</p>
                             <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
                         </div>
                     )
