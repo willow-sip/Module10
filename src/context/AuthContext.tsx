@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { initialUsers, User } from '../data/users';
+import { initialUser, User } from '../data/users';
 
 interface AuthContextType {
     user: User | null;
@@ -52,13 +52,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     const signIn = (email: string, password: string): boolean => {
-        const found = initialUsers.find(u => u.email === email && u.password === password);
-        if (!found) return false;
+        //const found = someUsersArray.find(u => u.email === email && u.password === password);
+        //if (!found) return false;
 
-        updateUser(found);
-        updateUserAuth(true);
-        localStorage.setItem('currentUser', JSON.stringify(found));
-        return true;
+        if (email === initialUser.email && password === initialUser.password) {
+            updateUser(initialUser);
+            updateUserAuth(true);
+            localStorage.setItem('currentUser', JSON.stringify(initialUser));
+            return true;
+        }
+        return false;
     };
 
     const logOut = () => {
