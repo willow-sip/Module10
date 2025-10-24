@@ -1,16 +1,14 @@
 import './style.css';
 import React from 'react';
 
-interface CommentProps {
-    comment: {
-        user: string;
-        text: string;
-    };
+interface CommentType {
+    user: string;
+    text: string;
 }
 
-const Comment: React.FC<CommentProps> = ({ comment }) => (
+const Comment = ({ user, text } : CommentType) => (
     <div className="comment">
-        <strong>{comment.user}</strong>: {comment.text}
+        <strong>{user}</strong>: {text}
     </div>
 );
 

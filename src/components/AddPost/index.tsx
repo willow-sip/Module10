@@ -6,18 +6,14 @@ interface User {
     avatar?: string;
 }
 
-interface AddPostProps {
-    user: User;
-}
-
-const AddPost: React.FC<AddPostProps> = ({ user }) => {
+const AddPost = ({ avatar } : User) => {
     const { theme } = useContext(ThemeContext);
 
     return (
         <form action="#" id="addPostForm" data-theme={theme}>
             <div>
                 <img
-                    src={user.avatar || './imgs/default-avatar.jpg'}
+                    src={avatar || './imgs/default-avatar.jpg'}
                     alt="User avatar"
                     className="avatar"
                 />

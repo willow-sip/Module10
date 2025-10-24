@@ -4,11 +4,11 @@ import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-interface AuthPageProps {
+interface Mode {
   mode: 'signup' | 'signin';
 }
 
-const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
+const AuthPage = ({ mode } : Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 

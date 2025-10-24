@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-const Footer: React.FC = () => {
+const Footer = () => {
     const { theme } = useContext(ThemeContext);
 
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
 
-const NotFoundPage: React.FC = () => (
+const NotFoundPage = () => (
   <div className="error-page">
     <i className="bi bi-x" />
     <h1>Oops...<br />Something bad has just happened</h1>

@@ -117,7 +117,7 @@ class Post extends Component<PostProps, PostState> {
                         {showComments && (
                             <div className="commentSection">
                                 {post.comments.map((comment, index) => (
-                                    <Comment key={index} comment={comment} />
+                                    <Comment key={index} user={comment.user} text={comment.text} />
                                 ))}
                             </div>
                         )}

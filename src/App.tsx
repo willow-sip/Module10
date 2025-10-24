@@ -16,7 +16,7 @@ import { ThemeContext } from './context/ThemeContext';
 import { defaultPosts, Post as PostType } from './data/posts';
 import './App.css';
 
-const App: React.FC = () => {
+const App = () => {
   const { user, userAuth } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 
@@ -30,7 +30,7 @@ const App: React.FC = () => {
           path="/"
           element={
             <>
-              {userAuth && user && <AddPost user={user} />}
+              {userAuth && user && <AddPost avatar={user?.avatar} />}
               <div className="main-page">
                 {userAuth && user && (
                   <Sidebar
