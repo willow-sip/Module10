@@ -49,8 +49,7 @@ body {
 }
 
 .posts {
-  margin-top: 30px;
-    width: 40%;
+  width: 700px;
 }
 
 .app {
@@ -59,38 +58,8 @@ body {
 }
 
 
-@media(max-width: 960px){
-  .header{
-    padding: 5px 10px;
-    margin-bottom: 20px;
-  }
-  .header .logo{
-    width: 10%;
-  }
-
-  .sidebar{
-    display: none;
-  }
-  .posts, #addPost{
+@media(max-width: 768px){
+  .posts{
     width: 100%;
-    margin: 0;
-  }
-  .post{
-    background-color: transparent;
-    font-size: smaller;
-    width: 100%;
-  }
-  .post .postButtons{
-    width: 100%;
-  }
-}
-
-@media(max-width: 600px){
-  .header{
-    padding: 2px 5px;
-    margin-bottom: 10px;
-  }
-  .header .logo{
-    width: 12%;
   }
 }

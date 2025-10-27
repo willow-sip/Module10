@@ -1,14 +1,14 @@
 .sidebar {
     position: absolute;
-    top: -70px;
-    left: 77%;
-    width: 17%;
-    margin: 0 20px;
+    top: -112px;
+    left: 1235px;
+    width: 325px;
 }
 
 .sidebar h4{
     margin: 0;
-    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .recPeople,
@@ -19,7 +19,7 @@
     overflow: hidden;
     background-color: var(--comp-bg-color);
     border: 2px solid var(--border-color);
-    padding: 15px;
+    padding: 24px;
     margin-bottom: 10px;
 }
 
@@ -27,12 +27,13 @@
 .community {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-top: 8px;
+    padding: 12px 0;
 }
 
 .sidebar .avatar {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -42,14 +43,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 10px;
+    margin-left: 16px;
     line-height: 1.5;
 }
 
 .personalInfo p,
 .communityInfo p {
     margin: 0;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text-color);
     font-weight: 500;
 }
@@ -57,6 +58,7 @@
 .personalInfo small,
 .communityInfo small {
     margin-top: 2px;
-    font-size: 13px;
+    font-size: 16px;
+    font-weight: 400;
     color: var(--small-text-color);
 }
