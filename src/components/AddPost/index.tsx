@@ -10,7 +10,7 @@ const AddPost = ({ avatar } : User) => {
     const { theme } = useContext(ThemeContext);
 
     return (
-        <form action="#" id="addPostForm" data-theme={theme}>
+        <div id="addPost" data-theme={theme}>
             <div>
                 <img
                     src={avatar || './imgs/default-avatar.jpg'}
@@ -20,7 +20,7 @@ const AddPost = ({ avatar } : User) => {
                 <p>What's happening?</p>
             </div>
             <button>Tell everyone</button>
-        </form>
+        </div>
     );
 };
 

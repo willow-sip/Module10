@@ -71,7 +71,7 @@ body {
   .sidebar{
     display: none;
   }
-  .posts, #addPostForm{
+  .posts, #addPost{
     width: 100%;
     margin: 0;
   }
