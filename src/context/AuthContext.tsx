@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { initialUser, User } from '../data/users';
+import { createContext, useState, useEffect, ReactNode } from 'react';
+import { User } from '../data/datatypes';
 
 interface AuthContextType {
     user: User | null;
@@ -8,8 +8,8 @@ interface AuthContextType {
     updateUser: (newUser: User | null) => void;
     updateUserAuth: (status: boolean) => void;
     updateAuthMode: (mode: string | null) => void;
-    signUp: (email: string, username: string, password: string) => boolean;
-    signIn: (email: string, password: string) => boolean;
+    signUp: (email: string, password: string) => Promise<boolean>;
+    signIn: (email: string, password: string) => Promise<boolean>;
     logOut: () => void;
 }
 
@@ -20,8 +20,8 @@ export const AuthContext = createContext<AuthContextType>({
     updateUser: () => { },
     updateUserAuth: () => { },
     updateAuthMode: () => { },
-    signUp: () => false,
-    signIn: () => false,
+    signUp: async () => false,
+    signIn: async () => false,
     logOut: () => { }
 });
 
@@ -29,7 +29,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [userAuth, setUserAuth] = useState<boolean>(false);
     const [authMode, setAuthMode] = useState<string | null>(null);
@@ -47,21 +47,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const updateUserAuth = (status: boolean) => setUserAuth(status);
     const updateAuthMode = (mode: string | null) => setAuthMode(mode);
 
-    const signUp = (email: string, username: string, password: string): boolean => {
-        return true;
+    const signUp = async (email: string, password: string): Promise<boolean> => {
+        try {
+            const response = await fetch('http://localhost:3000/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const currentUser: User = {id: NaN, username: ``, email: email, password: password};
+
+            updateUser(currentUser);
+            updateUserAuth(true);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     };
 
-    const signIn = (email: string, password: string): boolean => {
-        //const found = someUsersArray.find(u => u.email === email && u.password === password);
-        //if (!found) return false;
+    const signIn = async (email: string, password: string): Promise<boolean> => {
+        try {
+            const response = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-        if (email === initialUser.email && password === initialUser.password) {
-            updateUser(initialUser);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const data = await response.json();
+            const currentUser: User = data.user;
+
+            updateUser(currentUser);
             updateUserAuth(true);
-            localStorage.setItem('currentUser', JSON.stringify(initialUser));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             return true;
+        } catch (error) {
+            console.error(error);
+            return false;
         }
-        return false;
     };
 
     const logOut = () => {

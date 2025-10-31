@@ -4,31 +4,16 @@ import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import './style.css';
 
-interface CommentType {
-    user: string;
-    text: string;
-}
-
-interface Author {
-    name: string;
-    avatar?: string;
-}
-
-interface PostData {
-    author: Author;
-    caption: string;
-    image?: string;
-    likes: number;
-    comments: CommentType[];
-    publishTime: Date;
-}
+import { Post as PostType, User, Comment as CommentType } from '../../data/datatypes'
 
 interface PostProps {
-    post: PostData;
+    post: PostType;
 }
 
 interface PostState {
     showComments: boolean;
+    comments: CommentType[] | undefined;
+    author: User ;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -38,7 +23,12 @@ class Post extends Component<PostProps, PostState> {
     constructor(props: PostProps) {
         super(props);
         this.state = {
-            showComments: false
+            showComments: false,
+            comments: undefined,
+            author: {
+                id: NaN,
+                username: '',
+            },
         };
     }
 
@@ -50,7 +40,7 @@ class Post extends Component<PostProps, PostState> {
 
     calculatePublishTime = (): string => {
         const now = new Date();
-        const published = this.props.post.publishTime;
+        const published = new Date(this.props.post.creationDate);;
         const diffMs = now.getTime() - published.getTime();
 
         const seconds = Math.floor(diffMs / 1000);
@@ -69,10 +59,50 @@ class Post extends Component<PostProps, PostState> {
         return rtf.format(-Math.floor(days / 365), 'year');
     };
 
+
+
+    componentDidMount(): void {
+        const id: number = this.props.post.id;
+        fetch(`http://localhost:3000/api/posts/${id}/comments`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                this.setState(() => ({
+                    comments: data,
+                }));
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        fetch(`http://localhost:3000/api/posts/${id}/author`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // this.setState(() => ({
+                //     author: data,
+                // }));
+                //FAKE TEMPORARY REQUEST
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
     render() {
-        const { post } = this.props;
         const { showComments } = this.state;
         const theme = this.context;
+        const { title, content, image, likesCount, commentsCount } = this.props.post;
+        const comments = this.state.comments;
+        const { profileImage, firstName, secondName } = this.state.author;
 
         return (
             <AuthContext.Consumer>
@@ -80,28 +110,29 @@ class Post extends Component<PostProps, PostState> {
                     <div className="post" data-theme={theme}>
                         <div className="author">
                             <img
-                                src={post.author.avatar || './imgs/default-avatar.jpg'}
+                                src={profileImage || './imgs/default-avatar.jpg'}
                                 alt="Post author avatar"
                                 className="avatar"
                             />
                             <div className="authorInfo">
-                                <p>{post.author.name}</p>
+                                <p>{firstName} {secondName}</p>
                                 <small>{this.calculatePublishTime()}</small>
                             </div>
                         </div>
 
-                        {post.image && <img src={post.image} alt="Post" />}
-                        <h3>{post.caption}</h3>
+                        {image && <img src={image} alt="Post" />}
+                        <h3>{title}</h3>
+                        <p>{content}</p>
 
                         <div className="postButtons">
                             <div className="likes">
-                                <i className="bi bi-suit-heart" /> {post.likes} likes
+                                <i className="bi bi-suit-heart" /> {likesCount} likes
                             </div>
                             <div className="comments">
                                 <i className="bi bi-chat-left" />
                                 <span className="comment-text">
                                     {userAuth
-                                        ? `${post.comments.length} comments`
+                                        ? `${commentsCount} comments`
                                         : 'You have to log in to see the comments'}
                                 </span>
                             </div>
@@ -116,8 +147,8 @@ class Post extends Component<PostProps, PostState> {
 
                         {showComments && (
                             <div className="commentSection">
-                                {post.comments.map((comment, index) => (
-                                    <Comment key={index} user={comment.user} text={comment.text} />
+                                {comments?.map((comment, i) => (
+                                    <Comment key={comment.id} authorId={comment.authorId} text={comment.text} />
                                 ))}
                             </div>
                         )}

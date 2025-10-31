@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useContext } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 
 import AuthPage from './components/AuthPage';
 import NotFoundPage from './components/NotFoundPage';
@@ -13,35 +13,50 @@ import Post from './components/Post';
 
 import { AuthContext } from './context/AuthContext';
 import { ThemeContext } from './context/ThemeContext';
-import { defaultPosts, Post as PostType } from './data/posts';
+import { Post as PostType } from './data/datatypes';
 import './App.css';
 
 const App = () => {
   const { user, userAuth } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 
-  const posts: PostType[] = defaultPosts;
+  const [posts, setPosts] = useState<PostType[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/posts')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setPosts(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   return (
     <div className={`app ${theme}`}>
-      <Header name={user?.name} avatar={user?.avatar} />
+      <Header name={`${user?.firstName} ${user?.secondName}`} avatar={user?.profileImage} />
       <Routes>
         <Route
           path="/"
           element={
             <>
-              {userAuth && user && <AddPost avatar={user?.avatar} />}
+              {userAuth && user && <AddPost avatar={user?.profileImage} />}
               <div className="main-page">
                 {userAuth && user && (
-                  <Sidebar
-                    recPeople={user.recPeople}
-                    recCommunities={user.recCommunities}
-                  />
+                  <Sidebar />
                 )}
                 <div className="posts">
-                  {posts.map((post, index) => (
-                    <Post key={index} post={post} />
-                  ))}
+                  <Suspense fallback={<div>Loading posts...</div>}>
+                    {posts.map(post => (
+                      <Post key={post.id} post={post} />
+                    ))}
+                  </Suspense>
                 </div>
               </div>
             </>

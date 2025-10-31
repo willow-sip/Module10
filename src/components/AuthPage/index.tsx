@@ -62,21 +62,6 @@ const AuthPage = ({ mode } : Mode) => {
           required
         />
 
-        {authMode === 'signup' && (
-          <>
-            <label htmlFor="username"><i className="bi bi-person" /> Username</label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Enter username"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-            />
-          </>
-        )}
-
         <label htmlFor="password"><i className="bi bi-eye" /> Password</label>
         <input
           type="password"
