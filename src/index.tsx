@@ -6,19 +6,27 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { BrowserRouter } from 'react-router-dom';
 import ErrorHandler from './components/ErrorHandler'
+import { startMockingSocial } from '@sidekick-monorepo/internship-backend';
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
+async function enableMocking() {
+  await startMockingSocial();
+}
 
-root.render(
-  <BrowserRouter>
-    <ErrorHandler>
-      <AuthProvider>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
-      </AuthProvider>
-    </ErrorHandler>
-  </BrowserRouter>
-);
+enableMocking().then(() => {
+  const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-reportWebVitals();
+  root.render(
+    <BrowserRouter>
+      <ErrorHandler>
+        <AuthProvider>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </AuthProvider>
+      </ErrorHandler>
+    </BrowserRouter>
+  );
+
+  reportWebVitals();
+});
+
