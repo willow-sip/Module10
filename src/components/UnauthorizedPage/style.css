@@ -1,0 +1,27 @@
+.error-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.error-page .error401 {
+    width: 94.39px;
+    height: 94.39px;
+}
+
+.error-page h1 {
+    font-size: 60px;
+}
+
+@media (max-width: 768px) {
+    .error-page .error401 {
+        width: 41.95px;
+        height: 41.95px;
+    }
+
+    .error-page h1 {
+        font-size: 20px;
+    }
+}

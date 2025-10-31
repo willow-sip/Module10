@@ -1,0 +1,108 @@
+.authPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: inherit;
+    width: 375px;
+    margin: 0 auto;
+}
+
+.authBox {
+    border: none;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.mainInfo {
+    height: 70px;
+    margin-bottom: 18px;
+}
+
+.mainInfo h2 {
+    font-size: 18px;
+    margin: 0;
+    text-align: center;
+}
+
+.mainInfo p {
+    font-size: 14px;
+    text-align: center;
+}
+
+.authBox label {
+    font-size: 14px;
+}
+
+.authBox input {
+    height: 48px;
+    padding: 10px 12px;
+    border: 2px solid var(--border-color);
+    background-color: var(--comp-bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.authBox input:focus {
+    outline: none;
+}
+
+.authBox input::placeholder {
+    color: var(--border-color);
+}
+
+.authBox button {
+    height: 44px;
+    background-color: #FF8811;
+    color: var(--text-color);
+    border: none;
+    padding: 12px 48px;
+    margin-top: 18px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.authBox button:hover {
+    background-color: #e65c00;
+}
+
+.authBox small {
+    font-size: 12px;
+    text-align: center;
+    color: var(--small-text-color);
+    margin-top: 18px;
+}
+
+.authBox small span {
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.switchLink {
+    font-size: 14px;
+    color: var(--text-color);
+    text-align: center;
+    margin-top: 18px;
+}
+
+.switchLink span {
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .authPage {
+        width: 100%;
+    }
+
+    .authBox button {
+        height: 44px;
+    }
+}
