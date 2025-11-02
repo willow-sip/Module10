@@ -10,6 +10,8 @@ import AddPost from './components/AddPost';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
 import Post from './components/Post';
+import Stats from './components/Stats';
+import Profile from './components/Profile';
 
 import { AuthContext } from './context/AuthContext';
 import { ThemeContext } from './context/ThemeContext';
@@ -62,6 +64,8 @@ const App = () => {
             </>
           }
         />
+        <Route path="/stats" element={<Stats />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/sign-up" element={<AuthPage mode="signup" />} />
         <Route path="/sign-in" element={<AuthPage mode="signin" />} />
         <Route path="/401" element={<UnauthorizedPage />} />

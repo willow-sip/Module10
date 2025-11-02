@@ -9,13 +9,13 @@ interface User {
     avatar?: string;
 }
 
-const Header = ({ name, avatar }: User ) => {
+const Header = ({ name, avatar }: User) => {
     const { userAuth, logOut } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     const navigate = useNavigate();
     const location = useLocation();
-    const isMainPage = location.pathname === '/';
+    const isMainOrProfilePage = (location.pathname === '/') || (location.pathname === '/profile') || (location.pathname === '/stats');
 
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
@@ -32,7 +32,7 @@ const Header = ({ name, avatar }: User ) => {
         <header className="header" data-theme={theme}>
             <img className="logo" src="./imgs/logo.png" alt="Sidekick-logo" />
 
-            {isMainPage && (
+            {isMainOrProfilePage && (
                 isMobile ? (
                     <>
                         <button onClick={toggleDrawer} className="burger">
@@ -84,8 +84,10 @@ const Header = ({ name, avatar }: User ) => {
                             <button onClick={toggleTheme} className="theme-toggle">
                                 {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
                             </button>
-                            <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
-                            <p>{name}</p>
+                            <div className="profile-link" onClick={() => navigate('/profile')}>
+                                <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
+                                <p>{name}</p>
+                            </div>
                             <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
                         </div>
                     )

@@ -1,0 +1,20 @@
+.statsChart{
+    display: flex;
+    width: 1200px;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+.chartBlock h3{
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.chartBlock>div{
+    background-color: var(--comp-bg-color);
+    border: 1px solid var(--border-color);
+    margin-top: 24px;
+    padding: 24px 0;
+}
+

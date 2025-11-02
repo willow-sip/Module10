@@ -140,6 +140,13 @@
   padding-left: 12px;
 }
 
+.profile-link{
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .header {
     height: 36px;

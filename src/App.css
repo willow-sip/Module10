@@ -12,6 +12,8 @@
   --border-color: #384162;
   --small-text-color: #8791B7;
   --footer-text-color: #ff8000;
+  --chart-color: #2F3757;
+  --chart-dot: #bcc3e3;
 
 }
 [data-theme='light'] *{
@@ -22,6 +24,8 @@
   --border-color: #a2a7c1;
   --small-text-color: #666e89;
   --footer-text-color: #a95b0c;
+  --chart-color: #2F3757;
+  --chart-dot: #7b8094;
   
 }
 
