@@ -13,12 +13,12 @@ interface PostProps {
 interface PostState {
     showComments: boolean;
     comments: CommentType[] | undefined;
-    author: User ;
+    author: User;
 }
 
 class Post extends Component<PostProps, PostState> {
-    static contextType = ThemeContext;
-    context!: React.ContextType<typeof ThemeContext>;
+    static contextType = AuthContext;
+    context!: React.ContextType<typeof AuthContext>;
 
     constructor(props: PostProps) {
         super(props);
@@ -59,11 +59,15 @@ class Post extends Component<PostProps, PostState> {
         return rtf.format(-Math.floor(days / 365), 'year');
     };
 
-
-
     componentDidMount(): void {
         const id: number = this.props.post.id;
-        fetch(`http://localhost:3000/api/posts/${id}/comments`)
+        const { token } = this.context;
+
+        fetch(`http://localhost:3000/api/posts/${id}/comments`, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -79,7 +83,11 @@ class Post extends Component<PostProps, PostState> {
                 console.error(error);
             });
 
-        fetch(`http://localhost:3000/api/posts/${id}/author`)
+        fetch(`http://localhost:3000/api/posts/${id}/author`, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,14 +107,14 @@ class Post extends Component<PostProps, PostState> {
 
     render() {
         const { showComments } = this.state;
-        const theme = this.context;
+        const { userAuth } = this.context;
         const { title, content, image, likesCount, commentsCount } = this.props.post;
         const comments = this.state.comments;
         const { profileImage, firstName, secondName } = this.state.author;
 
         return (
-            <AuthContext.Consumer>
-                {({ userAuth }) => (
+            <ThemeContext.Consumer>
+                {theme => (
                     <div className="post" data-theme={theme}>
                         <div className="author">
                             <img
@@ -154,7 +162,7 @@ class Post extends Component<PostProps, PostState> {
                         )}
                     </div>
                 )}
-            </AuthContext.Consumer>
+            </ThemeContext.Consumer>
         );
     }
 }

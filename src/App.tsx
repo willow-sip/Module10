@@ -66,6 +66,7 @@ const App = () => {
         <Route path="/sign-in" element={<AuthPage mode="signin" />} />
         <Route path="/401" element={<UnauthorizedPage />} />
         <Route path="*" element={<NotFoundPage />} />
+
       </Routes>
       <Footer />
     </div>

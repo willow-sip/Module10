@@ -28,7 +28,7 @@ const AuthPage = ({ mode } : Mode) => {
     }
 
     const success = authMode === 'signup'
-      ? signUp(email, username, password)
+      ? signUp(email, password)
       : signIn(email, password);
 
     if (!success) {

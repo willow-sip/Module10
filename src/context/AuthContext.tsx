@@ -5,9 +5,11 @@ interface AuthContextType {
     user: User | null;
     userAuth: boolean;
     authMode: string | null;
+    token: string | null;
     updateUser: (newUser: User | null) => void;
     updateUserAuth: (status: boolean) => void;
     updateAuthMode: (mode: string | null) => void;
+    setToken: (token: string | null) => void;
     signUp: (email: string, password: string) => Promise<boolean>;
     signIn: (email: string, password: string) => Promise<boolean>;
     logOut: () => void;
@@ -17,9 +19,11 @@ export const AuthContext = createContext<AuthContextType>({
     user: null,
     userAuth: false,
     authMode: null,
+    token: null,
     updateUser: () => { },
     updateUserAuth: () => { },
     updateAuthMode: () => { },
+    setToken: () => { },
     signUp: async () => false,
     signIn: async () => false,
     logOut: () => { }
@@ -33,13 +37,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [userAuth, setUserAuth] = useState<boolean>(false);
     const [authMode, setAuthMode] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
         const savedUser = localStorage.getItem('currentUser');
-        if (savedUser) {
+        const savedToken = localStorage.getItem('authToken');
+        
+        if (savedUser && savedToken) {
             const parsedUser: User = JSON.parse(savedUser);
             updateUser(parsedUser);
             updateUserAuth(true);
+            setToken(savedToken);
         }
     }, []);
 
@@ -57,11 +65,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-            const currentUser: User = {id: NaN, username: ``, email: email, password: password};
+            const currentUser: User = { id: NaN, username: ``, email: email, password: password };
+            const newToken: string = `y7)0{ewrEdD@"{.GGmHmrwGsq+H@J3eR"R${Math.floor(Math.random() * 1000)}`;
 
             updateUser(currentUser);
             updateUserAuth(true);
+            setToken(newToken);
+
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('authToken', newToken);
+
             return true;
         } catch (error) {
             console.error(error);
@@ -81,10 +94,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             const data = await response.json();
             const currentUser: User = data.user;
+            const receivedToken: string = data.token;
 
             updateUser(currentUser);
             updateUserAuth(true);
+            setToken(receivedToken);
+
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('authToken', receivedToken);
+            
             return true;
         } catch (error) {
             console.error(error);
@@ -95,7 +113,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const logOut = () => {
         updateUser(null);
         updateUserAuth(false);
+        setToken(null);
+
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
     };
 
     return (
@@ -104,9 +125,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 user,
                 userAuth,
                 authMode,
+                token,
                 updateUser,
                 updateUserAuth,
                 updateAuthMode,
+                setToken,
                 signUp,
                 signIn,
                 logOut

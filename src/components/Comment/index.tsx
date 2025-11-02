@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import './style.css';
 
 import { User } from '../../data/datatypes'
+import { AuthContext } from '../../context/AuthContext'
 
 interface CommentType {
     authorId: number;
@@ -9,10 +10,15 @@ interface CommentType {
 }
 
 const Comment = ({ authorId, text }: CommentType) => {
-    let author: User = { id: NaN, username: '' };
+    const [author, setAuthor]: [User, unknown] = useState({ id: NaN, username: '' });
+    const { token } = useContext(AuthContext);
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/posts/${authorId}/author`)
+        fetch(`http://localhost:3000/api/posts/${authorId}/author`, {
+            headers: {
+                Authorization: `${token}`,
+            },
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,7 +32,7 @@ const Comment = ({ authorId, text }: CommentType) => {
             .catch(error => {
                 console.error(error);
             });
-    }, [])
+    }, [authorId, token])
 
     return (
         <div className="comment">
