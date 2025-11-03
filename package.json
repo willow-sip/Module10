@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap-icons": "^1.13.1",
     "express": "^5.1.0",
+    "formik": "^2.4.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
@@ -45,7 +46,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "gh-pages": "^6.3.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.2.2"
   },
   "msw": {
     "workerDirectory": [
