@@ -17,6 +17,7 @@ interface PostState {
     liked: boolean;
     likesCount: number;
     newComment: string;
+    prevToken: string | null;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -35,6 +36,7 @@ class Post extends Component<PostProps, PostState> {
             liked: false,
             likesCount: props.post.likesCount,
             newComment: '',
+            prevToken: null,
         };
     }
 
@@ -146,7 +148,7 @@ class Post extends Component<PostProps, PostState> {
                 return res.json();
             })
             .then(data => {
-                    const success = liked
+                const success = liked
                     ? !!data.data?.dislikePost?.id
                     : !!data.data?.likePost?.id;
 
@@ -162,52 +164,72 @@ class Post extends Component<PostProps, PostState> {
             .catch(err => console.error(err));
     };
 
+    loadCommentsAndAuthor = () => {
+        const id: number = this.props.post.id;
+        const { token, user } = this.context;
+
+        if (user && token) {
+            fetch(`http://localhost:3000/api/posts/${id}/comments`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    this.setState(() => ({
+                        comments: data,
+                    }));
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            fetch(`http://localhost:3000/api/posts/${id}/author`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // this.setState(() => ({
+                    //     author: data,
+                    // }));
+                    //FAKE TEMPORARY REQUEST
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    }
 
     componentDidMount(): void {
-        const id: number = this.props.post.id;
-        const { token } = this.context;
-
-        fetch(`http://localhost:3000/api/posts/${id}/comments`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                this.setState(() => ({
-                    comments: data,
-                }));
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        fetch(`http://localhost:3000/api/posts/${id}/author`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // this.setState(() => ({
-                //     author: data,
-                // }));
-                //FAKE TEMPORARY REQUEST
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        this.loadCommentsAndAuthor();
     }
+
+    componentDidUpdate(prevProps: PostProps, prevState: PostState) {
+        const { token } = this.context;
+        const { prevToken } = this.state;
+
+        if (!prevToken && token) {
+            this.loadCommentsAndAuthor();
+        }
+
+        if (prevToken !== token) {
+            this.setState({ prevToken: token });
+        }
+    }
+
+
 
     render() {
         const { showComments } = this.state;

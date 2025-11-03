@@ -85,6 +85,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const currentUser: User = data.user;
             const receivedToken: string = data.token;
 
+            console.log(receivedToken);
+
             updateUser(currentUser);
             updateUserAuth(true);
             setToken(receivedToken);
