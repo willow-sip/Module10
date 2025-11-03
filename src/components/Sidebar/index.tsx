@@ -38,8 +38,6 @@ class Sidebar extends Component<{}, SidebarState> {
                     return response.json();
                 })
                 .then((data: Group[]) => {
-
-                    console.log(data);
                     this.setState({ groups: data });
                 })
                 .catch(error => {

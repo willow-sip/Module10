@@ -14,6 +14,8 @@ interface PostState {
     showComments: boolean;
     comments: CommentType[] | undefined;
     author: User;
+    liked: boolean;
+    likesCount: number;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -29,6 +31,8 @@ class Post extends Component<PostProps, PostState> {
                 id: NaN,
                 username: '',
             },
+            liked: false,
+            likesCount: props.post.likesCount,
         };
     }
 
@@ -58,6 +62,53 @@ class Post extends Component<PostProps, PostState> {
         if (days < 365) return rtf.format(-Math.floor(days / 30), 'month');
         return rtf.format(-Math.floor(days / 365), 'year');
     };
+
+    handleLike = () => {
+        const { liked, likesCount } = this.state;
+        const { token } = this.context;
+        const postId = this.props.post.id;
+
+        const mutation = `
+            mutation LikeToggle($postId: Int!) {
+                ${liked ? 'dislikePost' : 'likePost'}(postId: $postId) {
+                    id
+                }
+            }
+        `;
+
+        const variables = { postId };
+
+        fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${token}`,
+            },
+            body: JSON.stringify({ query: mutation, variables }),
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                console.log('GraphQL response:', data);
+
+                const success = liked
+                    ? !!data.data?.dislikePost?.id
+                    : !!data.data?.likePost?.id;
+
+                if (success) {
+                    this.setState(prevState => ({
+                        liked: !prevState.liked,
+                        likesCount: prevState.liked
+                            ? prevState.likesCount - 1
+                            : prevState.likesCount + 1,
+                    }));
+                }
+            })
+            .catch(err => console.error(err));
+    };
+
 
     componentDidMount(): void {
         const id: number = this.props.post.id;
@@ -108,7 +159,7 @@ class Post extends Component<PostProps, PostState> {
     render() {
         const { showComments } = this.state;
         const { userAuth } = this.context;
-        const { title, content, image, likesCount, commentsCount } = this.props.post;
+        const { title, content, image, commentsCount } = this.props.post;
         const comments = this.state.comments;
         const { profileImage, firstName, secondName } = this.state.author;
 
@@ -134,7 +185,10 @@ class Post extends Component<PostProps, PostState> {
 
                         <div className="postButtons">
                             <div className="likes">
-                                <i className="bi bi-suit-heart" /> {likesCount} likes
+                                <i
+                                    className={this.state.liked ? 'bi bi-suit-heart-fill' : 'bi bi-suit-heart'}
+                                    onClick={this.handleLike}
+                                />{this.state.likesCount} likes
                             </div>
                             <div className="comments">
                                 <i className="bi bi-chat-left" />

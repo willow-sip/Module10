@@ -42,7 +42,11 @@ const AuthPage = ({ mode }: Mode) => {
     }
 
     updateAuthMode(null);
-    navigate('/');
+    if (authMode === 'signup') {
+      navigate('/sign-in');
+    } else {
+      navigate('/');
+    }
   };
 
   return (

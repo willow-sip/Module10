@@ -73,6 +73,10 @@
     color: var(--text-color);
 }
 
+.likes i{
+    cursor: pointer;
+}
+
 
 @media(max-width: 768px) {
     .post {

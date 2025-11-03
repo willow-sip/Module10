@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const savedUser = localStorage.getItem('currentUser');
         const savedToken = localStorage.getItem('authToken');
+        console.log(savedUser)
         
         if (savedUser && savedToken) {
             const parsedUser: User = JSON.parse(savedUser);
@@ -64,17 +65,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             });
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-            const currentUser: User = { id: NaN, username: ``, email: email, password: password };
-            const newToken: string = `y7)0{ewrEdD@"{.GGmHmrwGsq+H@J3eR"R${Math.floor(Math.random() * 1000)}`;
-
-            updateUser(currentUser);
-            updateUserAuth(true);
-            setToken(newToken);
-
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            localStorage.setItem('authToken', newToken);
-
             return true;
         } catch (error) {
             console.error(error);
