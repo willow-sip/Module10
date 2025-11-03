@@ -1,6 +1,10 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../data/datatypes';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { setExpiresAt, clearExpiresAt } from '../slices/authSlice';
+
 interface AuthContextType {
     user: User | null;
     userAuth: boolean;
@@ -33,11 +37,26 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
+function getTokenExpiration(token: string): number | null {
+    try {
+        const payloadBase64 = token.split('.')[1];
+        const payloadJson = atob(payloadBase64);
+        const payload = JSON.parse(payloadJson);
+        return payload.exp ? payload.exp * 1000 : null;
+    } catch (error) {
+        console.error('Error in token decifer:', error);
+        return null;
+    }
+}
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [userAuth, setUserAuth] = useState<boolean>(false);
     const [authMode, setAuthMode] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+
+    const dispatch = useDispatch();
+    const expiresAt = useSelector((state: RootState) => state.auth.expiresAt);
 
     useEffect(() => {
         const savedUser = localStorage.getItem('currentUser');
@@ -45,11 +64,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         if (savedUser && savedToken) {
             const parsedUser: User = JSON.parse(savedUser);
-            updateUser(parsedUser);
-            updateUserAuth(true);
-            setToken(savedToken);
+            const exp = getTokenExpiration(savedToken);
+
+            if (exp && Date.now() < exp) {
+                updateUser(parsedUser);
+                updateUserAuth(true);
+                setToken(savedToken);
+                dispatch(setExpiresAt(exp));
+            } else {
+                logOut();
+            }
         }
     }, []);
+
+    useEffect(() => {
+        if (expiresAt) {
+            const now = Date.now();
+            const timeout = expiresAt - now;
+
+            if (timeout <= 0) {
+                logOut();
+                dispatch(clearExpiresAt());
+            } else {
+                const timer = setTimeout(() => {
+                    logOut();
+                    dispatch(clearExpiresAt());
+                }, timeout);
+
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [expiresAt]);
 
     const updateUser = (newUser: User | null) => setUser(newUser);
     const updateUserAuth = (status: boolean) => setUserAuth(status);
@@ -84,15 +129,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const data = await response.json();
             const currentUser: User = data.user;
             const receivedToken: string = data.token;
-
-            console.log(receivedToken);
+            const exp = getTokenExpiration(receivedToken);
+            
+            if (!exp) throw new Error('No exp field in token object');
 
             updateUser(currentUser);
             updateUserAuth(true);
             setToken(receivedToken);
+            dispatch(setExpiresAt(exp));
 
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             localStorage.setItem('authToken', receivedToken);
+            localStorage.setItem('expiresAt', exp.toString());
             
             return true;
         } catch (error) {
@@ -105,9 +153,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         updateUser(null);
         updateUserAuth(false);
         setToken(null);
+        dispatch(clearExpiresAt());
 
         localStorage.removeItem('currentUser');
         localStorage.removeItem('authToken');
+        localStorage.removeItem('expiresAt');
     };
 
     return (

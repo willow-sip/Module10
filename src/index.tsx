@@ -7,6 +7,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { BrowserRouter } from 'react-router-dom';
 import ErrorHandler from './components/ErrorHandler'
 import { startMockingSocial } from '@sidekick-monorepo/internship-backend';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 async function enableMocking() {
   await startMockingSocial();
@@ -16,15 +18,17 @@ enableMocking().then(() => {
   const root = ReactDOM.createRoot(document.getElementById('root')!);
 
   root.render(
-    <BrowserRouter>
-      <ErrorHandler>
-        <AuthProvider>
-          <ThemeProvider>
-            <App />
-          </ThemeProvider>
-        </AuthProvider>
-      </ErrorHandler>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ErrorHandler>
+          <AuthProvider>
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
+          </AuthProvider>
+        </ErrorHandler>
+      </BrowserRouter>
+    </Provider>
   );
 
   reportWebVitals();
