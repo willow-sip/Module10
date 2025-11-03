@@ -28,7 +28,7 @@ class Sidebar extends Component<{}, SidebarState> {
         if (token) {
             fetch('http://localhost:3000/api/groups', {
                 headers: {
-                    Authorization: `${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             })
                 .then(response => {
@@ -46,7 +46,7 @@ class Sidebar extends Component<{}, SidebarState> {
 
             fetch('http://localhost:3000/api/getSuggested', {
                 headers: {
-                    Authorization: `${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             })
                 .then(response => {

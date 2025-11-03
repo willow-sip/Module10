@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const savedUser = localStorage.getItem('currentUser');
         const savedToken = localStorage.getItem('authToken');
-        console.log(savedUser)
         
         if (savedUser && savedToken) {
             const parsedUser: User = JSON.parse(savedUser);

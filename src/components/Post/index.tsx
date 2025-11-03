@@ -16,6 +16,7 @@ interface PostState {
     author: User;
     liked: boolean;
     likesCount: number;
+    newComment: string;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -33,14 +34,9 @@ class Post extends Component<PostProps, PostState> {
             },
             liked: false,
             likesCount: props.post.likesCount,
+            newComment: '',
         };
     }
-
-    toggleShowComments = () => {
-        this.setState(prevState => ({
-            showComments: !prevState.showComments
-        }));
-    };
 
     calculatePublishTime = (): string => {
         const now = new Date();
@@ -63,8 +59,67 @@ class Post extends Component<PostProps, PostState> {
         return rtf.format(-Math.floor(days / 365), 'year');
     };
 
+    toggleShowComments = () => {
+        this.setState(prevState => ({
+            showComments: !prevState.showComments
+        }));
+    };
+
+    handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({ newComment: e.target.value });
+    };
+
+    handleAddComment = () => {
+        const { newComment, comments } = this.state;
+        const { token, user } = this.context;
+        const postId = this.props.post.id;
+
+        if (!newComment.trim()) {
+            console.log('Comment text is empty');
+            return;
+        }
+
+        const commentData = {
+            postId: Number(postId),
+            text: newComment.trim(),
+        };
+
+        fetch('http://localhost:3000/api/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(commentData),
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(createdComment => {
+                if (user) {
+                    const fullComment: CommentType = {
+                        id: createdComment.id,
+                        text: createdComment.text,
+                        authorId: user.id,
+                        postId: createdComment.postId,
+                        creationDate: createdComment.creationDate || new Date().toISOString(),
+                        modifiedDate: createdComment.modifiedDate || new Date().toISOString(),
+                    };
+                    this.setState(prevState => ({
+                        comments: prevState.comments
+                            ? [...prevState.comments, fullComment]
+                            : [fullComment],
+                        newComment: '',
+                    }));
+                }
+            }).catch(err => console.error(err));
+    };
+
     handleLike = () => {
-        const { liked, likesCount } = this.state;
+        const { liked } = this.state;
         const { token } = this.context;
         const postId = this.props.post.id;
 
@@ -82,7 +137,7 @@ class Post extends Component<PostProps, PostState> {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `${token}`,
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query: mutation, variables }),
         })
@@ -91,9 +146,7 @@ class Post extends Component<PostProps, PostState> {
                 return res.json();
             })
             .then(data => {
-                console.log('GraphQL response:', data);
-
-                const success = liked
+                    const success = liked
                     ? !!data.data?.dislikePost?.id
                     : !!data.data?.likePost?.id;
 
@@ -116,7 +169,7 @@ class Post extends Component<PostProps, PostState> {
 
         fetch(`http://localhost:3000/api/posts/${id}/comments`, {
             headers: {
-                Authorization: `${token}`,
+                Authorization: `Bearer ${token}`,
             },
         })
             .then(response => {
@@ -136,7 +189,7 @@ class Post extends Component<PostProps, PostState> {
 
         fetch(`http://localhost:3000/api/posts/${id}/author`, {
             headers: {
-                Authorization: `${token}`,
+                Authorization: `Bearer ${token}`,
             },
         })
             .then(response => {
@@ -159,8 +212,9 @@ class Post extends Component<PostProps, PostState> {
     render() {
         const { showComments } = this.state;
         const { userAuth } = this.context;
-        const { title, content, image, commentsCount } = this.props.post;
+        const { title, content, image } = this.props.post;
         const comments = this.state.comments;
+        const commentsCount = this.state.comments?.length;
         const { profileImage, firstName, secondName } = this.state.author;
 
         return (
@@ -209,9 +263,37 @@ class Post extends Component<PostProps, PostState> {
 
                         {showComments && (
                             <div className="commentSection">
-                                {comments?.map((comment, i) => (
-                                    <Comment key={comment.id} authorId={comment.authorId} text={comment.text} />
+                                {comments?.map(comment => (
+                                    <Comment
+                                        key={comment.id}
+                                        id={comment.id}
+                                        authorId={comment.authorId}
+                                        text={comment.text}
+                                        edit={(newText) => {
+                                            this.setState(prev => ({
+                                                comments: prev.comments?.map(prevCom =>
+                                                    prevCom.id === comment.id ? { ...prevCom, text: newText } : prevCom),
+                                            }));
+                                        }}
+                                        deleteComm={() => {
+                                            this.setState(prev => ({
+                                                comments: prev.comments?.filter(c => c.id !== comment.id),
+                                            }));
+                                        }}
+                                    />
                                 ))}
+
+                                <div className="addComment">
+                                    <p><i className="bi bi-pencil-fill" /> Add a comment</p>
+                                    <textarea
+                                        name="commentText"
+                                        id="commentText"
+                                        placeholder="Write description here..."
+                                        value={this.state.newComment}
+                                        onChange={this.handleCommentChange}
+                                    />
+                                    <button onClick={this.handleAddComment}>Add a comment</button>
+                                </div>
                             </div>
                         )}
                     </div>

@@ -77,6 +77,49 @@
     cursor: pointer;
 }
 
+.addComment {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-color);
+}
+
+.addComment p {
+    font-size: 14px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+}
+
+.addComment textarea {
+    width: 652px;
+    height: 58px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    font-family: inherit;
+    color: var(--text-color);
+    resize: none;
+}
+
+.addComment button {
+    width: 211px;
+    height: 44px;
+    color: var(--text-color);
+    padding: 12px 48px;
+    background-color: var(--footer-text-color);
+    border: none;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background-color 0.3s ease;
+}
+
+.addComment button:hover {
+    background-color: rgba(var(--footer-text-color), 0.8);
+}
+
+
 
 @media(max-width: 768px) {
     .post {
