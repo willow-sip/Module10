@@ -24,20 +24,21 @@ const App = () => {
 
   const [posts, setPosts] = useState<PostType[]>([]);
 
+  const fetchPosts = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/posts');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    setPosts(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   useEffect(() => {
-    fetch('http://localhost:3000/api/posts')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setPosts(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    fetchPosts();
   }, []);
 
   return (
@@ -48,7 +49,7 @@ const App = () => {
           path="/"
           element={
             <>
-              {userAuth && user && <AddPost avatar={user?.profileImage} />}
+              {userAuth && user && <AddPost avatar={user?.profileImage} postCreated={fetchPosts}/>}
               <div className="main-page">
                 {userAuth && user && (
                   <Sidebar />

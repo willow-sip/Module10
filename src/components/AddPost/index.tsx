@@ -1,26 +1,33 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ThemeContext } from '../../context/ThemeContext';
+import AddPostForm from '../AddPostForm';
 import './style.css';
 
-interface User {
+interface Props {
     avatar?: string;
+    postCreated: () => void;
 }
 
-const AddPost = ({ avatar } : User) => {
+const AddPost = ({ avatar, postCreated } : Props) => {
     const { theme } = useContext(ThemeContext);
+    const [showForm, setShowForm] = useState(false);
 
     return (
+        <>
         <div id="addPost" data-theme={theme}>
             <div>
                 <img
-                    src={avatar || './imgs/default-avatar.jpg'}
-                    alt="User avatar"
-                    className="avatar"
-                />
-                <p>What's happening?</p>
+                        src={avatar || './imgs/default-avatar.jpg'}
+                        alt="User avatar"
+                        className="avatar"
+                    />
+                    <p>What's happening?</p>
+                </div>
+                <button onClick={() => setShowForm(true)}>Tell everyone</button>
             </div>
-            <button>Tell everyone</button>
-        </div>
+
+            {showForm && <AddPostForm close={() => setShowForm(false)} postCreated={postCreated}/>}
+        </>
     );
 };
 
