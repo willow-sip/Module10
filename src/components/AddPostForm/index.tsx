@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { ThemeContext } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext'
 import './style.css';
 
 interface Props {
@@ -14,15 +15,45 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState<File | null>(null);
+    const notContext = useNotification();
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
+            const selectedFile = e.target.files[0];
+            if (selectedFile.size > 10 * 1024 * 1024) {
+                notContext.showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                return;
+            }
+            
+            const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+            if (!fileTypes.includes(selectedFile.type)) {
+                notContext.showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                return;
+            }
+            
+            setFile(selectedFile);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!title.trim()) {
+            notContext.showNotification('Input post title please', 'warning', 2000);
+            return;
+        }
+
+        if (!description.trim()) {
+            notContext.showNotification('Input description please', 'warning', 2000);
+            return;
+        }
+
+        if (!token) {
+            notContext.showNotification('You are somehow not authorized', 'error', 3000);
+            return;
+        }
+
         const formData: { title: string; content: string; image?: File } = {
             title: title,
             content: description,
@@ -41,9 +72,12 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             });
 
             if (!response.ok) {
+                notContext.showNotification('Failed to create a post.', 'error', 3000);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
+            notContext.showNotification('Post created successfully', 'success', 3000);
+
             if (postCreated) {
                 postCreated();
             }
@@ -55,7 +89,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             close();
 
         } catch (error) {
-            console.error('Failed to create post:', error);
+            notContext.showNotification('Failed to create a post.', 'error', 3000);
         }
     };
 
@@ -78,7 +112,6 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             placeholder="Enter post title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            required
                         />
                     </div>
 
@@ -92,7 +125,6 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4}
-                            required
                         />
                     </div>
 

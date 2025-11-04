@@ -2,20 +2,21 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext';
 import './style.css';
 
 const Profile = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { user, updateUser, logOut, token } = useContext(AuthContext);
     const [location, setLocation] = useState<"profile" | "stats">("profile");
+    const notContext = useNotification(); 
 
     const [username, setUsername] = useState(user?.username || '');
     const [email, setEmail] = useState(user?.email || '');
     const [description, setDescription] = useState(user?.description || '');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
-    const [errors, setErrors] = useState<{ username?: string; email?: string }>({});
-
+    
     const navigate = useNavigate();
 
     const checkEmail = (email : string) : boolean => {
@@ -26,6 +27,16 @@ const Profile = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                notContext.showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                return;
+            }
+            
+            const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+            if (!fileTypes.includes(file.type)) {
+                notContext.showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                return;
+            }
             setSelectedFile(file);
             setPreviewImage(URL.createObjectURL(file));
         }
@@ -33,23 +44,27 @@ const Profile = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const formErrors: { username?: string; email?: string } = {};
 
-        if (!username.trim()){
-            formErrors.username = 'Please input a username.';
+        if (!username.trim()) {
+            notContext.showNotification('Input username please', 'warning', 2000);
+            return;
         }
 
-        if (!email.trim()){
-            formErrors.email = 'Please input an email.';
+        if (!email.trim()) {
+            notContext.showNotification('Input email please', 'warning', 2000);
+            return;
+        }
+
+        if (!checkEmail(email.trim())) {
+            notContext.showNotification('Input valid email please', 'warning', 2000);
+            return;
+        }
+
+        if (description.trim().length > 200) {
+            notContext.showNotification('Your description is too big', 'warning', 2000);
+            return;
         }
         
-        if (!checkEmail(email)){
-            formErrors.email = 'Please input an email in correct form.';
-        }
-
-        setErrors(formErrors);
-        if (Object.keys(formErrors).length > 0) return;
-
         const query = `
   mutation UpdateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) {
@@ -59,7 +74,6 @@ const Profile = () => {
         description
         firstName
         secondName
-        profileImage
     }
   }
 `
@@ -67,8 +81,7 @@ const Profile = () => {
             input: {
                 username,
                 email,
-                description,
-                selectedFile
+                description
             },
         };
 
@@ -85,12 +98,15 @@ const Profile = () => {
             const result = await response.json();
 
             if (result.errors) {
-                console.error(result.errors);
+                notContext.showNotification("Failed to update profile", 'error', 2000);
+                console.log(result.errors);
                 return;
             }
             updateUser(result.data.updateProfile);
+            notContext.showNotification('Profile updated successfully', 'success', 2000);
         } catch (err) {
-            console.error('Couldnt update profile:', err);
+            notContext.showNotification("Failed to update profile", 'error', 2000);
+            return;
         }
     };
 

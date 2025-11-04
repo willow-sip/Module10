@@ -4,6 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { NotificationContextClass } from './context/NotificationContext';
 import { BrowserRouter } from 'react-router-dom';
 import ErrorHandler from './components/ErrorHandler'
 import { startMockingSocial } from '@sidekick-monorepo/internship-backend';
@@ -22,9 +23,11 @@ enableMocking().then(() => {
       <BrowserRouter>
         <ErrorHandler>
           <AuthProvider>
-            <ThemeProvider>
-              <App />
-            </ThemeProvider>
+            <NotificationContextClass>
+              <ThemeProvider>
+                <App />
+              </ThemeProvider>
+            </NotificationContextClass>
           </AuthProvider>
         </ErrorHandler>
       </BrowserRouter>

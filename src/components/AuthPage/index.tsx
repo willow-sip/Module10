@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
+import { useNotification } from '../../context/NotificationContext'
 import { Formik, Form, Field } from 'formik';
 
 import './style.css';
@@ -14,6 +15,7 @@ const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
+  const notContext = useNotification();
 
   useEffect(() => {
     updateAuthMode(mode);
@@ -26,7 +28,7 @@ const AuthPage = ({ mode }: Mode) => {
     const { email, password } = values;
 
     if (!email || !password) {
-      alert('Please fill in all required fields');
+      notContext.showNotification('Not all required data filled.', 'warning', 2000);
       setSubmitting(false);
       return;
     }
@@ -36,15 +38,23 @@ const AuthPage = ({ mode }: Mode) => {
       : signIn(email, password);
 
     if (!success) {
-      alert('Invalid credentials or user already exists');
+      notContext.showNotification(
+        authMode === 'signup'
+          ? 'User already exists.'
+          : 'Invalid email or password',
+        'error',
+        3000
+      );
       setSubmitting(false);
       return;
     }
 
     updateAuthMode(null);
     if (authMode === 'signup') {
+      notContext.showNotification('Sign up successful, now sign in!', 'success', 2000);
       navigate('/sign-in');
     } else {
+      notContext.showNotification('Sign in successful!', 'success', 2000);
       navigate('/');
     }
   };
@@ -71,7 +81,6 @@ const AuthPage = ({ mode }: Mode) => {
               name="email"
               id="email"
               placeholder="Enter email"
-              required
             />
 
             <label htmlFor="password"><i className="bi bi-eye" /> Password</label>
@@ -80,7 +89,6 @@ const AuthPage = ({ mode }: Mode) => {
               name="password"
               id="password"
               placeholder="Enter password"
-              required
             />
 
             <button type="submit" disabled={isSubmitting}>
