@@ -43,29 +43,28 @@
   margin-bottom: 32px;
 }
 
-.profile-header {
+#profile-form .profile-header {
   width: 248px;
   display: flex;
   align-items: center;
   gap: 24px;
-  margin-bottom: 32px;
 }
 
-.profile-header .avatar {
+#profile-form .profile-header .avatar {
   width: 64px;
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.profile-info h3 {
-  margin-bottom: 8px;
+#profile-form .profile-info h3 {
+  margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 500;
   color: var(--text-color);
 }
 
-.change-photo {
+#profile-form .change-photo {
   background: none;
   border: none;
   color: var(--small-text-color);
@@ -76,24 +75,24 @@
   margin: 0;
 }
 
-.change-photo:hover {
+#profile-form .change-photo:hover {
   color: var(--text-color);
 }
 
-.profile-form {
+#profile-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-group {
+#profile-form .form-group {
   width: 327px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.form-group label {
+#profile-form .form-group label {
   font-size: 16px;
   color: var(--text-color);
   display: flex;
@@ -101,13 +100,13 @@
   gap: 8px;
 }
 
-.form-group label i {
+#profile-form .form-group label i {
   font-size: 16px;
   color: var(--small-text-color);
 }
 
-.form-group input,
-.form-group textarea {
+#profile-form .form-group input,
+#profile-form .form-group textarea {
   padding: 12px 16px;
   background-color: var(--comp-bg-color);
   border: 1px solid var(--border-color);
@@ -117,26 +116,27 @@
   outline: none;
 }
 
-.form-group textarea{
+#profile-form .form-group textarea{
   width: 575px;
+  height: 110px;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+#profile-form .form-group input:focus,
+#profile-form .form-group textarea:focus {
   border-color: var(--small-text-color);
 }
 
-.form-group textarea {
+#profile-form .form-group textarea {
   font-family: inherit;
 }
 
-.char-count {
+#profile-form .char-count {
   font-size: 16px;
   color: var(--small-text-color);
   margin-top: 4px;
 }
 
-.save-btn, .logout-button {
+#profile-form .save-btn, .logout-button {
   background-color: var(--footer-text-color);
   height: 44px;
   color: var(--text-color);
@@ -149,7 +149,7 @@
   align-self: flex-start;
 }
 
-.save-btn{
+#profile-form .save-btn{
   width: 244px;
 }
 
@@ -157,10 +157,9 @@
   width: 144px;
 }
 
-.save-btn:hover, .logout-button:hover {
+#profile-form .save-btn:hover, .logout-button:hover {
   background-color: rgba(var(--accent-color-hover), 1)
 }
-
 
 .switch {
   position: relative;

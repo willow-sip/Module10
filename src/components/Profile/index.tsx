@@ -6,9 +6,93 @@ import './style.css';
 
 const Profile = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
-    const { user, logOut } = useContext(AuthContext);
+    const { user, updateUser, logOut, token } = useContext(AuthContext);
     const [location, setLocation] = useState<"profile" | "stats">("profile");
+
+    const [username, setUsername] = useState(user?.username || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [description, setDescription] = useState(user?.description || '');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
+    const [errors, setErrors] = useState<{ username?: string; email?: string }>({});
+
     const navigate = useNavigate();
+
+    const checkEmail = (email : string) : boolean => {
+        const regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regExp.test(email);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            setPreviewImage(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const formErrors: { username?: string; email?: string } = {};
+
+        if (!username.trim()){
+            formErrors.username = 'Please input a username.';
+        }
+
+        if (!email.trim()){
+            formErrors.email = 'Please input an email.';
+        }
+        
+        if (!checkEmail(email)){
+            formErrors.email = 'Please input an email in correct form.';
+        }
+
+        setErrors(formErrors);
+        if (Object.keys(formErrors).length > 0) return;
+
+        const query = `
+  mutation UpdateProfile($input: UpdateProfileInput!) {
+    updateProfile(input: $input) {
+        id
+        username
+        email
+        description
+        firstName
+        secondName
+        profileImage
+    }
+  }
+`
+        const variables = {
+            input: {
+                username,
+                email,
+                description,
+                selectedFile
+            },
+        };
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ query, variables }),
+            });
+
+            const result = await response.json();
+
+            if (result.errors) {
+                console.error(result.errors);
+                return;
+            }
+            updateUser(result.data.updateProfile);
+        } catch (err) {
+            console.error('Couldnt update profile:', err);
+        }
+    };
 
     return (
         <>
@@ -20,12 +104,19 @@ const Profile = () => {
                 <div className="edit-profile">
                     <h1>Edit profile</h1>
 
-                    <form className="profile-form">
+                    <form id="profile-form" onSubmit={handleSubmit}>
                         <div className="profile-header">
-                            <img src={user?.profileImage || './imgs/default-avatar.jpg'} alt="Profile" className="avatar" />
+                            <img src={previewImage} alt="Profile" className="avatar" />
                             <div className="profile-info">
                                 <h3>{user?.firstName} {user?.secondName}</h3>
-                                <button type="button" className="change-photo">Change profile photo</button>
+                                <label htmlFor="profileImage" className="change-photo">Change profile photo</label>
+                                <input
+                                    type="file"
+                                    id="profileImage"
+                                    accept="image/*"
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileChange}
+                                />
                             </div>
                         </div>
                         <div className="form-group">
@@ -34,7 +125,8 @@ const Profile = () => {
                                 type="text"
                                 id="username"
                                 placeholder="@username123"
-                                defaultValue={user?.username || ''}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
 
@@ -44,7 +136,8 @@ const Profile = () => {
                                 type="email"
                                 id="email"
                                 placeholder="email@domain.com"
-                                defaultValue={user?.email || ''}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
@@ -53,7 +146,8 @@ const Profile = () => {
                             <textarea
                                 id="description"
                                 placeholder="Tell us about yourself..."
-                                defaultValue={user?.description || ''}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                                 maxLength={200}
                                 rows={4}
                             />
