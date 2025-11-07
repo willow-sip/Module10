@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import NotFoundPage from './NotFoundPage';
 
-class ErrorHandler extends Component<{ children: ReactNode }> {
+class ErrorBoundary extends Component<{ children: ReactNode }> {
     state = {
         hasError: false
     };
@@ -23,4 +23,4 @@ class ErrorHandler extends Component<{ children: ReactNode }> {
     }
 }
 
-export default ErrorHandler;
+export default ErrorBoundary;

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import { useNotification } from '../../context/NotificationContext'
@@ -14,7 +14,7 @@ interface Mode {
 const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
-  const navigate = useNavigate();
+  const router = useRouter();
   const notContext = useNotification();
 
   useEffect(() => {
@@ -52,10 +52,10 @@ const AuthPage = ({ mode }: Mode) => {
     updateAuthMode(null);
     if (authMode === 'signup') {
       notContext.showNotification('Sign up successful, now sign in!', 'success', 2000);
-      navigate('/sign-in');
+      router.push('/sign-in');
     } else {
       notContext.showNotification('Sign in successful!', 'success', 2000);
-      navigate('/');
+      router.push('/');
     }
   };
 
@@ -103,7 +103,7 @@ const AuthPage = ({ mode }: Mode) => {
             )}
 
             <p className="switchLink" onClick={() => {
-              navigate(authMode === 'signup' ? '/sign-in' : '/sign-up');
+              router.push(authMode === 'signup' ? '/sign-in' : '/sign-up');
               updateAuthMode(authMode === 'signup' ? 'signin' : 'signup');
             }}>
               {authMode === 'signup'
