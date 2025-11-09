@@ -10,10 +10,14 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
     "@sidekick-monorepo/internship-backend": "file:packages/sidekick-monorepo-internship-backend-0.0.1.tgz",
+    "formik": "^2.4.8",
     "next": "^16.0.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-redux": "^9.2.0",
+    "recharts": "^3.3.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

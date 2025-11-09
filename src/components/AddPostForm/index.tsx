@@ -3,6 +3,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext'
 import './style.css';
+import { useSafeFetch } from '@/data/useSafeFetch';
 
 interface Props {
     close: () => void;
@@ -16,6 +17,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     const [description, setDescription] = useState('');
     const [file, setFile] = useState<File | null>(null);
     const notContext = useNotification();
+    const { safeFetch, isMSWReady } = useSafeFetch();
 
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +65,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             formData.image = file;
         }
         try {
-            const response = await fetch('http://localhost:3000/api/posts', {
+            const response = await safeFetch('/api/posts', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { NotificationContextClass } from '@/context/NotificationContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { MSWProvider } from '@/context/MswContext'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <AuthProvider>
           <NotificationContextClass>
             <ThemeProvider>
-              {children}
+              <MSWProvider>
+                {children}
+              </MSWProvider>
             </ThemeProvider>
           </NotificationContextClass>
         </AuthProvider>

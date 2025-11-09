@@ -119,6 +119,20 @@
     background-color: rgba(var(--footer-text-color), 0.8);
 }
 
+.spinner {
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--footer-text-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 
 
 @media(max-width: 768px) {

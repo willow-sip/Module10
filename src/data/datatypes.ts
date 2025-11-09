@@ -30,6 +30,7 @@ export interface Comment {
   id: number;
   text: string;
   authorId: number;
+  authorName?: string;
   postId: number;
   creationDate: string;
   modifiedDate: string;

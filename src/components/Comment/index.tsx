@@ -1,8 +1,10 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState, useTransition } from 'react';
+import { useSafeFetch } from '@/data/useSafeFetch';
+
 import './style.css';
 
-import { User, Comment as CommentType } from '../../data/datatypes';
-import { AuthContext } from '../../context/AuthContext';
+import { User, Comment as CommentType } from '@/data/datatypes';
+import { AuthContext } from '@/context/AuthContext';
 
 interface CommentProps {
     id: number;
@@ -12,14 +14,15 @@ interface CommentProps {
     deleteComm?: () => void;
 }
 
-const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
-    const [author, setAuthor]: [User, unknown] = useState({ id: NaN, username: '' });
+const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
+    const [author, setAuthor] = useState({ id: NaN, username: '', firstName: '', secondName: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
     const { token, user } = useContext(AuthContext);
+    const { safeFetch, isMSWReady } = useSafeFetch();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/posts/${authorId}/author`, {
+        safeFetch(`/api/users/${authorId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -31,8 +34,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
                 return response.json();
             })
             .then(data => {
-                //setAuthor(data);
-                //FAKE TEMPORARY REQUEST
+                setAuthor(data);
             })
             .catch(error => {
                 console.error(error);
@@ -48,7 +50,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
     };
 
     const handleSaveEdit = () => {
-        fetch(`http://localhost:3000/api/comments/${id}`, {
+        safeFetch(`/api/comments/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +63,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
                 return res.json();
             })
             .then(newComment => {
-                if(edit){
+                if (edit) {
                     edit(newComment.text);
                     setIsEditing(false);
                 }
@@ -75,8 +77,8 @@ const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
 
     const handleDelete = () => {
         if (!canModify) return;
-        
-        fetch(`http://localhost:3000/api/comments/${id}`, {
+
+        safeFetch(`/api/comments/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -84,7 +86,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm} : CommentProps) => {
         })
             .then(res => {
                 if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-                if(deleteComm){
+                if (deleteComm) {
                     deleteComm();
                 }
             }).catch(err => console.error(err));

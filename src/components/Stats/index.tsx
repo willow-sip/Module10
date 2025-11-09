@@ -1,11 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useRouter } from 'next/navigation';
+import { ThemeContext } from '@/context/ThemeContext';
+import { AuthContext } from '@/context/AuthContext';
 import TableStats from '../TableStats/TableStats';
 import ChartStats from '../ChartStats/ChartStats';
+import { useSafeFetch } from '@/data/useSafeFetch';
 import './style.css';
 
-import { statsData, genStats } from '../../data/dummyStats'
+import { genStats } from '@/data/dummyStats'
+import {Like, Comment} from '@/data/datatypes'
 
 export interface StatsData {
     likes: { month: string; count: number }[];
@@ -14,43 +17,82 @@ export interface StatsData {
 
 const Stats = () => {
     const { theme } = useContext(ThemeContext);
+    const {token} = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
-    const [stats, setStats] = useState<StatsData>(statsData);
+    const [stats, setStats] = useState<StatsData | null>(null);
     const [location, setLocation] = useState<"profile" | "stats">("stats");
-    const navigate = useNavigate();
+    const { safeFetch, isMSWReady } = useSafeFetch();
+    const router = useRouter();
 
     const handleToggle = () => {
         setActiveTab(prev => (prev === 'table' ? 'chart' : 'table'));
     };
 
-    // useEffect(() => {
-    //     if (token) {
-    //         fetch(`http://localhost:3000/api/statistics`, {
-    //             headers: {
-    //                 Authorization: `${token}`,
-    //             },
-    //         })
-    //             .then(response => {
-    //                 if (!response.ok) {
-    //                     throw new Error(`HTTP error! status: ${response.status}`);
-    //                 }
-    //                 return response.json();
-    //             })
-    //             .then(data => {
-    //                 //setStats(data);
-    //                 //FAKE TEMPORARY REQUEST
-    //             })
-    //             .catch(error => {
-    //                 console.error(error);
-    //             });
-    //     }
-    // }, [token]);
+    function transformData(data: Like[] | Comment[]): { month: string; count: number }[] {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const result: { month: string; count: number }[] = [];
+        const monthCounts: { [key: string]: number } = {};
+
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i];
+            const date = new Date(item.creationDate);
+            const monthIndex = date.getMonth();
+            const monthName = monthNames[monthIndex];
+
+            if (monthCounts[monthName] === undefined) {
+                monthCounts[monthName] = 1;
+            } else {
+                monthCounts[monthName] += 1;
+            }
+        }
+
+        for (let i = 0; i < monthNames.length; i++) {
+            const name = monthNames[i];
+            if (monthCounts[name] !== undefined) {
+                result.push({
+                    month: name,
+                    count: monthCounts[name]
+                });
+            }
+        }
+
+        return result;
+    }
+
+    useEffect(() => {
+        if (token) {
+            const fetchStats = async () => {
+                try {
+                    const [likesRes, commentsRes] = await Promise.all([
+                        safeFetch(`/api/me/likes`, { headers: { Authorization: `Bearer ${token}`} }),
+                        safeFetch(`/api/me/comments`, { headers: { Authorization: `Bearer ${token}`} }),
+                    ]);
+
+                    if (!likesRes.ok || !commentsRes.ok) throw new Error('Fetch failed');
+
+                    const likesData = await likesRes.json();
+                    const commentsData = await commentsRes.json();
+
+                    setStats({
+                        likes: transformData(likesData),
+                        comments: transformData(commentsData),
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+
+            fetchStats();
+        }
+        
+    }, [token]);
+
 
     return (
         <>
             <div className="page-switch">
-                <button className={location === "profile" ? "active" : ""} onClick={() => {navigate('/profile'); setLocation("profile")}}>Profile Info</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => {navigate('/stats');setLocation("stats")}}>Statistics</button>
+                <button className={location === "profile" ? "active" : ""} onClick={() => {router.push('/profile'); setLocation("profile")}}>Profile Info</button>
+                <button className={location === "stats" ? "active" : ""} onClick={() => {router.push('/stats');setLocation("stats")}}>Statistics</button>
             </div>
             <div className="general-stats" data-theme={theme}>
                 {genStats.map((stat, index) => (

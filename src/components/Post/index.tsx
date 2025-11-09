@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Comment from '../Comment';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
-import { NotificationContext } from '../../context/NotificationContext';
+import { AuthContext } from '@/context/AuthContext';
+import { ThemeContext } from '@/context/ThemeContext';
+import { NotificationContext } from '@/context/NotificationContext';
+import { safeFetch } from '@/data/safeFetch';
 import './style.css';
 
-import { Post as PostType, User, Comment as CommentType } from '../../data/datatypes'
+import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes'
 
 interface PostProps {
     post: PostType;
+    isReady: boolean;
 }
 
 interface PostState {
@@ -19,6 +21,8 @@ interface PostState {
     likesCount: number;
     newComment: string;
     prevToken: string | null;
+    loading: boolean;
+    addingComment: boolean;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -38,6 +42,8 @@ class Post extends Component<PostProps, PostState> {
             likesCount: props.post.likesCount,
             newComment: '',
             prevToken: null,
+            loading: true,
+            addingComment: false,
         };
     }
 
@@ -81,13 +87,14 @@ class Post extends Component<PostProps, PostState> {
             console.log('Comment text is empty');
             return;
         }
+        this.setState({ addingComment: true });
 
         const commentData = {
             postId: Number(postId),
             text: newComment.trim(),
         };
 
-        fetch('http://localhost:3000/api/comments', {
+        safeFetch('/api/comments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,6 +123,7 @@ class Post extends Component<PostProps, PostState> {
                             ? [...prevState.comments, fullComment]
                             : [fullComment],
                         newComment: '',
+                        addingComment: false,
                     }));
                     notificationContext.showNotification('Comment updated!', 'success', 2000);
                 }
@@ -137,7 +145,7 @@ class Post extends Component<PostProps, PostState> {
 
         const variables = { postId };
 
-        fetch('http://localhost:3000/graphql', {
+        safeFetch('/graphql', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -171,7 +179,7 @@ class Post extends Component<PostProps, PostState> {
         const { token, user } = this.context;
 
         if (user && token) {
-            fetch(`http://localhost:3000/api/posts/${id}/comments`, {
+            safeFetch(`/api/posts/${id}/comments`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -191,7 +199,7 @@ class Post extends Component<PostProps, PostState> {
                     console.error(error);
                 });
 
-            fetch(`http://localhost:3000/api/posts/${id}/author`, {
+            safeFetch(`/api/users/${this.props.post.authorId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -203,10 +211,11 @@ class Post extends Component<PostProps, PostState> {
                     return response.json();
                 })
                 .then(data => {
-                    // this.setState(() => ({
-                    //     author: data,
-                    // }));
-                    //FAKE TEMPORARY REQUEST
+                    console.log(data);
+                    this.setState(() => ({
+                        author: data,
+                        loading: false
+                    }));
                 })
                 .catch(error => {
                     console.error(error);
@@ -232,7 +241,6 @@ class Post extends Component<PostProps, PostState> {
     }
 
 
-
     render() {
         const { showComments } = this.state;
         const { userAuth } = this.context;
@@ -247,7 +255,14 @@ class Post extends Component<PostProps, PostState> {
                     <NotificationContext.Consumer>
                         {notificationContext => (
                             <div className="post" data-theme={theme}>
-                                <div className="author">
+                                {this.state.loading ? (
+                                    <div className="author">
+                                        <div className="avatar" style={{ backgroundColor: 'var(--border-color)', borderRadius: '50%' }}></div>
+                                        <div className="authorInfo">
+                                            <div className="spinner"></div>
+                                        </div>
+                                    </div>
+                                ) : (<div className="author">
                                     <img
                                         src={profileImage || './imgs/default-avatar.jpg'}
                                         alt="Post author avatar"
@@ -257,7 +272,8 @@ class Post extends Component<PostProps, PostState> {
                                         <p>{firstName} {secondName}</p>
                                         <small>{this.calculatePublishTime()}</small>
                                     </div>
-                                </div>
+                                </div>)}
+                                
 
                                 {image && <img src={image} alt="Post" />}
                                 <h3>{title}</h3>
@@ -274,7 +290,7 @@ class Post extends Component<PostProps, PostState> {
                                         <i className="bi bi-chat-left" />
                                         <span className="comment-text">
                                             {userAuth
-                                                ? `${commentsCount} comments`
+                                                ? (commentsCount !== undefined ? `${commentsCount} comments` : 'Loading comments...')
                                                 : 'You have to log in to see the comments'}
                                         </span>
                                     </div>
@@ -320,7 +336,9 @@ class Post extends Component<PostProps, PostState> {
                                                 value={this.state.newComment}
                                                 onChange={this.handleCommentChange}
                                             />
-                                            <button onClick={() => this.handleAddComment(notificationContext)}>Add a comment</button>
+                                            <button onClick={() => this.handleAddComment(notificationContext)} disabled={this.state.addingComment}>
+                                                {this.state.addingComment ? 'Adding...' : 'Add a comment'}
+                                            </button>
                                         </div>
                                     </div>
                                 )}

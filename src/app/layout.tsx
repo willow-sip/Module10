@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from 'next/font/google';
 import { Providers } from './providers';
+import { MSWWrapper } from '@/components/MswWrapper'
 import './globals.css';
 
 const poppins = Poppins({
@@ -19,15 +20,17 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={poppins.className}>
+        <html lang="en" className={poppins.className} >
             <head>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
             </head>
-            <Providers>
-                <body>
-                    <div id="root">{children}</div>
-                </body>
-            </Providers>
+            <body>
+                <Providers>
+                    <div id="root">
+                        <MSWWrapper>{children}</MSWWrapper>
+                    </div>
+                </Providers>
+            </body>
         </html>
     )
 };

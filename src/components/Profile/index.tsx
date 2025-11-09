@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ThemeContext } from '../../context/ThemeContext';
 import { AuthContext } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -17,7 +17,7 @@ const Profile = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
     
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const checkEmail = (email : string) : boolean => {
         const regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -113,8 +113,8 @@ const Profile = () => {
     return (
         <>
             <div className="page-switch">
-                <button className={location === "profile" ? "active" : ""} onClick={() => { navigate('/profile'); setLocation("profile") }}>Profile Info</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => { navigate('/stats'); setLocation("stats") }}>Statistics</button>
+                <button className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>Profile Info</button>
+                <button className={location === "stats" ? "active" : ""} onClick={() => { router.push('/stats'); setLocation("stats") }}>Statistics</button>
             </div>
             <div className="profile" data-theme={theme}>
                 <div className="edit-profile">
@@ -189,7 +189,7 @@ const Profile = () => {
                     <h1>Actions</h1>
                     <button className="logout-button" onClick={() => {
                         logOut();
-                        navigate('/');
+                        router.push('/');
                     }}>Logout</button>
                 </div>
             </div>

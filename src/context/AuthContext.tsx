@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../data/datatypes';
+import { useSafeFetch } from '@/data/useSafeFetch';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [userAuth, setUserAuth] = useState<boolean>(false);
     const [authMode, setAuthMode] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const { safeFetch, isMSWReady } = useSafeFetch();
 
     const dispatch = useDispatch();
     const expiresAt = useSelector((state: RootState) => state.auth.expiresAt);
@@ -102,7 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const signUp = async (email: string, password: string): Promise<boolean> => {
         try {
-            const response = await fetch('http://localhost:3000/api/signup', {
+            const response = await safeFetch('/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -118,7 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const signIn = async (email: string, password: string): Promise<boolean> => {
         try {
-            const response = await fetch('http://localhost:3000/api/login', {
+            const response = await safeFetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
