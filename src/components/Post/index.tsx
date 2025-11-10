@@ -11,6 +11,7 @@ import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, P
 
 interface PostProps {
     post: PostType;
+    t: (key: string) => string;
 }
 
 interface PostState {
@@ -252,6 +253,7 @@ class Post extends Component<PostProps, PostState> {
         const comments = this.state.comments;
         const commentsCount = this.state.comments?.length;
         const { profileImage, firstName, secondName } = this.state.author;
+        const t = this.props.t;
 
         return (
             <ThemeContext.Consumer>
@@ -288,16 +290,16 @@ class Post extends Component<PostProps, PostState> {
                                     animate={this.state.animateLike.toString()}
                                     onClick={this.handleLike}
                                 />
-                                {this.state.likesCount} likes
+                                {this.state.likesCount} {t('likes')}
                             </Likes>
                             <Comments>
                                 <i className="bi bi-chat-left" />
                                 <span className="comment-text">
                                     {userAuth
                                         ? commentsCount !== undefined
-                                            ? `${commentsCount} comments`
-                                            : 'Loading comments...'
-                                        : 'You have to log in to see the comments'}
+                                            ? `${commentsCount} ${t('commentsCount')}`
+                                            : t('loadingComments')
+                                        : t('loginToSeeComments')}
                                 </span>
                             </Comments>
                             {userAuth && (
@@ -325,25 +327,25 @@ class Post extends Component<PostProps, PostState> {
                                                     prevCom.id === comment.id ? { ...prevCom, text: newText } : prevCom
                                                 ),
                                             }));
-                                            showNotification('Comment updated!', 'success', 2000);
+                                            showNotification(t('updateComment'), 'success', 2000);
                                         }}
                                         deleteComm={() => {
                                             this.setState((prev) => ({
                                                 comments: prev.comments?.filter((c) => c.id !== comment.id),
                                             }));
-                                            showNotification('Comment deleted', 'success', 2000);
+                                            showNotification(t('deleteComment'), 'success', 2000);
                                         }}
                                     />
                                 ))}
 
                                 <AddComment>
                                     <AddCommentHeader>
-                                        <i className="bi bi-pencil-fill" /> Add a comment
+                                        <i className="bi bi-pencil-fill" /> {t('addComment')}
                                     </AddCommentHeader>
                                     <CommentTextarea
                                         name="commentText"
                                         id="commentText"
-                                        placeholder="Write description here..."
+                                        placeholder={t('commentPlaceholder')}
                                         value={this.state.newComment}
                                         onChange={this.handleCommentChange}
                                     />
@@ -352,7 +354,7 @@ class Post extends Component<PostProps, PostState> {
                                         disabled={this.state.addingComment}
                                         adding={this.state.addingComment.toString()}
                                     >
-                                        {this.state.addingComment ? 'Adding...' : 'Add a comment'}
+                                        {this.state.addingComment ? t('addingComment') : t('addComment')}
                                     </AddCommentButton>
                                 </AddComment>
                             </CommentSection>

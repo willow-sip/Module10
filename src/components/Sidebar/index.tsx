@@ -5,17 +5,21 @@ import './style.css';
 
 import { User, Group } from '@/data/datatypes';
 
+interface SidebarProps {
+    t: (key: string) => string;
+}
+
 interface SidebarState {
     groups: Group[];
     suggestedUsers: User[];
     loading: boolean;
 }
 
-class Sidebar extends Component<{}, SidebarState> {
+class Sidebar extends Component<SidebarProps, SidebarState> {
     static contextType = AuthContext;
     context!: React.ContextType<typeof AuthContext>;
 
-    constructor(props: {}) {
+    constructor(props: SidebarProps) {
         super(props);
         this.state = {
             groups: [],
@@ -70,15 +74,15 @@ class Sidebar extends Component<{}, SidebarState> {
 
     render() {
         const { groups, suggestedUsers } = this.state;
+        const t = this.props.t;
 
         return (
-
             <ThemeContext.Consumer>
                 {theme => (
                     <aside className="sidebar" data-theme={theme}>
                         <div className="recPeople">
-                            <h4>Suggested people</h4>
-                            {this.state.loading ? (<p>Loading people...</p>) : (
+                            <h4>{t('sugPeople')}</h4>
+                            {this.state.loading ? (<p>{t('loadSugPeople')}</p>) : (
                                 <>
                                 {suggestedUsers.map(user => (
                                     <div className="person" key={user.id}>
@@ -97,8 +101,8 @@ class Sidebar extends Component<{}, SidebarState> {
                             )}
                         </div>
                         <div className="recCommunities">
-                            <h4>Communities you might like</h4>
-                            {this.state.loading ? (<p>Loading groups...</p>) : (
+                            <h4>{t('sugGroups')}</h4>
+                            {this.state.loading ? (<p>{t('loadSugGroups')}</p>) : (
                                 <>
                                     {groups.map(group => (
                                         <div className="community" key={group.id}>
@@ -109,7 +113,7 @@ class Sidebar extends Component<{}, SidebarState> {
                                             />
                                             <div className="communityInfo">
                                                 <p>{group.title}</p>
-                                                <small>{group.membersCount} members</small>
+                                                <small>{group.membersCount} {t('members')}</small>
                                             </div>
                                         </div>
                                     ))}

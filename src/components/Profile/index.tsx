@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
+import { useTranslation } from 'react-i18next';
 import './style.css';
 
 const Profile = () => {
@@ -17,6 +18,7 @@ const Profile = () => {
     const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
     
     const router = useRouter();
+    const { t } = useTranslation();
 
     const checkEmail = (email : string) : boolean => {
         const regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,13 +29,13 @@ const Profile = () => {
         const file = e.target.files?.[0];
         if (file) {
             if (file.size > 10 * 1024 * 1024) {
-                showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                showNotification(t('fileSizeExceeded'), 'error', 3000);
                 return;
             }
             
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(file.type)) {
-                showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                showNotification(t('invalidFileType'), 'error', 3000);
                 return;
             }
             setSelectedFile(file);
@@ -45,22 +47,22 @@ const Profile = () => {
         e.preventDefault();
 
         if (!username.trim()) {
-            showNotification('Input username please', 'warning', 2000);
+            showNotification(t('inputUsername'), 'warning', 2000);
             return;
         }
 
         if (!email.trim()) {
-            showNotification('Input email please', 'warning', 2000);
+            showNotification(t('inputEmail'), 'warning', 2000);
             return;
         }
 
         if (!checkEmail(email.trim())) {
-            showNotification('Input valid email please', 'warning', 2000);
+            showNotification(t('inputValidEmail'), 'warning', 2000);
             return;
         }
 
         if (description.trim().length > 200) {
-            showNotification('Your description is too big', 'warning', 2000);
+            showNotification(t('descSize'), 'warning', 2000);
             return;
         }
         
@@ -85,7 +87,7 @@ const Profile = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/graphql', {
+            const response = await fetch('/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,14 +99,14 @@ const Profile = () => {
             const result = await response.json();
 
             if (result.errors) {
-                showNotification("Failed to update profile", 'error', 2000);
+                showNotification(t('couldntUpdateProfile'), 'error', 2000);
                 console.log(result.errors);
                 return;
             }
             updateUser(result.data.updateProfile);
-            showNotification('Profile updated successfully', 'success', 2000);
+            showNotification(t('updatedProfile'), 'success', 2000);
         } catch (err) {
-            showNotification("Failed to update profile", 'error', 2000);
+            showNotification(t('couldntUpdateProfile'), 'error', 2000);
             return;
         }
     };
@@ -117,14 +119,14 @@ const Profile = () => {
             </div>
             <div className="profile" data-theme={theme}>
                 <div className="edit-profile">
-                    <h1>Edit profile</h1>
+                    <h1>{t('editProfile')}</h1>
 
                     <form id="profile-form" onSubmit={handleSubmit}>
                         <div className="profile-header">
                             <img src={previewImage} alt="Profile" className="avatar" />
                             <div className="profile-info">
                                 <h3>{user?.firstName} {user?.secondName}</h3>
-                                <label htmlFor="profileImage" className="change-photo">Change profile photo</label>
+                                <label htmlFor="profileImage" className="change-photo">{t('changeProfilePhoto')}</label>
                                 <input
                                     type="file"
                                     id="profileImage"
@@ -135,7 +137,7 @@ const Profile = () => {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username"><i className="bi bi-person" /> Username</label>
+                            <label htmlFor="username"><i className="bi bi-person" /> {t('username')}</label>
                             <input
                                 type="text"
                                 id="username"
@@ -146,7 +148,7 @@ const Profile = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="email"><i className="bi bi-envelope" /> Email</label>
+                            <label htmlFor="email"><i className="bi bi-envelope" /> {t('email')}</label>
                             <input
                                 type="email"
                                 id="email"
@@ -157,19 +159,19 @@ const Profile = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="description"><i className="bi bi-pencil" /> Description</label>
+                            <label htmlFor="description"><i className="bi bi-pencil" /> {t('description')}</label>
                             <textarea
                                 id="description"
-                                placeholder="Tell us about yourself..."
+                                placeholder={t('descriptionPlaceholder')}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 maxLength={200}
                                 rows={4}
                             />
-                            <small className="char-count"><i className="bi bi-info-circle-fill" /> Max 200 chars</small>
+                            <small className="char-count"><i className="bi bi-info-circle-fill" /> {t('maxDescLength')}</small>
                         </div>
 
-                        <button type="submit" className="save-btn">Save Profile Changes</button>
+                        <button type="submit" className="save-btn">{t('saveProfile')}</button>
                     </form>
                 </div>
                 <div className="preferences">

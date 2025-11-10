@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { ThemeContext } from '@/context/ThemeContext';
 import AddPostForm from '../AddPostForm';
+import { useTranslation } from 'react-i18next';
 import './style.css';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 const AddPost = ({ avatar, postCreated } : Props) => {
     const { theme } = useContext(ThemeContext);
     const [showForm, setShowForm] = useState(false);
+    const { t } = useTranslation();
 
     return (
         <>
@@ -21,9 +23,9 @@ const AddPost = ({ avatar, postCreated } : Props) => {
                         alt="User avatar"
                         className="avatar"
                     />
-                    <p>What's happening?</p>
+                    <p>{t('whatsHappening')}</p>
                 </div>
-                <button onClick={() => setShowForm(true)}>Tell everyone</button>
+                <button onClick={() => setShowForm(true)}>{t('tellEveryone')}</button>
             </div>
 
             {showForm && <AddPostForm close={() => setShowForm(false)} postCreated={postCreated}/>}

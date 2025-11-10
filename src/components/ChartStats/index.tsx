@@ -10,6 +10,7 @@ import {
     Tooltip,
     ResponsiveContainer
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 import './style.css';
 
@@ -18,10 +19,12 @@ interface Props {
 }
 
 const ChartStats = ({ stats }: Props) => {
+    const { t } = useTranslation();
+
     return (
         <div className="statsChart">
             <div className="chartBlock">
-                <h3>Likes</h3>
+                <h3>{t('likesStat')}</h3>
                 <div>
                     <ResponsiveContainer width={575} height={448}>
                         <LineChart data={stats.likes} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -67,7 +70,7 @@ const ChartStats = ({ stats }: Props) => {
             </div>
 
             <div className="chartBlock">
-                <h3>Comments</h3>
+                <h3>{t('commentsStat')}</h3>
                 <div>
                 <ResponsiveContainer width={575} height={448}>
                     <BarChart data={stats.comments} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>

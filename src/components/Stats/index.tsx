@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
-import TableStats from '../TableStats/TableStats';
-import ChartStats from '../ChartStats/ChartStats';
+import TableStats from '../TableStats';
+import ChartStats from '../ChartStats';
+import { useTranslation } from 'react-i18next';
 import './style.css';
 
 import { genStats } from '@/data/dummyStats'
@@ -21,6 +22,7 @@ const Stats = () => {
     const [stats, setStats] = useState<StatsData | null>(null);
     const [location, setLocation] = useState<"profile" | "stats">("stats");
     const router = useRouter();
+    const { t } = useTranslation();
 
     const handleToggle = () => {
         setActiveTab(prev => (prev === 'table' ? 'chart' : 'table'));
@@ -89,21 +91,21 @@ const Stats = () => {
     return (
         <>
             <div className="page-switch">
-                <button className={location === "profile" ? "active" : ""} onClick={() => {router.push('/profile'); setLocation("profile")}}>Profile Info</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => {router.push('/stats');setLocation("stats")}}>Statistics</button>
+                <button className={location === "profile" ? "active" : ""} onClick={() => {router.push('/profile'); setLocation("profile")}}>{t('profileLink')}</button>
+                <button className={location === "stats" ? "active" : ""} onClick={() => {router.push('/stats');setLocation("stats")}}>{t('statsLink')}</button>
             </div>
             <div className="general-stats" data-theme={theme}>
                 {genStats.map((stat, index) => (
                     <div className="stat" key={index}>
                         <p>{stat.title}</p>
                         <h1>{stat.stat}</h1>
-                        <small>{stat.percent >= 0 ? `+${stat.percent}` : `${stat.percent}`}% month over month</small>
+                        <small>{stat.percent >= 0 ? `+${stat.percent}` : `${stat.percent}`}{t('percentStats')}</small>
                     </div>
                 ))}
             </div>
             <div className="stats" data-theme={theme}>
                 <div className="view">
-                    <p>Table view</p>
+                    <p>{t('tableView')}</p>
                     <label className="tabSwitch">
                         <input
                             type="checkbox"
@@ -112,7 +114,7 @@ const Stats = () => {
                         />
                         <span className="slider" />
                     </label>
-                    <p>Chart view</p>
+                    <p>{t('chartView')}</p>
                 </div>
 
                 {activeTab === 'table' && stats && <TableStats stats={stats} />}

@@ -5,6 +5,8 @@ import { useRouter, usePathname  } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
 import { ThemeContext } from '@/context/ThemeContext';
 import './style.css';
+import LangToggler from '../LangToggler';
+import { useTranslation } from 'react-i18next';
 
 interface User {
     name?: string;
@@ -14,6 +16,7 @@ interface User {
 const Header = ({ name, avatar }: User) => {
     const { userAuth, logOut } = useContext(AuthContext);
     const { theme, toggleTheme } = useContext(ThemeContext);
+    const { t } = useTranslation();
 
     const router = useRouter();
     const pathname = usePathname();
@@ -35,6 +38,7 @@ const Header = ({ name, avatar }: User) => {
     return (
         <header className="header" data-theme={theme}>
             <img className="logo" src="./imgs/logo.png" alt="Sidekick-logo" />
+            <LangToggler />
 
             {isMainOrProfilePage && (
                 isMobile ? (
@@ -63,13 +67,13 @@ const Header = ({ name, avatar }: User) => {
 
                             {!userAuth ? (
                                 <>
-                                    <button onClick={() => router.push('/sign-up')}>Sign Up</button>
-                                    <button onClick={() => router.push('/sign-in')}>Sign In</button>
+                                    <button onClick={() => router.push('/sign-up')}>{t('signUp')}</button>
+                                    <button onClick={() => router.push('/sign-in')}>{t('signIn')}</button>
                                 </>
                             ) : (
                                 <>
-                                    <button onClick={() => router.push('/profile')}>Profile Info</button>
-                                    <button onClick={() => router.push('/stats')}>Statistics</button>
+                                    <button onClick={() => router.push('/profile')}>{t('profileLink')}</button>
+                                    <button onClick={() => router.push('/stats')}>{t('statsLink')}</button>
                                 </>
                             )}
                         </div>
@@ -80,8 +84,8 @@ const Header = ({ name, avatar }: User) => {
                             <button onClick={toggleTheme} className="theme-toggle">
                                 {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
                             </button>
-                            <button onClick={() => router.push('/sign-up')}>Sign Up</button>
-                            <button onClick={() => router.push('/sign-in')}>Sign In</button>
+                            <button onClick={() => router.push('/sign-up')}>{t('signUp')}</button>
+                            <button onClick={() => router.push('/sign-in')}>{t('signIn')}</button>
                         </div>
                     ) : (
                         <div className="user-info">

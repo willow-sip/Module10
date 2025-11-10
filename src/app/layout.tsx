@@ -2,21 +2,34 @@
 
 import { Poppins } from 'next/font/google';
 import { Providers } from './providers';
+import i18n from '@/i18next';
 import './globals.css';
+import { useEffect } from 'react';
 
 const poppins = Poppins({
     weight: ['300', '400', '500', '600', '700'],
-    subsets: ['latin']
+    subsets: ['latin'],
 });
-
 
 export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    useEffect(() => {
+        const updateHtmlLang = () => {
+            document.documentElement.lang = i18n.language;
+        };
+        updateHtmlLang();
+        i18n.on('languageChanged', updateHtmlLang);
+
+        return () => {
+            i18n.off('languageChanged', updateHtmlLang);
+        };
+    }, []);
+
     return (
-        <html lang="en" className={poppins.className} >
+        <html lang="en" className={poppins.className}>
             <head>
                 <title>Social Media App</title>
                 <meta name="description" content="Social media application created using Next.js" />
@@ -31,5 +44,5 @@ export default function RootLayout({
                 </Providers>
             </body>
         </html>
-    )
-};
+    );
+}

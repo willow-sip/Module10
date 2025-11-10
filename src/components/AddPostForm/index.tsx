@@ -4,6 +4,7 @@ import { AuthContext } from '@/context/AuthContext';
 import './style.css';
 import { showNotification } from '@/components/notify';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     close: () => void;
@@ -16,19 +17,20 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState<File | null>(null);
+    const { t } = useTranslation();
 
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
             if (selectedFile.size > 10 * 1024 * 1024) {
-                showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                showNotification(t('fileSizeExceeded'), 'error', 3000);
                 return;
             }
             
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(selectedFile.type)) {
-                showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                showNotification(t('invalidFileType'), 'error', 3000);
                 return;
             }
             
@@ -40,17 +42,17 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         e.preventDefault();
 
         if (!title.trim()) {
-            showNotification('Input post title please', 'warning', 2000);
+            showNotification(t('inputPostTitle'), 'warning', 2000);
             return;
         }
 
         if (!description.trim()) {
-            showNotification('Input description please', 'warning', 2000);
+            showNotification(t('inputPostDesc'), 'warning', 2000);
             return;
         }
 
         if (!token) {
-            showNotification('You are somehow not authorized', 'error', 3000);
+            showNotification(t('unAutorized'), 'error', 3000);
             return;
         }
 
@@ -76,7 +78,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            showNotification('Post created successfully', 'success', 3000);
+            showNotification(t('postCreated'), 'success', 3000);
 
             if (postCreated) {
                 postCreated();
@@ -89,7 +91,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             close();
 
         } catch (error) {
-            showNotification('Failed to create a post.', 'error', 3000);
+            showNotification(t('postNotCreated'), 'error', 3000);
         }
     };
 
@@ -97,19 +99,19 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         <div className="blur" data-theme={theme}>
             <div className="form-container">
                 <div className="form-header">
-                    <h2>Create a new post</h2>
+                    <h2>{t('createNewPost')}</h2>
                     <button className="close-form-button" onClick={close}>×</button>
                 </div>
 
                 <form id="add-post" onSubmit={handleSubmit}>
                     <div className="form-group title">
                         <label htmlFor="postTitle">
-                            <i className="bi bi-envelope"></i> Post Title
+                            <i className="bi bi-envelope"></i> {t('postTitle')}
                         </label>
                         <input
                             id="postTitle"
                             type="text"
-                            placeholder="Enter post title"
+                            placeholder={t('postTitlePlaceholder')}
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
@@ -117,11 +119,11 @@ const AddPostForm = ({ close, postCreated }: Props) => {
 
                     <div className="form-group">
                         <label htmlFor="description">
-                            <i className="bi bi-pencil"></i> Description
+                            <i className="bi bi-pencil"></i> {t('description')}
                         </label>
                         <textarea
                             id="description"
-                            placeholder="Write description here..."
+                            placeholder={t('descriptionPlaceholder')}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={4}
@@ -131,8 +133,8 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                     <div className="upload-area">
                         <i className="bi bi-file-earmark-arrow-up" />
                         <div className="upload-content">
-                            <p>{file ? `Uploaded file: ${file.name}.` : 'Select a file or drag and drop here'}</p>
-                            <p className="file-types">JPG, PNG or PDF, file size no more than 10MB</p>
+                            <p>{file ? `Uploaded file: ${file.name}.` : t('uploadFile')}</p>
+                            <p className="file-types">{t('fileTypes')}</p>
                         </div>
                         <input
                             type="file"
@@ -141,7 +143,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             className="file-input"
                         />
                     </div>
-                    <button type="submit" className="create-btn">Create</button>
+                    <button type="submit" className="create-btn">{t('create')}</button>
                 </form>
             </div>
         </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StatsData } from '../Stats';
 import './style.css';
 
@@ -6,15 +7,16 @@ interface Props {
 }
 
 const TableStats = ({ stats }: Props) => {
+    const { t } = useTranslation();
     return (
         <div className="statsTable">
             <div className="stat">
-                <h3>Likes</h3>
+                <h3>{t('likesStat')}</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Month</th>
-                            <th>Likes count</th>
+                            <th>{t('month')}</th>
+                            <th>{t('likesCountStats')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,9 +31,9 @@ const TableStats = ({ stats }: Props) => {
             </div>
 
             <div className="stat">
-                <h3>Comments</h3>
+                <h3>{t('commentsStat')}</h3>
                 <table>
-                    <thead><tr><th>Month</th><th>Comments count</th></tr></thead>
+                    <thead><tr><th>{t('month')}</th><th>{t('commentsCountStats')}</th></tr></thead>
                     <tbody>
                         {stats.comments.map((comment, i) => (
                             <tr key={i}><td>{comment.month}</td><td>{comment.count}</td></tr>

@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
 import { ThemeContext } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
+import { useTranslation } from 'react-i18next';
 import { Formik, Form, Field } from 'formik';
 
 import './style.css';
@@ -15,6 +16,7 @@ const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     updateAuthMode(mode);
@@ -27,7 +29,7 @@ const AuthPage = ({ mode }: Mode) => {
     const { email, password } = values;
 
     if (!email || !password) {
-      showNotification('Not all required data filled.', 'warning', 2000);
+      showNotification(t('fillAllFields'), 'warning', 2000);
       setSubmitting(false);
       return;
     }
@@ -39,8 +41,8 @@ const AuthPage = ({ mode }: Mode) => {
     if (!success) {
       showNotification(
         authMode === 'signup'
-          ? 'User already exists.'
-          : 'Invalid email or password',
+          ? t('userExists')
+          : t('invalidCredentials'),
         'error',
         3000
       );
@@ -50,10 +52,10 @@ const AuthPage = ({ mode }: Mode) => {
 
     updateAuthMode(null);
     if (authMode === 'signup') {
-      showNotification('Sign up successful, now sign in!', 'success', 2000);
+      showNotification(t('signUpSuccess'), 'success', 2000);
       router.push('/sign-in');
     } else {
-      showNotification('Sign in successful!', 'success', 2000);
+      showNotification(t('signInSuccess'), 'success', 2000);
       router.push('/');
     }
   };
@@ -61,10 +63,10 @@ const AuthPage = ({ mode }: Mode) => {
   return (
     <div className="authPage" data-theme={theme}>
       <div className="mainInfo">
-        <h2>{authMode === 'signup' ? 'Create an account' : 'Sign in into an account'}</h2>
+        <h2>{authMode === 'signup' ? t('createAccount') : t('signInAccount')}</h2>
         <p>
-          Enter your email and password <br />
-          {authMode === 'signup' ? 'to sign up for' : 'to sign in into'} this app
+          {t('enterEmailPassword')} <br />
+          {authMode === 'signup' ? t('toSignUp') : t('toSignIn')} {t('thisApp')}
         </p>
       </div>
 
@@ -74,30 +76,30 @@ const AuthPage = ({ mode }: Mode) => {
       >
         {({ isSubmitting }) => (
           <Form className="authBox">
-            <label htmlFor="email"><i className="bi bi-envelope" /> Email</label>
+            <label htmlFor="email"><i className="bi bi-envelope" /> {t('email')}</label>
             <Field
               type="email"
               name="email"
               id="email"
-              placeholder="Enter email"
+              placeholder={t('emailPlaceholder')}
             />
 
-            <label htmlFor="password"><i className="bi bi-eye" /> Password</label>
+            <label htmlFor="password"><i className="bi bi-eye" /> {t('password')}</label>
             <Field
               type="password"
               name="password"
               id="password"
-              placeholder="Enter password"
+              placeholder={t('passwordPlaceholder')}
             />
 
             <button type="submit" disabled={isSubmitting}>
-              {authMode === 'signup' ? 'Sign Up' : 'Sign In'}
+              {authMode === 'signup' ? t('signUp') : t('signIn')}
             </button>
 
             {authMode === 'signup' && (
               <small>
-                By clicking continue, you agree to our <span>Terms of Service</span><br />
-                and <span>Privacy Policy</span>
+                {t('termsAgreement')} <span>{t('termsOfService')}</span><br />
+                {t('and')} <span>{t('privacyPolicy')}</span>
               </small>
             )}
 
@@ -106,8 +108,8 @@ const AuthPage = ({ mode }: Mode) => {
               updateAuthMode(authMode === 'signup' ? 'signin' : 'signup');
             }}>
               {authMode === 'signup'
-                ? <>Already have an account? <span>Sign in</span></>
-                : <>Forgot to create an account? <span>Sign up</span></>}
+                ? <>{t('alreadyHaveAccount')} <span>{t('signInLink')}</span></>
+                : <>{t('dontHaveAccount')} <span>{t('signUpLink')}</span></>}
             </p>
           </Form>
         )}
