@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './style.css';
 
 interface Props {
@@ -19,10 +20,10 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
 
         return () => clearTimeout(timer);
     }, [isVisible, autoHide, close]);
-    
+
     if (!isVisible) return null;
 
-    return (
+    const notificationElement = (
         <div className={`notification notification-${type}`}>
             <div className="notification-content">
                 <span className="notification-icon">
@@ -35,6 +36,12 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
             </div>
         </div>
     );
+
+    const portalRoot = typeof window !== 'undefined'
+        ? document.getElementById('notification-root')
+        : null;
+
+    return portalRoot ? createPortal(notificationElement, portalRoot) : null;
 };
 
 export default Notification;

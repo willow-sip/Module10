@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
-import { useNotification } from '../../context/NotificationContext'
+import { AuthContext } from '@/context/AuthContext';
+import { ThemeContext } from '@/context/ThemeContext';
+import { showNotification } from '@/components/notify';
 import { Formik, Form, Field } from 'formik';
 
 import './style.css';
@@ -15,7 +15,6 @@ const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
-  const notContext = useNotification();
 
   useEffect(() => {
     updateAuthMode(mode);
@@ -28,7 +27,7 @@ const AuthPage = ({ mode }: Mode) => {
     const { email, password } = values;
 
     if (!email || !password) {
-      notContext.showNotification('Not all required data filled.', 'warning', 2000);
+      showNotification('Not all required data filled.', 'warning', 2000);
       setSubmitting(false);
       return;
     }
@@ -38,7 +37,7 @@ const AuthPage = ({ mode }: Mode) => {
       : signIn(email, password);
 
     if (!success) {
-      notContext.showNotification(
+      showNotification(
         authMode === 'signup'
           ? 'User already exists.'
           : 'Invalid email or password',
@@ -51,10 +50,10 @@ const AuthPage = ({ mode }: Mode) => {
 
     updateAuthMode(null);
     if (authMode === 'signup') {
-      notContext.showNotification('Sign up successful, now sign in!', 'success', 2000);
+      showNotification('Sign up successful, now sign in!', 'success', 2000);
       router.push('/sign-in');
     } else {
-      notContext.showNotification('Sign in successful!', 'success', 2000);
+      showNotification('Sign in successful!', 'success', 2000);
       router.push('/');
     }
   };

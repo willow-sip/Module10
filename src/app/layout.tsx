@@ -27,6 +27,7 @@ export default function RootLayout({
             <body>
                 <Providers>
                     <div id="root">
+                        <div id="notification-root" />
                         <MSWWrapper>{children}</MSWWrapper>
                     </div>
                 </Providers>

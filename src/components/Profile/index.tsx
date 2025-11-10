@@ -1,15 +1,14 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeContext } from '../../context/ThemeContext';
-import { AuthContext } from '../../context/AuthContext';
-import { useNotification } from '../../context/NotificationContext';
+import { ThemeContext } from '@/context/ThemeContext';
+import { AuthContext } from '@/context/AuthContext';
+import { showNotification } from '@/components/notify';
 import './style.css';
 
 const Profile = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { user, updateUser, logOut, token } = useContext(AuthContext);
     const [location, setLocation] = useState<"profile" | "stats">("profile");
-    const notContext = useNotification(); 
 
     const [username, setUsername] = useState(user?.username || '');
     const [email, setEmail] = useState(user?.email || '');
@@ -28,13 +27,13 @@ const Profile = () => {
         const file = e.target.files?.[0];
         if (file) {
             if (file.size > 10 * 1024 * 1024) {
-                notContext.showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                showNotification("File size mustn't exceed 10MB", 'error', 3000);
                 return;
             }
             
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(file.type)) {
-                notContext.showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
                 return;
             }
             setSelectedFile(file);
@@ -46,22 +45,22 @@ const Profile = () => {
         e.preventDefault();
 
         if (!username.trim()) {
-            notContext.showNotification('Input username please', 'warning', 2000);
+            showNotification('Input username please', 'warning', 2000);
             return;
         }
 
         if (!email.trim()) {
-            notContext.showNotification('Input email please', 'warning', 2000);
+            showNotification('Input email please', 'warning', 2000);
             return;
         }
 
         if (!checkEmail(email.trim())) {
-            notContext.showNotification('Input valid email please', 'warning', 2000);
+            showNotification('Input valid email please', 'warning', 2000);
             return;
         }
 
         if (description.trim().length > 200) {
-            notContext.showNotification('Your description is too big', 'warning', 2000);
+            showNotification('Your description is too big', 'warning', 2000);
             return;
         }
         
@@ -98,14 +97,14 @@ const Profile = () => {
             const result = await response.json();
 
             if (result.errors) {
-                notContext.showNotification("Failed to update profile", 'error', 2000);
+                showNotification("Failed to update profile", 'error', 2000);
                 console.log(result.errors);
                 return;
             }
             updateUser(result.data.updateProfile);
-            notContext.showNotification('Profile updated successfully', 'success', 2000);
+            showNotification('Profile updated successfully', 'success', 2000);
         } catch (err) {
-            notContext.showNotification("Failed to update profile", 'error', 2000);
+            showNotification("Failed to update profile", 'error', 2000);
             return;
         }
     };

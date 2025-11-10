@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname  } from 'next/navigation';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { AuthContext } from '@/context/AuthContext';
+import { ThemeContext } from '@/context/ThemeContext';
 import './style.css';
 
 interface User {

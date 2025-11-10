@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react';
-import { ThemeContext } from '../../context/ThemeContext';
-import { AuthContext } from '../../context/AuthContext';
-import { useNotification } from '../../context/NotificationContext'
+import { ThemeContext } from '@/context/ThemeContext';
+import { AuthContext } from '@/context/AuthContext';
 import './style.css';
 import { useSafeFetch } from '@/data/useSafeFetch';
+import { showNotification } from '@/components/notify';
 
 interface Props {
     close: () => void;
@@ -16,7 +16,6 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState<File | null>(null);
-    const notContext = useNotification();
     const { safeFetch, isMSWReady } = useSafeFetch();
 
 
@@ -24,13 +23,13 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
             if (selectedFile.size > 10 * 1024 * 1024) {
-                notContext.showNotification("File size mustn't exceed 10MB", 'error', 3000);
+                showNotification("File size mustn't exceed 10MB", 'error', 3000);
                 return;
             }
             
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(selectedFile.type)) {
-                notContext.showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
+                showNotification('Invalid file type( not *.jpg, *.png or *.pdf)', 'error', 3000);
                 return;
             }
             
@@ -42,17 +41,17 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         e.preventDefault();
 
         if (!title.trim()) {
-            notContext.showNotification('Input post title please', 'warning', 2000);
+            showNotification('Input post title please', 'warning', 2000);
             return;
         }
 
         if (!description.trim()) {
-            notContext.showNotification('Input description please', 'warning', 2000);
+            showNotification('Input description please', 'warning', 2000);
             return;
         }
 
         if (!token) {
-            notContext.showNotification('You are somehow not authorized', 'error', 3000);
+            showNotification('You are somehow not authorized', 'error', 3000);
             return;
         }
 
@@ -74,11 +73,11 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             });
 
             if (!response.ok) {
-                notContext.showNotification('Failed to create a post.', 'error', 3000);
+                showNotification('Failed to create a post.', 'error', 3000);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            notContext.showNotification('Post created successfully', 'success', 3000);
+            showNotification('Post created successfully', 'success', 3000);
 
             if (postCreated) {
                 postCreated();
@@ -91,7 +90,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             close();
 
         } catch (error) {
-            notContext.showNotification('Failed to create a post.', 'error', 3000);
+            showNotification('Failed to create a post.', 'error', 3000);
         }
     };
 

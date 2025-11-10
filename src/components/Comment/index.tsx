@@ -1,10 +1,9 @@
-import { useEffect, useContext, useState, useTransition } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useSafeFetch } from '@/data/useSafeFetch';
+import { AuthContext } from '@/context/AuthContext';
 
 import './style.css';
 
-import { User, Comment as CommentType } from '@/data/datatypes';
-import { AuthContext } from '@/context/AuthContext';
 
 interface CommentProps {
     id: number;
