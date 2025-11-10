@@ -205,3 +205,23 @@ input:checked + .slider:before {
   -ms-transform: translateX(20px);
   transform: translateX(20px);
 }
+
+@media (max-width: 768px) {
+  .profile{
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+  .edit-profile{
+    width: 100%;
+  }
+  .profile > div{
+    min-height: auto;
+    width: auto;
+  }
+  #profile-form .form-group{
+    min-width: 80%;
+  }
+  #profile-form .form-group textarea{
+    width: 100%;
+  }
+}

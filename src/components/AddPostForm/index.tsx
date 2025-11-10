@@ -143,7 +143,9 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             className="file-input"
                         />
                     </div>
-                    <button type="submit" className="create-btn">{t('create')}</button>
+                    <div className="create-post-container">
+                        <button type="submit" className="create-btn">{t('create')}</button>
+                    </div>
                 </form>
             </div>
         </div>

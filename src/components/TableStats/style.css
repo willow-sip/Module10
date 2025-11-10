@@ -63,3 +63,19 @@ tr:hover {
     background-color: var(--border-color);
     transition: background 0.2s ease-in-out;
 }
+
+@media (max-width: 768px) {
+    .statsTable{
+        max-width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0;
+    }
+    .statsTable .stat {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+    .statsTable .stat table{
+        width: 100%;
+    }
+}

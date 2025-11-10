@@ -4,6 +4,7 @@ import { User } from '../data/datatypes';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { setExpiresAt, clearExpiresAt } from '../slices/authSlice';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
     user: User | null;
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const dispatch = useDispatch();
     const expiresAt = useSelector((state: RootState) => state.auth.expiresAt);
+    const router = useRouter();
 
     useEffect(() => {
         const savedUser = localStorage.getItem('currentUser');
@@ -158,6 +160,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('authToken');
         localStorage.removeItem('expiresAt');
+         router.push('/');
     };
 
     return (
