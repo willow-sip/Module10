@@ -3,6 +3,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import './style.css';
 import { showNotification } from '@/components/notify';
+import React from 'react';
 
 interface Props {
     close: () => void;
@@ -147,4 +148,4 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     );
 };
 
-export default AddPostForm;
+export default React.memo(AddPostForm);

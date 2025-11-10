@@ -7,14 +7,18 @@ import Header from '@/components/Header';
 import AddPost from '@/components/AddPost';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
-import Post from '@/components/Post';
-import { Post as PostType } from '@/data/datatypes';
+import { Post } from '@/data/datatypes';
+import dynamic from 'next/dynamic';
+
+const DynamicPost = dynamic(() => import('@/components/Post'), {
+  loading: () => <p>Loading post...</p>,
+});
 
 
 export default function HomePage() {
   const { user, userAuth } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
-  const [posts, setPosts] = useState<PostType[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = async () => {
     try {
@@ -41,7 +45,7 @@ export default function HomePage() {
         <div className="posts">
           <Suspense fallback={<div>Loading posts...</div>}>
             {posts.map(post => (
-              <Post key={post.id} post={post}/>
+              <DynamicPost key={post.id} post={post}/>
             ))}
           </Suspense>
         </div>
