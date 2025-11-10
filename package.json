@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
+    "@react-spring/web": "^10.0.3",
     "@reduxjs/toolkit": "^2.10.1",
     "@sidekick-monorepo/internship-backend": "file:packages/sidekick-monorepo-internship-backend-0.0.1.tgz",
     "formik": "^2.4.8",

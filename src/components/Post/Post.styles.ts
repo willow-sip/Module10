@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -197,4 +197,20 @@ export const Spinner = styled.div`
   width: 20px;
   height: 20px;
   animation: ${spin} 1s linear infinite;
+`;
+
+const bounce = keyframes`
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+`;
+
+
+export const AnimatedHeart = styled.i<{ animate: string }>`
+  cursor: pointer;
+  margin-right: 8px;
+  display: inline-block;
+  transform-origin: center;
+  animation: ${({ animate }) =>
+    animate === "true" ? css`${bounce} 0.4s ease` : 'none'};
 `;

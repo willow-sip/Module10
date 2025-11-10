@@ -6,7 +6,7 @@ import { showNotification } from '@/components/notify';
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes';
 
 import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
-  Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner } from './Post.styles';
+  Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
 
 
 interface PostProps {
@@ -23,6 +23,7 @@ interface PostState {
     prevToken: string | null;
     loading: boolean;
     addingComment: boolean;
+    animateLike: boolean;
 }
 
 class Post extends Component<PostProps, PostState> {
@@ -44,6 +45,7 @@ class Post extends Component<PostProps, PostState> {
             prevToken: null,
             loading: true,
             addingComment: false,
+            animateLike: false,
         };
     }
 
@@ -134,6 +136,11 @@ class Post extends Component<PostProps, PostState> {
         const { liked } = this.state;
         const { token, user } = this.context; 
         const postId = this.props.post.id;
+
+        this.setState({ animateLike: true });
+        setTimeout(() => {
+            this.setState({ animateLike: false });
+        }, 400);
 
         const endpoint = liked ? '/api/dislike' : '/api/like';
         const method = 'POST';
@@ -276,8 +283,9 @@ class Post extends Component<PostProps, PostState> {
 
                         <PostButtons>
                             <Likes>
-                                <i
+                                <AnimatedHeart
                                     className={this.state.liked ? 'bi bi-suit-heart-fill' : 'bi bi-suit-heart'}
+                                    animate={this.state.animateLike.toString()}
                                     onClick={this.handleLike}
                                 />
                                 {this.state.likesCount} likes
