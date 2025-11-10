@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Poppins } from 'next/font/google';
 import { Providers } from './providers';
-import { MSWWrapper } from '@/components/MswWrapper'
 import './globals.css';
 
 const poppins = Poppins({
@@ -9,10 +9,6 @@ const poppins = Poppins({
     subsets: ['latin']
 });
 
-export const metadata: Metadata = {
-    title: 'Social Media App',
-    description: 'Social media application created using Next.js',
-};
 
 export default function RootLayout({
     children,
@@ -22,13 +18,15 @@ export default function RootLayout({
     return (
         <html lang="en" className={poppins.className} >
             <head>
+                <title>Social Media App</title>
+                <meta name="description" content="Social media application created using Next.js" />
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
             </head>
             <body>
                 <Providers>
                     <div id="root">
                         <div id="notification-root" />
-                        <MSWWrapper>{children}</MSWWrapper>
+                        {children}
                     </div>
                 </Providers>
             </body>

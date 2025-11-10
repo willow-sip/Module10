@@ -9,20 +9,16 @@ import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import Post from '@/components/Post';
 import { Post as PostType } from '@/data/datatypes';
-import { useSafeFetch } from '@/data/useSafeFetch';
-import { useMSW } from '@/context/MswContext';
 
 
 export default function HomePage() {
   const { user, userAuth } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
   const [posts, setPosts] = useState<PostType[]>([]);
-  const { safeFetch, isMSWReady } = useSafeFetch();
-  const { isReady } = useMSW();
 
   const fetchPosts = async () => {
     try {
-      const response = await safeFetch('/api/posts');
+      const response = await fetch('/api/posts');
       if (response.ok) {
         const data = await response.json();
         setPosts(data);
@@ -41,11 +37,11 @@ export default function HomePage() {
       <Header name={`${user?.firstName} ${user?.secondName}`} avatar={user?.profileImage} />
       {userAuth && user && <AddPost avatar={user?.profileImage} postCreated={fetchPosts} />}
       <div className="main-page">
-        {userAuth && user && <Sidebar isReady={isReady}/>}
+        {userAuth && user && <Sidebar/>}
         <div className="posts">
           <Suspense fallback={<div>Loading posts...</div>}>
             {posts.map(post => (
-              <Post key={post.id} post={post} isReady={isReady}/>
+              <Post key={post.id} post={post}/>
             ))}
           </Suspense>
         </div>

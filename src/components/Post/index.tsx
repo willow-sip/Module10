@@ -3,14 +3,12 @@ import Comment from '../Comment';
 import { AuthContext } from '@/context/AuthContext';
 import { ThemeContext } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
-import { safeFetch } from '@/data/safeFetch';
 import './style.css';
 
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes'
 
 interface PostProps {
     post: PostType;
-    isReady: boolean;
 }
 
 interface PostState {
@@ -94,7 +92,7 @@ class Post extends Component<PostProps, PostState> {
             text: newComment.trim(),
         };
 
-        safeFetch('/api/comments', {
+        fetch('/api/comments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -132,46 +130,43 @@ class Post extends Component<PostProps, PostState> {
 
     handleLike = () => {
         const { liked } = this.state;
-        const { token } = this.context;
+        const { token, user } = this.context; 
         const postId = this.props.post.id;
 
-        const mutation = `
-            mutation LikeToggle($postId: Int!) {
-                ${liked ? 'dislikePost' : 'likePost'}(postId: $postId) {
-                    id
-                }
-            }
-        `;
+        const endpoint = liked ? '/api/dislike' : '/api/like';
+        const method = 'POST';
 
-        const variables = { postId };
-
-        safeFetch('/graphql', {
-            method: 'POST',
+        fetch(endpoint, {
+            method,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ query: mutation, variables }),
+            body: JSON.stringify({ postId }),
         })
             .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 return res.json();
             })
             .then(data => {
-                const success = liked
-                    ? !!data.data?.dislikePost?.id
-                    : !!data.data?.likePost?.id;
-
-                if (success) {
+                console.log(data)
+                if (data) {
                     this.setState(prevState => ({
                         liked: !prevState.liked,
                         likesCount: prevState.liked
-                            ? prevState.likesCount - 1
+                            ? (prevState.likesCount - 1)
                             : prevState.likesCount + 1,
                     }));
+                } else {
+                    showNotification('Failed to toggle like', 'error', 2000);
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error('Error toggling like:', err);
+                showNotification('Network error', 'error', 2000);
+            });
     };
 
     loadCommentsAndAuthor = () => {
@@ -179,7 +174,7 @@ class Post extends Component<PostProps, PostState> {
         const { token, user } = this.context;
 
         if (user && token) {
-            safeFetch(`/api/posts/${id}/comments`, {
+            fetch(`/api/posts/${id}/comments`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -199,7 +194,7 @@ class Post extends Component<PostProps, PostState> {
                     console.error(error);
                 });
 
-            safeFetch(`/api/users/${this.props.post.authorId}`, {
+            fetch(`/api/users/${this.props.post.authorId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

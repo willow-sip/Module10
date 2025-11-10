@@ -4,7 +4,6 @@ import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import TableStats from '../TableStats/TableStats';
 import ChartStats from '../ChartStats/ChartStats';
-import { useSafeFetch } from '@/data/useSafeFetch';
 import './style.css';
 
 import { genStats } from '@/data/dummyStats'
@@ -21,7 +20,6 @@ const Stats = () => {
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
     const [stats, setStats] = useState<StatsData | null>(null);
     const [location, setLocation] = useState<"profile" | "stats">("stats");
-    const { safeFetch, isMSWReady } = useSafeFetch();
     const router = useRouter();
 
     const handleToggle = () => {
@@ -64,8 +62,8 @@ const Stats = () => {
             const fetchStats = async () => {
                 try {
                     const [likesRes, commentsRes] = await Promise.all([
-                        safeFetch(`/api/me/likes`, { headers: { Authorization: `Bearer ${token}`} }),
-                        safeFetch(`/api/me/comments`, { headers: { Authorization: `Bearer ${token}`} }),
+                        fetch(`/api/me/likes`, { headers: { Authorization: `Bearer ${token}`} }),
+                        fetch(`/api/me/comments`, { headers: { Authorization: `Bearer ${token}`} }),
                     ]);
 
                     if (!likesRes.ok || !commentsRes.ok) throw new Error('Fetch failed');

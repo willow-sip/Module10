@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
-import { safeFetch } from '@/data/safeFetch';
 import './style.css';
 
-import { User, Group } from '../../data/datatypes';
-
-interface SidebarProps {
-    isReady: boolean;
-}
+import { User, Group } from '@/data/datatypes';
 
 interface SidebarState {
     groups: Group[];
@@ -16,11 +11,11 @@ interface SidebarState {
     loading: boolean;
 }
 
-class Sidebar extends Component<SidebarProps, SidebarState> {
+class Sidebar extends Component<{}, SidebarState> {
     static contextType = AuthContext;
     context!: React.ContextType<typeof AuthContext>;
 
-    constructor(props: SidebarProps) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             groups: [],
@@ -33,7 +28,7 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
         const { token } = this.context;
 
         if (token) {
-            safeFetch('/api/groups', {
+            fetch('/api/groups', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -51,7 +46,7 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                     console.error('Error fetching groups:', error);
                 });
 
-            safeFetch('/api/getSuggested', {
+            fetch('/api/getSuggested', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

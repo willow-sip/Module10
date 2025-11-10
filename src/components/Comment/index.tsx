@@ -1,5 +1,4 @@
 import { useEffect, useContext, useState } from 'react';
-import { useSafeFetch } from '@/data/useSafeFetch';
 import { AuthContext } from '@/context/AuthContext';
 
 import './style.css';
@@ -18,10 +17,9 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
     const { token, user } = useContext(AuthContext);
-    const { safeFetch, isMSWReady } = useSafeFetch();
 
     useEffect(() => {
-        safeFetch(`/api/users/${authorId}`, {
+        fetch(`/api/users/${authorId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -49,7 +47,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     };
 
     const handleSaveEdit = () => {
-        safeFetch(`/api/comments/${id}`, {
+        fetch(`/api/comments/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,7 +75,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const handleDelete = () => {
         if (!canModify) return;
 
-        safeFetch(`/api/comments/${id}`, {
+        fetch(`/api/comments/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${token}`,
