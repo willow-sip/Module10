@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { MoonLoader } from 'react-spinners';
 
-const Stats = lazy(() => import('@/components/Stats'));
+const Stats = lazy(() => import('@/components/Statistics'));
 
 export default function StatsPage() {
     return (

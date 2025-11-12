@@ -1,4 +1,4 @@
-import { StatsData } from "../components/Stats";
+import { StatsData } from "../components/Statistics";
 
 export const statsData: StatsData = {
   likes: [

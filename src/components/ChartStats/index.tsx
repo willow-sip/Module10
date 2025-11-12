@@ -1,6 +1,6 @@
 'use client';
 
-import { StatsData } from '../Stats';
+import { StatsData } from '../Statistics';
 import {
     LineChart,
     Line,

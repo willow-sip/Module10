@@ -17,7 +17,7 @@ export interface StatsData {
     comments: { month: string; count: number }[];
 }
 
-const Stats = () => {
+const Statistics = () => {
     const { theme } = useContext(ThemeContext);
     const {token} = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
@@ -126,4 +126,4 @@ const Stats = () => {
     );
 };
 
-export default Stats;
+export default Statistics;
