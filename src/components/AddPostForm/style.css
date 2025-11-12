@@ -48,15 +48,15 @@
 }
 
 .form-group label {
-  display: block;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
+  height: 20px;
   font-weight: 500;
   font-size: 14px;
   color: var(--text-color);
   margin: 12px 0;
-}
-
-#add-post .form-group label i {
-  color: var(--text-color);
 }
 
 #add-post .form-group input,
@@ -107,10 +107,6 @@
 
 .upload-area:hover {
   border: 2px solid var(--border-color);
-}
-
-.upload-area i {
-  font-size: 40px;
 }
 
 .upload-content {
@@ -165,6 +161,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
 
 @media (max-width: 768px) {
   .form-header h2{

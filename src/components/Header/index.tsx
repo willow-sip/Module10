@@ -7,6 +7,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 import './style.css';
 import LangToggler from '../LangToggler';
 import { useTranslation } from 'react-i18next';
+import { BurgerMenu, Logout, Moon, Sun } from '@/svgs';
 
 interface User {
     name?: string;
@@ -44,7 +45,7 @@ const Header = ({ name, avatar }: User) => {
                 isMobile ? (
                     <>
                         <button onClick={toggleDrawer} className="burger">
-                            <i className="bi bi-list" />
+                            <BurgerMenu />
                         </button>
                         {drawerOpen && <div className="drawer-overlay" onClick={() => setDrawerOpen(false)} />}
                         <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
@@ -57,11 +58,11 @@ const Header = ({ name, avatar }: User) => {
                                             alt="User avatar"
                                             className="drawer-avatar"
                                         />
-                                        <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
+                                        <button onClick={logOut}><Logout /></button>
                                     </div>
                                 )}
                                 <button onClick={toggleTheme} className="theme-toggle">
-                                    {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
+                                    {theme === 'light' ? <Moon /> : <Sun />}
                                 </button>
                             </div>
 
@@ -82,7 +83,7 @@ const Header = ({ name, avatar }: User) => {
                     !userAuth ? (
                         <div className="sign-buttons">
                             <button onClick={toggleTheme} className="theme-toggle">
-                                {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
+                                {theme === 'light' ? <Moon /> : <Sun />}
                             </button>
                             <button onClick={() => router.push('/sign-up')}>{t('signUp')}</button>
                             <button onClick={() => router.push('/sign-in')}>{t('signIn')}</button>
@@ -90,13 +91,13 @@ const Header = ({ name, avatar }: User) => {
                     ) : (
                         <div className="user-info">
                             <button onClick={toggleTheme} className="theme-toggle">
-                                {theme === 'light' ? <i className="bi bi-moon-fill" /> : <i className="bi bi-sun-fill" />}
+                                {theme === 'light' ? <Moon /> : <Sun />}
                             </button>
                             <div className="profile-link" onClick={() => router.push('/profile')}>
                                 <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
                                 <p>{name}</p>
                             </div>
-                            <button onClick={logOut}><i className="bi bi-box-arrow-right" /></button>
+                            <button onClick={logOut}><Logout /></button>
                         </div>
                     )
                 )

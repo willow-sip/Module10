@@ -7,6 +7,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import './style.css';
+import { Envelope, Important, Pencil, Person } from '@/svgs';
 
 const Profile = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -139,7 +140,10 @@ const Profile = () => {
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="username"><i className="bi bi-person" /> {t('username')}</label>
+                            <label htmlFor="username">
+                                <Person />
+                                <p>{t('username')}</p>
+                            </label>
                             <input
                                 type="text"
                                 id="username"
@@ -149,8 +153,11 @@ const Profile = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="email"><i className="bi bi-envelope" /> {t('email')}</label>
+                        <div className="form-group">                            
+                            <label htmlFor="email">
+                                <Envelope />
+                                <p>{t('email')}</p>
+                            </label>
                             <input
                                 type="email"
                                 id="email"
@@ -161,7 +168,10 @@ const Profile = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="description"><i className="bi bi-pencil" /> {t('description')}</label>
+                            <label htmlFor="description">
+                                <Pencil />
+                                <p>{t('description')}</p>
+                            </label>
                             <textarea
                                 id="description"
                                 placeholder={t('descriptionPlaceholder')}
@@ -170,7 +180,10 @@ const Profile = () => {
                                 maxLength={200}
                                 rows={4}
                             />
-                            <small className="char-count"><i className="bi bi-info-circle-fill" /> {t('maxDescLength')}</small>
+                            <small className="char-count">
+                                <Important id="important-svg"/>
+                                <p>{t('maxDescLength')}</p>
+                            </small>
                         </div>
 
                         <button type="submit" className="save-btn">{t('saveProfile')}</button>

@@ -21,9 +21,6 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={poppins.className}>
-            <head>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
-            </head>
             <body>
                 <Providers>
                     <div id="root">

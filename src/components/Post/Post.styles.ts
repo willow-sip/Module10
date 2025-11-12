@@ -112,16 +112,18 @@ export const Button = styled.button`
 `;
 
 export const Likes = styled.div`
-  i {
-    cursor: pointer;
-    margin-right: 8px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  height: 24px;
 `;
 
 export const Comments = styled.div`
-  i {
-    margin-right: 8px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
   .comment-text {
     color: var(--text-color);
   }
@@ -140,14 +142,14 @@ export const AddComment = styled.div`
   color: var(--text-color);
 `;
 
-export const AddCommentHeader = styled.p`
+export const AddCommentHeader = styled.div`
   font-size: 14px;
   font-weight: 400;
   display: flex;
   align-items: center;
-  i {
-    margin-right: 8px;
-  }
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
 `;
 
 export const CommentTextarea = styled.textarea`
@@ -206,11 +208,11 @@ const bounce = keyframes`
 `;
 
 
-export const AnimatedHeart = styled.i<{ animate: string }>`
+export const AnimatedHeart = styled.div<{ animate: string }>`
+  display: flex;
+  align-self: center;
   cursor: pointer;
-  margin-right: 8px;
-  display: inline-block;
   transform-origin: center;
   animation: ${({ animate }) =>
-    animate === "true" ? css`${bounce} 0.4s ease` : 'none'};
+    animate === 'true' ? css`${bounce} 0.4s ease` : 'none'};
 `;

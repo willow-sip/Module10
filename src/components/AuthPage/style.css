@@ -97,6 +97,17 @@
     font-weight: 500;
 }
 
+.authBox label {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+    height: 20px;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
 @media (max-width: 768px) {
     .authPage {
         width: 100%;

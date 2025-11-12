@@ -69,6 +69,16 @@ body {
   width: 700px;
 }
 
+svg path {
+  fill: var(--text-color);
+  vertical-align: middle;
+}
+
+svg.outline path{
+  fill: none;
+  stroke: var(--text-color);
+}
+
 @media (max-width: 768px) {
   .posts {
     width: 100%;

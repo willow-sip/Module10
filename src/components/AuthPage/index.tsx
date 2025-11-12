@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Formik, Form, Field } from 'formik';
 
 import './style.css';
+import { Envelope, Eye } from '@/svgs';
 
 interface Mode {
   mode: 'signup' | 'signin';
@@ -80,7 +81,10 @@ const AuthPage = ({ mode }: Mode) => {
       >
         {({ isSubmitting }) => (
           <Form className="authBox">
-            <label htmlFor="email"><i className="bi bi-envelope" /> {t('email')}</label>
+            <label htmlFor="email">
+              <Envelope /> 
+              <p>{t('email')}</p>
+            </label>
             <Field
               type="email"
               name="email"
@@ -88,7 +92,10 @@ const AuthPage = ({ mode }: Mode) => {
               placeholder={t('emailPlaceholder')}
             />
 
-            <label htmlFor="password"><i className="bi bi-eye" /> {t('password')}</label>
+            <label htmlFor="password">
+              <Eye />
+              <p>{t('password')}</p>
+            </label>
             <Field
               type="password"
               name="password"

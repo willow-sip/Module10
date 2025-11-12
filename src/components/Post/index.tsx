@@ -9,6 +9,7 @@ import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes
 
 import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
   Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
+import { ArrowDown, ArrowUp, CommentSvg, LikeSvg, Pencil } from '@/svgs';
 
 
 interface PostProps {
@@ -288,14 +289,15 @@ class Post extends Component<PostProps, PostState> {
                         <PostButtons>
                             <Likes>
                                 <AnimatedHeart
-                                    className={this.state.liked ? 'bi bi-suit-heart-fill' : 'bi bi-suit-heart'}
                                     animate={this.state.animateLike.toString()}
                                     onClick={this.handleLike}
-                                />
-                                {this.state.likesCount} {t('likes')}
+                                >
+                                    <LikeSvg className={this.state.liked ? '' : 'outline'}/>
+                                </AnimatedHeart>
+                                <p>{this.state.likesCount} {t('likes')}</p>
                             </Likes>
                             <Comments>
-                                <i className="bi bi-chat-left" />
+                                <CommentSvg className="outline"/>
                                 <span className="comment-text">
                                     {userAuth
                                         ? commentsCount !== undefined
@@ -307,9 +309,9 @@ class Post extends Component<PostProps, PostState> {
                             {userAuth && (
                                 <Button onClick={this.toggleShowComments}>
                                     {showComments ? (
-                                        <i className="bi bi-chevron-down" />
+                                        <ArrowDown />
                                     ) : (
-                                        <i className="bi bi-chevron-up" />
+                                        <ArrowUp />
                                     )}
                                 </Button>
                             )}
@@ -342,7 +344,8 @@ class Post extends Component<PostProps, PostState> {
 
                                 <AddComment>
                                     <AddCommentHeader>
-                                        <i className="bi bi-pencil-fill" /> {t('addComment')}
+                                        <Pencil />
+                                        <p>{t('addComment')}</p> 
                                     </AddCommentHeader>
                                     <CommentTextarea
                                         name="commentText"

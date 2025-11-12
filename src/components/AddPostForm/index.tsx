@@ -1,12 +1,12 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
-import './style.css';
 import { showNotification } from '@/components/notify';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Envelope, Pencil, UploadFile } from '@/svgs';
+import './style.css';
 
 interface Props {
     close: () => void;
@@ -108,7 +108,8 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                 <form id="add-post" onSubmit={handleSubmit}>
                     <div className="form-group title">
                         <label htmlFor="postTitle">
-                            <i className="bi bi-envelope"></i> {t('postTitle')}
+                            <Envelope />
+                            <p>{t('postTitle')}</p>
                         </label>
                         <input
                             id="postTitle"
@@ -121,7 +122,8 @@ const AddPostForm = ({ close, postCreated }: Props) => {
 
                     <div className="form-group">
                         <label htmlFor="description">
-                            <i className="bi bi-pencil"></i> {t('description')}
+                            <Pencil />
+                            <p>{t('description')}</p>
                         </label>
                         <textarea
                             id="description"
@@ -133,7 +135,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                     </div>
 
                     <div className="upload-area">
-                        <i className="bi bi-file-earmark-arrow-up" />
+                        <UploadFile />
                         <div className="upload-content">
                             <p>{file ? `Uploaded file: ${file.name}.` : t('uploadFile')}</p>
                             <p className="file-types">{t('fileTypes')}</p>

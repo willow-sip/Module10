@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './style.css';
+import { Cross, SuccessCheck, Warning } from '@/svgs';
 
 interface Props {
     message: string;
@@ -29,9 +30,9 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
         <div className={`notification notification-${type}`}>
             <div className="notification-content">
                 <span className="notification-icon">
-                    {type === 'success' && <i className="bi bi-check-circle-fill" />}
-                    {type === 'error' && <i className="bi bi-x-lg" />}
-                    {type === 'warning' && <i className="bi bi-exclamation-circle-fill" />}
+                    {type === 'success' && <SuccessCheck />}
+                    {type === 'error' && <Cross />}
+                    {type === 'warning' && <Warning />}
                 </span>
                 <p className="notification-message">{message}</p>
                 <button className="notification-close" onClick={close}>×</button>
