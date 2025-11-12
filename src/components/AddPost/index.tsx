@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext, useState } from 'react';
 import { ThemeContext } from '@/context/ThemeContext';
 import AddPostForm from '../AddPostForm';

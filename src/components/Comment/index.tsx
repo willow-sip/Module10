@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useContext, useState } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { Paper, Typography, TextField, Button, IconButton, Box, useTheme } from '@mui/material';
@@ -14,7 +16,7 @@ interface CommentProps {
 }
 
 const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
-    const [author, setAuthor] = useState({ id: NaN, username: '', firstName: '', secondName: '' });
+    const [author, setAuthor] = useState({ id: null, username: '', firstName: '', secondName: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
     const { token, user } = useContext(AuthContext);

@@ -1,3 +1,5 @@
+'use client';
+
 import { StatsData } from '../Stats';
 import {
     LineChart,

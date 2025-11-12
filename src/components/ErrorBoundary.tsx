@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import NotFoundPage from './NotFoundPage';
 
 class ErrorBoundary extends Component<{ children: ReactNode }> {

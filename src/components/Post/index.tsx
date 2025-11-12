@@ -1,3 +1,5 @@
+'use client';
+
 import React, { Component } from 'react';
 import Comment from '../Comment';
 import { AuthContext } from '@/context/AuthContext';

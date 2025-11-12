@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
@@ -12,6 +14,8 @@ interface Mode {
   mode: 'signup' | 'signin';
 }
 
+const INITIAL_VALUES = { email: '', password: '' };
+
 const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
@@ -20,9 +24,9 @@ const AuthPage = ({ mode }: Mode) => {
 
   useEffect(() => {
     updateAuthMode(mode);
-  }, [mode, updateAuthMode]);
+  }, [mode]);
 
-  const handleSubmit = (
+  const  handleSubmit = async (
     values: { email: string; password: string },
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
@@ -35,8 +39,8 @@ const AuthPage = ({ mode }: Mode) => {
     }
 
     const success = authMode === 'signup'
-      ? signUp(email, password)
-      : signIn(email, password);
+      ? await signUp(email, password)
+      : await signIn(email, password);
 
     if (!success) {
       showNotification(
@@ -71,7 +75,7 @@ const AuthPage = ({ mode }: Mode) => {
       </div>
 
       <Formik
-        initialValues={{ email: '', password: '' }}
+        initialValues={INITIAL_VALUES}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
