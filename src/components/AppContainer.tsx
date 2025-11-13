@@ -1,11 +1,12 @@
 'use client';
 
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+import { useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import i18n from '@/i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 export default function AppContainer({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function AppContainer({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  const { user } = useContext(AuthContext);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { theme } = useTheme();
 
   return (

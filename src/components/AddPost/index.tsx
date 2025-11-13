@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import AddPostForm from '../AddPostForm';
 import { useTranslation } from 'react-i18next';

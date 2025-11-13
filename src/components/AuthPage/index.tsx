@@ -1,12 +1,14 @@
 'use client';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthContext } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
-import { Formik, Form, Field, FormikErrors } from 'formik';
+import { Formik, Form, Field } from 'formik';
+import { signUp, signIn, updateAuthMode } from '@/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store';
 
 import './style.css';
 import { Envelope, Eye } from '@/svgs';
@@ -18,14 +20,15 @@ interface Mode {
 const INITIAL_VALUES = { email: '', password: '' };
 
 const AuthPage = ({ mode }: Mode) => {
-  const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
+  const { authMode } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
   const { theme } = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
-    updateAuthMode(mode);
-  }, [mode]);
+    dispatch(updateAuthMode(mode));
+  }, [mode, dispatch]);
 
   const validate = (values: { email: string; password: string }) => {
     const errors: { email?: string; password?: string } = {};
@@ -52,11 +55,19 @@ const AuthPage = ({ mode }: Mode) => {
 
     const { email, password } = values;
 
-    const success = authMode === 'signup'
-      ? await signUp(email, password)
-      : await signIn(email, password);
+    try {
+      if (authMode === 'signup') {
+        await dispatch(signUp({ email, password })).unwrap();
+        showNotification(t('signUpSuccess'), 'success', 2000);
+        router.push('/sign-in');
+      } else {
+        await dispatch(signIn({ email, password })).unwrap();
+        showNotification(t('signInSuccess'), 'success', 2000);
+        router.push('/');
+      }
 
-    if (!success) {
+      dispatch(updateAuthMode(null));
+    } catch (err) {
       showNotification(
         authMode === 'signup'
           ? t('userExists')
@@ -64,18 +75,9 @@ const AuthPage = ({ mode }: Mode) => {
         'error',
         3000
       );
-      setSubmitting(false);
-      return;
     }
 
-    updateAuthMode(null);
-    if (authMode === 'signup') {
-      showNotification(t('signUpSuccess'), 'success', 2000);
-      router.push('/sign-in');
-    } else {
-      showNotification(t('signInSuccess'), 'success', 2000);
-      router.push('/');
-    }
+    setSubmitting(false);
   };
 
   return (

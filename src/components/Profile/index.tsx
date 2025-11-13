@@ -1,13 +1,15 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
-import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from '@tanstack/react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store';
+import { logOut, updateUser } from '@/slices/authSlice'
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
 
@@ -22,7 +24,8 @@ interface FormInput {
 
 const Profile = () => {
     const { theme, toggleTheme } = useTheme();
-    const { user, updateUser, logOut, token } = useContext(AuthContext);
+    const { user, token } = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch<AppDispatch>();
     const [location, setLocation] = useState<"profile" | "stats">("profile");
 
     const [username, setUsername] = useState(user?.username || '');
@@ -133,7 +136,7 @@ const Profile = () => {
             return result.data.updateProfile;
         },
         onSuccess: (updatedUser) => {
-            updateUser(updatedUser);
+             dispatch(updateUser(updatedUser));
             showNotification(t('updatedProfile'), 'success', 2000);
             reset({
                 username: updatedUser.username,
@@ -247,7 +250,7 @@ const Profile = () => {
                     </div>
                     <h1>Actions</h1>
                     <button className="logout-button" onClick={() => {
-                        logOut();
+                        dispatch(logOut());
                         router.push('/');
                     }}>Logout</button>
                 </div>

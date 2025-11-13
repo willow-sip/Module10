@@ -1,7 +1,6 @@
 'use client';
 
-import { useContext, Suspense } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+import { Suspense } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import AddPost from '@/components/AddPost';
 import Sidebar from '@/components/Sidebar';
@@ -9,13 +8,15 @@ import { Post } from '@/data/datatypes';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const DynamicPost = dynamic(() => import('@/components/Post'), {
   loading: () => <p>Loading post...</p>,
 });
 
 export default function HomePage() {
-  const { user, userAuth } = useContext(AuthContext);
+  const { user, userAuth } = useSelector((state: RootState) => state.auth);
   const { theme } = useTheme();
   const { t } = useTranslation();
 

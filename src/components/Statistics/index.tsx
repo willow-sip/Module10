@@ -1,9 +1,8 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
-import { AuthContext } from '@/context/AuthContext';
 import TableStats from '../TableStats';
 import ChartStats from '../ChartStats';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +10,8 @@ import './style.css';
 
 import { genStats } from '@/data/dummyStats'
 import {Like, Comment} from '@/data/datatypes'
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 export interface StatsData {
     likes: { month: string; count: number }[];
@@ -19,7 +20,7 @@ export interface StatsData {
 
 const Statistics = () => {
     const { theme } = useTheme();
-    const {token} = useContext(AuthContext);
+    const { token } = useSelector((state: RootState) => state.auth);
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
     const [stats, setStats] = useState<StatsData | null>(null);
     const [location, setLocation] = useState<"profile" | "stats">("stats");

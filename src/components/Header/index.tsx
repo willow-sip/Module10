@@ -1,13 +1,15 @@
 'use client';
 
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname  } from 'next/navigation';
-import { AuthContext } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 import LangToggler from '../LangToggler';
 import { useTranslation } from 'react-i18next';
 import { BurgerMenu, Logout, Moon, Sun } from '@/svgs';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store';
+import { logOut } from '@/slices/authSlice'
 
 interface User {
     name?: string;
@@ -15,7 +17,8 @@ interface User {
 }
 
 const Header = ({ name, avatar }: User) => {
-    const { userAuth, logOut } = useContext(AuthContext);
+    const { userAuth } = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch<AppDispatch>();
     const { theme, toggleTheme } = useTheme();
     const { t } = useTranslation();
 
@@ -58,7 +61,7 @@ const Header = ({ name, avatar }: User) => {
                                             alt="User avatar"
                                             className="drawer-avatar"
                                         />
-                                        <button onClick={logOut}><Logout /></button>
+                                        <button onClick={() => dispatch(logOut())}><Logout /></button>
                                     </div>
                                 )}
                                 <button onClick={toggleTheme} className="theme-toggle">
@@ -97,7 +100,7 @@ const Header = ({ name, avatar }: User) => {
                                 <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
                                 <p>{name}</p>
                             </div>
-                            <button onClick={logOut}><Logout /></button>
+                            <button onClick={() => dispatch(logOut())}><Logout /></button>
                         </div>
                     )
                 )

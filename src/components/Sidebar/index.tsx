@@ -2,13 +2,16 @@
 
 import React, { Component } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { AuthContext } from '@/context/AuthContext';
 import './style.css';
 
 import { User, Group } from '@/data/datatypes';
+import enableAuth from '../AuthHoc';
 
 interface SidebarProps {
     t: (key: string) => string;
+    user: User | null;
+    token: string | null;
+    userAuth: boolean;
 }
 
 interface SidebarState {
@@ -48,10 +51,10 @@ const fetchGroups = async (token: string): Promise<Group[]> => {
 };
 
 const fetchSuggestedUsers = async (token: string): Promise<User[]> => {
-    const response = await fetch('/api/getSuggested',{
+    const response = await fetch('/api/getSuggested', {
         headers: { Authorization: `Bearer ${token}`, },
     });
-    
+
     const data = await response.json();
 
     if (data.errors) {
@@ -62,9 +65,6 @@ const fetchSuggestedUsers = async (token: string): Promise<User[]> => {
 }
 
 class Sidebar extends Component<SidebarProps, SidebarState> {
-    static contextType = AuthContext;
-    context!: React.ContextType<typeof AuthContext>;
-
     constructor(props: SidebarProps) {
         super(props);
         this.state = {
@@ -75,7 +75,7 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
     }
 
     componentDidMount() {
-        const { token } = this.context;
+        const { token } = this.props;
 
         if (token) {
             Promise.all([
@@ -144,4 +144,4 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
     }
 }
 
-export default Sidebar;
+export default enableAuth(Sidebar);

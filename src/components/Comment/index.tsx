@@ -1,11 +1,13 @@
 'use client';
 
-import { useContext, useState } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+import { useState } from 'react';
 import { Paper, Typography, TextField, Button, IconButton, Box, useTheme } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { animated, useSpring, config } from '@react-spring/web';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+
 const AnimatedPaper = animated(Paper);
 
 interface CommentProps {
@@ -19,7 +21,7 @@ interface CommentProps {
 const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
-    const { token, user } = useContext(AuthContext);
+    const { token, user } = useSelector((state: RootState) => state.auth);
 
     const fadeInSpring = useSpring({
         from: { opacity: 0, transform: 'translateY(-10px)' },

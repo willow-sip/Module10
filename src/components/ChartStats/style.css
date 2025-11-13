@@ -18,6 +18,10 @@
     padding: 24px 0;
 }
 
+.statsChart svg path{
+    fill: var(--chart-color) !important;
+}
+
 @media (max-width: 768px) {
     .statsChart{
         max-width: 100%;

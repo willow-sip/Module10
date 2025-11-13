@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react';
 import Comment from '../Comment';
-import { AuthContext } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes';
@@ -10,11 +9,15 @@ import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes
 import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
   Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
 import { ArrowDown, ArrowUp, CommentSvg, LikeSvg, Pencil } from '@/svgs';
+import enableAuth from '../AuthHoc';
 
 
 interface PostProps {
     post: PostType;
     t: (key: string) => string;
+    user: User | null;
+    token: string | null;
+    userAuth: boolean;
 }
 
 interface PostState {
@@ -31,9 +34,6 @@ interface PostState {
 }
 
 class Post extends Component<PostProps, PostState> {
-    static contextType = AuthContext;
-    context!: React.ContextType<typeof AuthContext>;
-
     constructor(props: PostProps) {
         super(props);
         this.state = {
@@ -86,7 +86,7 @@ class Post extends Component<PostProps, PostState> {
 
     handleAddComment = () => {
         const { newComment, comments } = this.state;
-        const { token, user } = this.context;
+        const { token, user } = this.props;
         const postId = this.props.post.id;
 
         if (!newComment.trim()) {
@@ -138,7 +138,7 @@ class Post extends Component<PostProps, PostState> {
 
     handleLike = () => {
         const { liked } = this.state;
-        const { token, user } = this.context; 
+        const { token, user } = this.props; 
         const postId = this.props.post.id;
 
         this.setState({ animateLike: true });
@@ -184,7 +184,7 @@ class Post extends Component<PostProps, PostState> {
 
     loadCommentsAndAuthor = () => {
         const id: number = this.props.post.id;
-        const { token, user } = this.context;
+        const { token, user } = this.props;
 
         if (user && token) {
             fetch(`/api/posts/${id}/comments`, {
@@ -236,7 +236,7 @@ class Post extends Component<PostProps, PostState> {
     }
 
     componentDidUpdate(prevProps: PostProps, prevState: PostState) {
-        const { token } = this.context;
+        const { token } = this.props;
         const { prevToken } = this.state;
 
         if (!prevToken && token) {
@@ -251,7 +251,7 @@ class Post extends Component<PostProps, PostState> {
 
     render() {
         const { showComments } = this.state;
-        const { userAuth } = this.context;
+        const { userAuth } = this.props;
         const { title, content, image } = this.props.post;
         const comments = this.state.comments;
         const commentsCount = this.state.comments?.length;
@@ -368,4 +368,4 @@ class Post extends Component<PostProps, PostState> {
     }
 }
 
-export default Post;
+export default enableAuth(Post);

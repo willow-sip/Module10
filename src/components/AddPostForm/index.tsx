@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { Envelope, Pencil, UploadFile } from '@/svgs';
 import { useMutation  } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import './style.css';
 
 interface Props {
@@ -16,7 +17,7 @@ interface Props {
 
 const AddPostForm = ({ close, postCreated }: Props) => {
     const { theme } = useTheme();
-    const { token } = useContext(AuthContext);
+    const { token } = useSelector((state: RootState) => state.auth);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState<File | null>(null);
