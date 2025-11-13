@@ -90,7 +90,7 @@ export const PostContent = styled.p``;
 export const PostButtons = styled.div`
   display: flex;
   font-size: 16px;
-  width: 433px;
+  width: 100%;
   align-items: center;
   justify-content: flex-start;
   gap: 16px;
@@ -125,7 +125,6 @@ export const Comments = styled.div`
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  min-width: 350px;
   .comment-text {
     color: var(--text-color);
   }

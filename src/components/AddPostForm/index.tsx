@@ -6,6 +6,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { Envelope, Pencil, UploadFile } from '@/svgs';
+import { useMutation  } from '@tanstack/react-query';
 import './style.css';
 
 interface Props {
@@ -40,19 +41,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!title.trim()) {
-            showNotification(t('inputPostTitle'), 'warning', 2000);
-            return;
-        }
-
-        if (!description.trim()) {
-            showNotification(t('inputPostDesc'), 'warning', 2000);
-            return;
-        }
-
+    const addPostLogic = async () => {
         if (!token) {
             showNotification(t('unAutorized'), 'error', 3000);
             return;
@@ -66,35 +55,50 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         if (file) {
             formData.image = file;
         }
-        try {
-            const response = await fetch('/api/posts', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
+        
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+        });
 
-            if (!response.ok) {
-                showNotification('Failed to create a post.', 'error', 3000);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+        if (!response.ok) {
+            showNotification('Failed to create a post.', 'error', 3000);
+        }
 
+        return response.json();
+    };
+
+    const { mutate } = useMutation({
+        mutationFn: addPostLogic,
+        onSuccess: () => {
             showNotification(t('postCreated'), 'success', 3000);
-
-            if (postCreated) {
-                postCreated();
-            }
-
+            postCreated();
             setTitle('');
             setDescription('');
             setFile(null);
-
             close();
-
-        } catch (error) {
+        },
+        onError: () => {
             showNotification(t('postNotCreated'), 'error', 3000);
         }
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!title.trim()) {
+            showNotification(t('inputPostTitle'), 'warning', 2000);
+            return;
+        }
+        if (!description.trim()) {
+            showNotification(t('inputPostDesc'), 'warning', 2000);
+            return;
+        }
+
+        mutate();
     };
 
     return (

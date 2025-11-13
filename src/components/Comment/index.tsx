@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { Paper, Typography, TextField, Button, IconButton, Box, useTheme } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { animated, useSpring, config } from '@react-spring/web';
+import { useQuery, useMutation } from '@tanstack/react-query';
 const AnimatedPaper = animated(Paper);
 
 interface CommentProps {
@@ -16,7 +17,6 @@ interface CommentProps {
 }
 
 const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
-    const [author, setAuthor] = useState({ id: null, username: '', firstName: '', secondName: '' });
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
     const { token, user } = useContext(AuthContext);
@@ -27,53 +27,74 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
         config: config.gentle,
     });
 
-    useEffect(() => {
-        fetch(`/api/users/${authorId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setAuthor(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, [authorId, token]);
+    const { data: author } = useQuery({
+        queryKey: ['get-comment-author', authorId],
+        queryFn: async () => {
+            const response = await fetch(`/api/users/${authorId}`,
+            { headers: { Authorization: `Bearer ${token}` } });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }
+    });
 
+    const editMutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`/api/comments/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ text: editText.trim() }),
+            });
+            if (!response.ok){
+                throw new Error(`Edit failed: ${response.status}`);
+            }
+            return response.json();
+        },
+        onSuccess: (newComment) => {
+            edit?.(newComment.text);
+            setIsEditing(false);
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`/api/comments/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!response.ok) {
+                throw new Error(`Delete failed: ${response.status}`);
+            }
+        },
+        onSuccess: () => {
+            deleteComm?.();
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    });
+
+    
     const canModify = user?.id === authorId;
 
     const handleEdit = () => {
-        if (!canModify) return;
-        setIsEditing(true);
-        setEditText(text);
+        if (canModify) {
+            setIsEditing(true);
+            setEditText(text);
+        }
     };
 
     const handleSaveEdit = () => {
-        fetch(`/api/comments/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ text: editText.trim() }),
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`Edit failed: ${res.status}`);
-                return res.json();
-            })
-            .then(newComment => {
-                if (edit) {
-                    edit(newComment.text);
-                    setIsEditing(false);
-                }
-            }).catch(err => console.error(err));
+        if (editText.trim()){
+            editMutation.mutate();
+        }
     };
 
     const handleCancelEdit = () => {
@@ -81,22 +102,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
         setEditText(text);
     };
 
-    const handleDelete = () => {
-        if (!canModify) return;
-
-        fetch(`/api/comments/${id}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
-                if (deleteComm) {
-                    deleteComm();
-                }
-            }).catch(err => console.error(err));
-    };
+    const handleDelete = () => { deleteMutation.mutate() };
 
     return (
         <AnimatedPaper
@@ -178,7 +184,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
                 <Box sx={{ fontFamily: 'inherit', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
                         <Typography component="span" fontWeight="bold" sx={{ mr: 0.5 }}>
-                            {author.firstName} {author.secondName}:
+                            {author?.firstName} {author?.secondName}:
                         </Typography>
                         {text}
                     </Typography>

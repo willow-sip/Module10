@@ -17,6 +17,50 @@ interface SidebarState {
     loading: boolean;
 }
 
+
+const fetchGroups = async (token: string): Promise<Group[]> => {
+    const query = `
+    query {
+      allGroups {
+        id
+        title
+        membersCount
+        photo
+      }
+    }
+  `;
+
+    const response = await fetch('/api/graphql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query }),
+    });
+
+    const data = await response.json();
+
+    if (data.errors) {
+        console.error('Error fetching groups:', data.errors);
+    }
+    return data.data.allGroups;
+};
+
+const fetchSuggestedUsers = async (token: string): Promise<User[]> => {
+    const response = await fetch('/api/getSuggested',{
+        headers: { Authorization: `Bearer ${token}`, },
+    });
+    
+    const data = await response.json();
+
+    if (data.errors) {
+        console.error('Error fetching users:', data.errors);
+    }
+
+    return data;
+}
+
 class Sidebar extends Component<SidebarProps, SidebarState> {
     static contextType = AuthContext;
     context!: React.ContextType<typeof AuthContext>;
@@ -34,44 +78,18 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
         const { token } = this.context;
 
         if (token) {
-            fetch('/api/groups', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then((data: Group[]) => {
-                    this.setState({ groups: data, loading: false });
+            Promise.all([
+                fetchGroups(token),
+                fetchSuggestedUsers(token)
+            ])
+                .then(([groups, suggestedUsers]) => {
+                    this.setState({ groups, suggestedUsers, loading: false });
                 })
                 .catch(error => {
-                    console.error('Error fetching groups:', error);
-                });
-
-            fetch('/api/getSuggested', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then((data: User[]) => {
-                    console.log(data)
-                    this.setState({ suggestedUsers: data, loading: false });
-                })
-                .catch(error => {
-                    console.error('Error fetching suggested users:', error);
+                    console.error('HTTP error!', error);
+                    this.setState({ loading: false });
                 });
         }
-
     }
 
     render() {
@@ -86,19 +104,19 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                             <h4>{t('sugPeople')}</h4>
                             {this.state.loading ? (<p>{t('loadSugPeople')}</p>) : (
                                 <>
-                                {suggestedUsers.map(user => (
-                                    <div className="person" key={user.id}>
-                                        <img
-                                            src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
-                                            alt="Person avatar"
-                                            className="avatar"
-                                        />
-                                        <div className="personalInfo">
-                                            <p>{user.firstName} {user.secondName}</p>
-                                            <small>@{user.username}</small>
+                                    {suggestedUsers?.map(user => (
+                                        <div className="person" key={user.id}>
+                                            <img
+                                                src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
+                                                alt="Person avatar"
+                                                className="avatar"
+                                            />
+                                            <div className="personalInfo">
+                                                <p>{user.firstName} {user.secondName}</p>
+                                                <small>@{user.username}</small>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                                 </>
                             )}
                         </div>
