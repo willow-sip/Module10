@@ -3,7 +3,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname  } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 import LangToggler from '../LangToggler';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ interface User {
 
 const Header = ({ name, avatar }: User) => {
     const { userAuth, logOut } = useContext(AuthContext);
-    const { theme, toggleTheme } = useContext(ThemeContext);
+    const { theme, toggleTheme } = useTheme();
     const { t } = useTranslation();
 
     const router = useRouter();

@@ -1,45 +1,29 @@
-'use client';
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import { create } from 'zustand'
 
-interface ThemeContextType {
+type ThemeState = {
     theme: string;
     updateTheme: (newTheme: string) => void;
     toggleTheme: () => void;
 }
 
-export const ThemeContext = createContext < ThemeContextType > ({
-    theme: 'dark',
-    updateTheme: () => { },
-    toggleTheme: () => { }
+export const useTheme = create<ThemeState>()((set, get) => {
+    const savedTheme = localStorage.getItem('theme');
+    const initialTheme = savedTheme || 'dark';
+    document.body.setAttribute('data-theme', initialTheme);
+
+    return {
+        theme: initialTheme,
+
+        updateTheme: (newTheme: string) => {
+            set({ theme: newTheme });
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        },
+
+        toggleTheme: () => {
+            const current = get().theme;
+            const next = current === 'light' ? 'dark' : 'light';
+            get().updateTheme(next);
+        },
+    };
 });
-
-interface ThemeProviderProps {
-    children: ReactNode;
-}
-
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-    const [theme, setTheme] = useState < string > ('dark');
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            updateTheme(savedTheme);
-        }
-    }, []);
-
-    const updateTheme = (newTheme: string) => {
-        setTheme(newTheme);
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-    };
-
-    const toggleTheme = () => {
-        updateTheme(theme === 'light' ? 'dark' : 'light');
-    };
-
-    return (
-        <ThemeContext.Provider value={{ theme, updateTheme, toggleTheme }}>
-            {children}
-        </ThemeContext.Provider>
-    );
-};

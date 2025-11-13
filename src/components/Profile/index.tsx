@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ interface FormInput {
 }
 
 const Profile = () => {
-    const { theme, toggleTheme } = useContext(ThemeContext);
+    const { theme, toggleTheme } = useTheme();
     const { user, updateUser, logOut, token } = useContext(AuthContext);
     const [location, setLocation] = useState<"profile" | "stats">("profile");
 

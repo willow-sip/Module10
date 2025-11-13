@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '@/context/AuthContext';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import i18n from '@/i18next';
@@ -21,7 +21,7 @@ export default function AppContainer({ children }: { children: React.ReactNode }
   }, []);
 
   const { user } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
 
   return (
     <div className="app" data-theme={theme}>

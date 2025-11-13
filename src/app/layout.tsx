@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={poppins.className}>
-            <body>
+            <body data-theme="dark">
                 <Providers>
                     <div id="root">
                         <div id="notification-root" />

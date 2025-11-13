@@ -1,7 +1,7 @@
 'use client';
 
 import { useContext, useState } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import AddPostForm from '../AddPostForm';
 import { useTranslation } from 'react-i18next';
 import './style.css';
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const AddPost = ({ avatar, postCreated } : Props) => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
     const [showForm, setShowForm] = useState(false);
     const { t } = useTranslation();
 

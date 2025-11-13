@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useContext } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 
 const Footer = () => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
 
     return (
         <footer className="footer" data-theme={theme}>

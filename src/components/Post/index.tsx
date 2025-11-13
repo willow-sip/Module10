@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import Comment from '../Comment';
 import { AuthContext } from '@/context/AuthContext';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes';
 
@@ -257,117 +257,113 @@ class Post extends Component<PostProps, PostState> {
         const commentsCount = this.state.comments?.length;
         const { profileImage, firstName, secondName } = this.state.author;
         const t = this.props.t;
+        const theme = useTheme.getState().theme;
 
         return (
-            <ThemeContext.Consumer>
-                {theme => (
-                    <PostContainer theme={theme}>
-                        {this.state.loading ? (
-                            <Author>
-                                <LoadingAvatar />
-                                <AuthorInfo>
-                                    <Spinner />
-                                </AuthorInfo>
-                            </Author>
-                        ) : (
-                            <Author>
-                                <Avatar
-                                    src={profileImage || './imgs/default-avatar.jpg'}
-                                    alt="Post author avatar"
-                                />
-                                <AuthorInfo>
-                                    <AuthorName>{firstName} {secondName}</AuthorName>
-                                    <PublishTime>{this.calculatePublishTime()}</PublishTime>
-                                </AuthorInfo>
-                            </Author>
-                        )}
-
-                        {image && <PostImage src={image} alt="Post" />}
-                        <PostTitle>{title}</PostTitle>
-                        <PostContent>{content}</PostContent>
-
-                        <PostButtons>
-                            <Likes>
-                                <AnimatedHeart
-                                    animate={this.state.animateLike.toString()}
-                                    onClick={this.handleLike}
-                                >
-                                    <LikeSvg className={this.state.liked ? '' : 'outline'}/>
-                                </AnimatedHeart>
-                                <p>{this.state.likesCount} {t('likes')}</p>
-                            </Likes>
-                            <Comments>
-                                <CommentSvg className="outline"/>
-                                <span className="comment-text">
-                                    {userAuth
-                                        ? commentsCount !== undefined
-                                            ? `${commentsCount} ${t('commentsCount')}`
-                                            : t('loadingComments')
-                                        : t('loginToSeeComments')}
-                                </span>
-                            </Comments>
-                            {userAuth && (
-                                <Button onClick={this.toggleShowComments}>
-                                    {showComments ? (
-                                        <ArrowDown />
-                                    ) : (
-                                        <ArrowUp />
-                                    )}
-                                </Button>
-                            )}
-                        </PostButtons>
-
-                        {showComments && (
-                            <CommentSection>
-                                {comments?.map((comment) => (
-                                    <Comment
-                                        key={comment.id}
-                                        id={comment.id}
-                                        authorId={comment.authorId}
-                                        text={comment.text}
-                                        edit={(newText) => {
-                                            this.setState((prev) => ({
-                                                comments: prev.comments?.map((prevCom) =>
-                                                    prevCom.id === comment.id ? { ...prevCom, text: newText } : prevCom
-                                                ),
-                                            }));
-                                            showNotification(t('updateComment'), 'success', 2000);
-                                        }}
-                                        deleteComm={() => {
-                                            this.setState((prev) => ({
-                                                comments: prev.comments?.filter((c) => c.id !== comment.id),
-                                            }));
-                                            showNotification(t('deleteComment'), 'success', 2000);
-                                        }}
-                                    />
-                                ))}
-
-                                <AddComment>
-                                    <AddCommentHeader>
-                                        <Pencil />
-                                        <p>{t('addComment')}</p> 
-                                    </AddCommentHeader>
-                                    <CommentTextarea
-                                        name="commentText"
-                                        id="commentText"
-                                        placeholder={t('commentPlaceholder')}
-                                        value={this.state.newComment}
-                                        onChange={this.handleCommentChange}
-                                    />
-                                    <AddCommentButton
-                                        onClick={this.handleAddComment}
-                                        disabled={this.state.addingComment}
-                                        adding={this.state.addingComment.toString()}
-                                    >
-                                        {this.state.addingComment ? t('addingComment') : t('addComment')}
-                                    </AddCommentButton>
-                                </AddComment>
-                            </CommentSection>
-                        )}
-                    </PostContainer>
-
+            <PostContainer theme={theme}>
+                {this.state.loading ? (
+                    <Author>
+                        <LoadingAvatar />
+                        <AuthorInfo>
+                            <Spinner />
+                        </AuthorInfo>
+                    </Author>
+                ) : (
+                    <Author>
+                        <Avatar
+                            src={profileImage || './imgs/default-avatar.jpg'}
+                            alt="Post author avatar"
+                        />
+                        <AuthorInfo>
+                            <AuthorName>{firstName} {secondName}</AuthorName>
+                            <PublishTime>{this.calculatePublishTime()}</PublishTime>
+                        </AuthorInfo>
+                    </Author>
                 )}
-            </ThemeContext.Consumer>
+
+                {image && <PostImage src={image} alt="Post" />}
+                <PostTitle>{title}</PostTitle>
+                <PostContent>{content}</PostContent>
+
+                <PostButtons>
+                    <Likes>
+                        <AnimatedHeart
+                            animate={this.state.animateLike.toString()}
+                            onClick={this.handleLike}
+                        >
+                            <LikeSvg className={this.state.liked ? '' : 'outline'} />
+                        </AnimatedHeart>
+                        <p>{this.state.likesCount} {t('likes')}</p>
+                    </Likes>
+                    <Comments>
+                        <CommentSvg className="outline" />
+                        <span className="comment-text">
+                            {userAuth
+                                ? commentsCount !== undefined
+                                    ? `${commentsCount} ${t('commentsCount')}`
+                                    : t('loadingComments')
+                                : t('loginToSeeComments')}
+                        </span>
+                    </Comments>
+                    {userAuth && (
+                        <Button onClick={this.toggleShowComments}>
+                            {showComments ? (
+                                <ArrowDown />
+                            ) : (
+                                <ArrowUp />
+                            )}
+                        </Button>
+                    )}
+                </PostButtons>
+
+                {showComments && (
+                    <CommentSection>
+                        {comments?.map((comment) => (
+                            <Comment
+                                key={comment.id}
+                                id={comment.id}
+                                authorId={comment.authorId}
+                                text={comment.text}
+                                edit={(newText) => {
+                                    this.setState((prev) => ({
+                                        comments: prev.comments?.map((prevCom) =>
+                                            prevCom.id === comment.id ? { ...prevCom, text: newText } : prevCom
+                                        ),
+                                    }));
+                                    showNotification(t('updateComment'), 'success', 2000);
+                                }}
+                                deleteComm={() => {
+                                    this.setState((prev) => ({
+                                        comments: prev.comments?.filter((c) => c.id !== comment.id),
+                                    }));
+                                    showNotification(t('deleteComment'), 'success', 2000);
+                                }}
+                            />
+                        ))}
+
+                        <AddComment>
+                            <AddCommentHeader>
+                                <Pencil />
+                                <p>{t('addComment')}</p>
+                            </AddCommentHeader>
+                            <CommentTextarea
+                                name="commentText"
+                                id="commentText"
+                                placeholder={t('commentPlaceholder')}
+                                value={this.state.newComment}
+                                onChange={this.handleCommentChange}
+                            />
+                            <AddCommentButton
+                                onClick={this.handleAddComment}
+                                disabled={this.state.addingComment}
+                                adding={this.state.addingComment.toString()}
+                            >
+                                {this.state.addingComment ? t('addingComment') : t('addComment')}
+                            </AddCommentButton>
+                        </AddComment>
+                    </CommentSection>
+                )}
+            </PostContainer>
         );
     }
 }

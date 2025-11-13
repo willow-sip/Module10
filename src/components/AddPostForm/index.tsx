@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useContext, useState } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const AddPostForm = ({ close, postCreated }: Props) => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
     const { token } = useContext(AuthContext);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');

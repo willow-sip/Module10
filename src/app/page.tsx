@@ -2,7 +2,7 @@
 
 import { useContext, Suspense } from 'react';
 import { AuthContext } from '@/context/AuthContext';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import AddPost from '@/components/AddPost';
 import Sidebar from '@/components/Sidebar';
 import { Post } from '@/data/datatypes';
@@ -16,7 +16,7 @@ const DynamicPost = dynamic(() => import('@/components/Post'), {
 
 export default function HomePage() {
   const { user, userAuth } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const { t } = useTranslation();
 
   const { data: posts = [], refetch } = useQuery({

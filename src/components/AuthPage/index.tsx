@@ -3,7 +3,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form, Field, FormikErrors } from 'formik';
@@ -19,7 +19,7 @@ const INITIAL_VALUES = { email: '', password: '' };
 
 const AuthPage = ({ mode }: Mode) => {
   const { authMode, updateAuthMode, signUp, signIn } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
 

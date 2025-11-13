@@ -1,14 +1,13 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { useContext } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 
 import './style.css'
 
 const LangToggler = () => {
     const { i18n } = useTranslation();
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
 
     const changeLanguage = (language: string) => {
         i18n.changeLanguage(language);

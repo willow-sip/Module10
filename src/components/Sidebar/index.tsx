@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Component } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import './style.css';
 
@@ -95,54 +95,51 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
     render() {
         const { groups, suggestedUsers } = this.state;
         const t = this.props.t;
+        const theme = useTheme.getState().theme;
 
         return (
-            <ThemeContext.Consumer>
-                {theme => (
-                    <aside className="sidebar" data-theme={theme}>
-                        <div className="recPeople">
-                            <h4>{t('sugPeople')}</h4>
-                            {this.state.loading ? (<p>{t('loadSugPeople')}</p>) : (
-                                <>
-                                    {suggestedUsers?.map(user => (
-                                        <div className="person" key={user.id}>
-                                            <img
-                                                src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
-                                                alt="Person avatar"
-                                                className="avatar"
-                                            />
-                                            <div className="personalInfo">
-                                                <p>{user.firstName} {user.secondName}</p>
-                                                <small>@{user.username}</small>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                        </div>
-                        <div className="recCommunities">
-                            <h4>{t('sugGroups')}</h4>
-                            {this.state.loading ? (<p>{t('loadSugGroups')}</p>) : (
-                                <>
-                                    {groups.map(group => (
-                                        <div className="community" key={group.id}>
-                                            <img
-                                                src={group.photo}
-                                                alt="Community avatar"
-                                                className="avatar"
-                                            />
-                                            <div className="communityInfo">
-                                                <p>{group.title}</p>
-                                                <small>{group.membersCount} {t('members')}</small>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                        </div>
-                    </aside>
-                )}
-            </ThemeContext.Consumer>
+            <aside className="sidebar" data-theme={theme}>
+                <div className="recPeople">
+                    <h4>{t('sugPeople')}</h4>
+                    {this.state.loading ? (<p>{t('loadSugPeople')}</p>) : (
+                        <>
+                            {suggestedUsers?.map(user => (
+                                <div className="person" key={user.id}>
+                                    <img
+                                        src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
+                                        alt="Person avatar"
+                                        className="avatar"
+                                    />
+                                    <div className="personalInfo">
+                                        <p>{user.firstName} {user.secondName}</p>
+                                        <small>@{user.username}</small>
+                                    </div>
+                                </div>
+                            ))}
+                        </>
+                    )}
+                </div>
+                <div className="recCommunities">
+                    <h4>{t('sugGroups')}</h4>
+                    {this.state.loading ? (<p>{t('loadSugGroups')}</p>) : (
+                        <>
+                            {groups.map(group => (
+                                <div className="community" key={group.id}>
+                                    <img
+                                        src={group.photo}
+                                        alt="Community avatar"
+                                        className="avatar"
+                                    />
+                                    <div className="communityInfo">
+                                        <p>{group.title}</p>
+                                        <small>{group.membersCount} {t('members')}</small>
+                                    </div>
+                                </div>
+                            ))}
+                        </>
+                    )}
+                </div>
+            </aside>
         );
     }
 }

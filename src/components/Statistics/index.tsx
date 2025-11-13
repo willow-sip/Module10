@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import TableStats from '../TableStats';
 import ChartStats from '../ChartStats';
@@ -18,7 +18,7 @@ export interface StatsData {
 }
 
 const Statistics = () => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useTheme();
     const {token} = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
     const [stats, setStats] = useState<StatsData | null>(null);
