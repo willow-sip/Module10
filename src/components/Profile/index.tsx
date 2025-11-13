@@ -1,13 +1,20 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ThemeContext } from '@/context/ThemeContext';
 import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
+import { useForm, SubmitHandler } from "react-hook-form";
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
+
+interface FormInput {
+    username: string;
+    email: string;
+    description: string;
+}
 
 const Profile = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -23,10 +30,25 @@ const Profile = () => {
     const router = useRouter();
     const { t } = useTranslation();
 
-    const checkEmail = (email : string) : boolean => {
-        const regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regExp.test(email);
-    };
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, watch } = useForm<FormInput>({
+        defaultValues: {
+            username: user?.username || '',
+            email: user?.email || '',
+            description: user?.description || '',
+        },
+    });
+
+    useEffect(() => {
+        if (selectedFile) {
+            const url = URL.createObjectURL(selectedFile);
+            setPreviewImage(url);
+            return () => URL.revokeObjectURL(url);
+        } else if (user?.profileImage) {
+            setPreviewImage(user.profileImage);
+        } else {
+            setPreviewImage('./imgs/default-avatar.jpg');
+        }
+    }, [selectedFile, user?.profileImage]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -35,19 +57,24 @@ const Profile = () => {
                 showNotification(t('fileSizeExceeded'), 'error', 3000);
                 return;
             }
-            
+
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(file.type)) {
                 showNotification(t('invalidFileType'), 'error', 3000);
                 return;
             }
             setSelectedFile(file);
-            setPreviewImage(URL.createObjectURL(file));
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit: SubmitHandler<FormInput> = async (data) => {
+        const { username, email, description } = data;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showNotification(t('inputValidEmail'), 'warning', 2000);
+            return;
+        }
 
         if (!username.trim()) {
             showNotification(t('inputUsername'), 'warning', 2000);
@@ -59,11 +86,6 @@ const Profile = () => {
             return;
         }
 
-        if (!checkEmail(email.trim())) {
-            showNotification(t('inputValidEmail'), 'warning', 2000);
-            return;
-        }
-
         if (description.trim().length > 200) {
             showNotification(t('descSize'), 'warning', 2000);
             return;
@@ -72,12 +94,9 @@ const Profile = () => {
         const query = `
   mutation UpdateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) {
-        id
         username
         email
         description
-        firstName
-        secondName
     }
   }
 `
@@ -108,6 +127,7 @@ const Profile = () => {
             }
             updateUser(result.data.updateProfile);
             showNotification(t('updatedProfile'), 'success', 2000);
+            reset(data);
         } catch (err) {
             showNotification(t('couldntUpdateProfile'), 'error', 2000);
             return;
@@ -124,7 +144,7 @@ const Profile = () => {
                 <div className="edit-profile">
                     <h1>{t('editProfile')}</h1>
 
-                    <form id="profile-form" onSubmit={handleSubmit}>
+                    <form id="profile-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="profile-header">
                             <img src={previewImage} alt="Profile" className="avatar" />
                             <div className="profile-info">
