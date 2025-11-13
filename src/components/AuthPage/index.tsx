@@ -1,12 +1,12 @@
 'use client';
 
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
 import { ThemeContext } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikErrors } from 'formik';
 
 import './style.css';
 import { Envelope, Eye } from '@/svgs';
@@ -27,17 +27,30 @@ const AuthPage = ({ mode }: Mode) => {
     updateAuthMode(mode);
   }, [mode]);
 
-  const  handleSubmit = async (
+  const validate = (values: { email: string; password: string }) => {
+    const errors: { email?: string; password?: string } = {};
+
+    if (!values.email) {
+      errors.email = t('inputEmail');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      errors.email = t('invalidCredentials');
+    }
+
+    if (!values.password) {
+      errors.password = t('inputPassword');
+    } else if (values.password.length < 6) {
+      errors.password = t('passwordTooShort');
+    }
+
+    return errors;
+  }
+
+  const handleSubmit = async (
     values: { email: string; password: string },
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    const { email, password } = values;
 
-    if (!email || !password) {
-      showNotification(t('fillAllFields'), 'warning', 2000);
-      setSubmitting(false);
-      return;
-    }
+    const { email, password } = values;
 
     const success = authMode === 'signup'
       ? await signUp(email, password)
@@ -78,52 +91,69 @@ const AuthPage = ({ mode }: Mode) => {
       <Formik
         initialValues={INITIAL_VALUES}
         onSubmit={handleSubmit}
+        validate={validate}
+        validateOnMount={true}
       >
-        {({ isSubmitting }) => (
-          <Form className="authBox">
-            <label htmlFor="email">
-              <Envelope /> 
-              <p>{t('email')}</p>
-            </label>
-            <Field
-              type="email"
-              name="email"
-              id="email"
-              placeholder={t('emailPlaceholder')}
-            />
+        {({ errors, touched, isSubmitting }) => {
+          const prevErrorsRef = useRef(errors);
 
-            <label htmlFor="password">
-              <Eye />
-              <p>{t('password')}</p>
-            </label>
-            <Field
-              type="password"
-              name="password"
-              id="password"
-              placeholder={t('passwordPlaceholder')}
-            />
+          useEffect(() => {
+            if (touched.email && errors.email && errors.email !== prevErrorsRef.current.email) {
+              showNotification(errors.email, 'warning', 3000);
+            }
+            if (touched.password && errors.password && errors.password !== prevErrorsRef.current.password) {
+              showNotification(errors.password, 'warning', 3000);
+            }
+            prevErrorsRef.current = { ...errors };
+          }, [errors.email, errors.password, touched.email, touched.password]);
 
-            <button type="submit" disabled={isSubmitting}>
-              {authMode === 'signup' ? t('signUp') : t('signIn')}
-            </button>
 
-            {authMode === 'signup' && (
-              <small>
-                {t('termsAgreement')} <span>{t('termsOfService')}</span><br />
-                {t('and')} <span>{t('privacyPolicy')}</span>
-              </small>
-            )}
+          return (
+            <Form className="authBox">
+              <label htmlFor="email">
+                <Envelope />
+                <p>{t('email')}</p>
+              </label>
+              <Field
+                type="email"
+                name="email"
+                id="email"
+                placeholder={t('emailPlaceholder')}
+              />
 
-            <p className="switchLink" onClick={() => {
-              router.push(authMode === 'signup' ? '/sign-in' : '/sign-up');
-              updateAuthMode(authMode === 'signup' ? 'signin' : 'signup');
-            }}>
-              {authMode === 'signup'
-                ? <>{t('alreadyHaveAccount')} <span>{t('signInLink')}</span></>
-                : <>{t('dontHaveAccount')} <span>{t('signUpLink')}</span></>}
-            </p>
-          </Form>
-        )}
+              <label htmlFor="password">
+                <Eye />
+                <p>{t('password')}</p>
+              </label>
+              <Field
+                type="password"
+                name="password"
+                id="password"
+                placeholder={t('passwordPlaceholder')}
+              />
+
+              <button type="submit" disabled={isSubmitting}>
+                {authMode === 'signup' ? t('signUp') : t('signIn')}
+              </button>
+
+              {authMode === 'signup' && (
+                <small>
+                  {t('termsAgreement')} <span>{t('termsOfService')}</span><br />
+                  {t('and')} <span>{t('privacyPolicy')}</span>
+                </small>
+              )}
+
+              <p className="switchLink" onClick={() => {
+                router.push(authMode === 'signup' ? '/sign-in' : '/sign-up');
+                updateAuthMode(authMode === 'signup' ? 'signin' : 'signup');
+              }}>
+                {authMode === 'signup'
+                  ? <>{t('alreadyHaveAccount')} <span>{t('signInLink')}</span></>
+                  : <>{t('dontHaveAccount')} <span>{t('signUpLink')}</span></>}
+              </p>
+            </Form>
+          )
+        }}
       </Formik>
     </div>
   );
