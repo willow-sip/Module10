@@ -7,6 +7,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useMutation } from '@tanstack/react-query';
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
 
@@ -14,6 +15,9 @@ interface FormInput {
     username: string;
     email: string;
     description: string;
+    profileImage: string;
+    firstName: string;
+    secondName: string;
 }
 
 const Profile = () => {
@@ -30,11 +34,14 @@ const Profile = () => {
     const router = useRouter();
     const { t } = useTranslation();
 
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, watch } = useForm<FormInput>({
+    const { handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormInput>({
         defaultValues: {
             username: user?.username || '',
             email: user?.email || '',
             description: user?.description || '',
+            profileImage: user?.profileImage || './imgs/default-avatar.jpg',
+            firstName: user?.firstName || '',
+            secondName: user?.secondName || ''
         },
     });
 
@@ -67,49 +74,48 @@ const Profile = () => {
         }
     };
 
-    const onSubmit: SubmitHandler<FormInput> = async (data) => {
-        const { username, email, description } = data;
+    const updateUserRequest = useMutation({
+        mutationFn: async (data: FormInput) => {
+            const { username, email, description } = data;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            showNotification(t('inputValidEmail'), 'warning', 2000);
-            return;
-        }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!username.trim()) {
-            showNotification(t('inputUsername'), 'warning', 2000);
-            return;
-        }
+            if (!emailRegex.test(email)) {
+                showNotification(t('inputValidEmail'), 'warning', 2000);
+                return;
+            }
 
-        if (!email.trim()) {
-            showNotification(t('inputEmail'), 'warning', 2000);
-            return;
-        }
+            if (!username.trim()) {
+                showNotification(t('inputUsername'), 'warning', 2000);
+                return;
+            }
 
-        if (description.trim().length > 200) {
-            showNotification(t('descSize'), 'warning', 2000);
-            return;
-        }
-        
-        const query = `
-  mutation UpdateProfile($input: UpdateProfileInput!) {
-    updateProfile(input: $input) {
-        username
-        email
-        description
-    }
-  }
-`
-        const variables = {
-            input: {
-                username,
-                email,
-                description
-            },
-        };
+            if (!email.trim()) {
+                showNotification(t('inputEmail'), 'warning', 2000);
+                return;
+            }
 
-        try {
-            const response = await fetch('/graphql', {
+            if (description.trim().length > 200) {
+                showNotification(t('descSize'), 'warning', 2000);
+                return;
+            }
+
+            const query = `
+                mutation UpdateProfile($input: UpdateProfileInput!) {
+                    updateProfile(input: $input) {
+                        username
+                        email
+                        description
+                        profileImage
+                        firstName
+                        secondName
+                    }
+                }
+            `;
+            
+            const variables = { input: data };
+
+            const response = await fetch('/api/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,16 +128,33 @@ const Profile = () => {
 
             if (result.errors) {
                 showNotification(t('couldntUpdateProfile'), 'error', 2000);
-                console.log(result.errors);
                 return;
             }
-            updateUser(result.data.updateProfile);
+            return result.data.updateProfile;
+        },
+        onSuccess: (updatedUser) => {
+            updateUser(updatedUser);
             showNotification(t('updatedProfile'), 'success', 2000);
-            reset(data);
-        } catch (err) {
+            reset({
+                username: updatedUser.username,
+                email: updatedUser.email,
+                description: updatedUser.description,
+                profileImage: updatedUser.profileImage
+            });
+        },
+        onError: () => {
             showNotification(t('couldntUpdateProfile'), 'error', 2000);
             return;
         }
+    });
+
+    const onSubmit: SubmitHandler<FormInput> = async (data) => {
+        updateUserRequest.mutate( {
+            ...data,
+            profileImage: user?.profileImage || './imgs/default-avatar.jpg',
+            firstName: user?.firstName || '',
+            secondName: user?.secondName || ''
+        } );
     };
 
     return (

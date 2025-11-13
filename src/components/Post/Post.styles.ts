@@ -117,6 +117,7 @@ export const Likes = styled.div`
   justify-content: flex-start;
   gap: 8px;
   height: 24px;
+  min-width: 90px;
 `;
 
 export const Comments = styled.div`
@@ -124,6 +125,7 @@ export const Comments = styled.div`
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
+  min-width: 350px;
   .comment-text {
     color: var(--text-color);
   }
