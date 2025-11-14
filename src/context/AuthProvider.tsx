@@ -1,19 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { clearAuth } from '@/slices/authSlice';
 import { restoreAuth } from '@/slices/restoreAuth';
-import { RootState } from '@/store';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const dispatch = useDispatch();
     const router = useRouter();
-    const expiresAt = useSelector((state: RootState) => state.auth.expiresAt);
+    const [expiresAt, setExpiresAt] = useState<number | null>(null);
 
     useEffect(() => {
         restoreAuth();
+        const stored = localStorage.getItem("expiresAt");
+        if (stored) {
+            setExpiresAt(Number(stored));
+        }
     }, []);
 
     useEffect(() => {

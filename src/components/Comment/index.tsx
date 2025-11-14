@@ -7,6 +7,7 @@ import { animated, useSpring, config } from '@react-spring/web';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { tokenApi } from '@/tokenApi';
 
 const AnimatedPaper = animated(Paper);
 
@@ -21,7 +22,7 @@ interface CommentProps {
 const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
-    const { token, user } = useSelector((state: RootState) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
 
     const fadeInSpring = useSpring({
         from: { opacity: 0, transform: 'translateY(-10px)' },
@@ -32,29 +33,15 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const { data: author } = useQuery({
         queryKey: ['get-comment-author', authorId],
         queryFn: async () => {
-            const response = await fetch(`/api/users/${authorId}`,
-            { headers: { Authorization: `Bearer ${token}` } });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
+            const response = await tokenApi.get(`/users/${authorId}`);
+            return response;
         }
     });
 
     const editMutation = useMutation({
         mutationFn: async () => {
-            const response = await fetch(`/api/comments/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ text: editText.trim() }),
-            });
-            if (!response.ok){
-                throw new Error(`Edit failed: ${response.status}`);
-            }
-            return response.json();
+            const response = await tokenApi.put(`/comments/${id}`, { text: editText.trim() });
+            return response;
         },
         onSuccess: (newComment) => {
             edit?.(newComment.text);
@@ -67,13 +54,7 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
 
     const deleteMutation = useMutation({
         mutationFn: async () => {
-            const response = await fetch(`/api/comments/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!response.ok) {
-                throw new Error(`Delete failed: ${response.status}`);
-            }
+            const response = await tokenApi.delete(`/comments/${id}`);
         },
         onSuccess: () => {
             deleteComm?.();

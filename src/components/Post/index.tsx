@@ -5,19 +5,20 @@ import Comment from '../Comment';
 import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes';
+import { TFunction } from 'i18next';
 
 import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
   Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
 import { ArrowDown, ArrowUp, CommentSvg, LikeSvg, Pencil } from '@/svgs';
-import enableAuth from '../AuthHoc';
+import enableAuth from '../AuthHOC';
+import { tokenApi } from '@/tokenApi';
 
 
 interface PostProps {
     post: PostType;
-    t: (key: string) => string;
     user: User | null;
-    token: string | null;
     userAuth: boolean;
+    t: TFunction;
 }
 
 interface PostState {
@@ -27,7 +28,6 @@ interface PostState {
     liked: boolean;
     likesCount: number;
     newComment: string;
-    prevToken: string | null;
     loading: boolean;
     addingComment: boolean;
     animateLike: boolean;
@@ -46,7 +46,6 @@ class Post extends Component<PostProps, PostState> {
             liked: false,
             likesCount: props.post.likesCount,
             newComment: '',
-            prevToken: null,
             loading: true,
             addingComment: false,
             animateLike: false,
@@ -86,7 +85,7 @@ class Post extends Component<PostProps, PostState> {
 
     handleAddComment = () => {
         const { newComment, comments } = this.state;
-        const { token, user } = this.props;
+        const { user } = this.props;
         const postId = this.props.post.id;
 
         if (!newComment.trim()) {
@@ -100,20 +99,7 @@ class Post extends Component<PostProps, PostState> {
             text: newComment.trim(),
         };
 
-        fetch('/api/comments', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(commentData),
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
+        tokenApi.put('/comments', commentData)
             .then(createdComment => {
                 if (user) {
                     const fullComment: CommentType = {
@@ -138,7 +124,6 @@ class Post extends Component<PostProps, PostState> {
 
     handleLike = () => {
         const { liked } = this.state;
-        const { token, user } = this.props; 
         const postId = this.props.post.id;
 
         this.setState({ animateLike: true });
@@ -146,23 +131,9 @@ class Post extends Component<PostProps, PostState> {
             this.setState({ animateLike: false });
         }, 400);
 
-        const endpoint = liked ? '/api/dislike' : '/api/like';
-        const method = 'POST';
+        const endpoint = liked ? '/dislike' : '/like';
 
-        fetch(endpoint, {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ postId }),
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
+        tokenApi.post(endpoint, { postId })
             .then(data => {
                 if (data) {
                     this.setState(prevState => ({
@@ -183,20 +154,10 @@ class Post extends Component<PostProps, PostState> {
 
     loadCommentsAndAuthor = () => {
         const id: number = this.props.post.id;
-        const { token, user } = this.props;
+        const { user } = this.props;
 
-        if (user && token) {
-            fetch(`/api/posts/${id}/comments`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+        if (user) {
+            tokenApi.get(`/posts/${id}/comments`)
                 .then(data => {
                     this.setState(() => ({
                         comments: data,
@@ -206,17 +167,7 @@ class Post extends Component<PostProps, PostState> {
                     console.error(error);
                 });
 
-            fetch(`/api/users/${this.props.post.authorId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+            tokenApi.get(`/users/${this.props.post.authorId}`)
                 .then(data => {
                     this.setState(() => ({
                         author: data,
@@ -233,28 +184,18 @@ class Post extends Component<PostProps, PostState> {
         this.loadCommentsAndAuthor();
     }
 
-    componentDidUpdate(prevProps: PostProps, prevState: PostState) {
-        const { token } = this.props;
-        const { prevToken } = this.state;
-
-        if (!prevToken && token) {
-            this.loadCommentsAndAuthor();
-        }
-
-        if (prevToken !== token) {
-            this.setState({ prevToken: token });
-        }
+    componentDidUpdate() {
+        this.loadCommentsAndAuthor();
     }
 
 
     render() {
         const { showComments } = this.state;
-        const { userAuth } = this.props;
+        const { userAuth, t } = this.props;
         const { title, content, image } = this.props.post;
         const comments = this.state.comments;
         const commentsCount = this.state.comments?.length;
         const { profileImage, firstName, secondName } = this.state.author;
-        const t = this.props.t;
         const theme = useTheme.getState().theme;
 
         return (

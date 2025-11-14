@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
+import { tokenApi } from '@/tokenApi';
 
 interface FormInput {
     username: string;
@@ -36,7 +37,7 @@ const profileSchema = (t: (key: string) => string) => yup.object({
 
 const Profile = () => {
     const { theme, toggleTheme } = useTheme();
-    const { user, token } = useSelector((state: RootState) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
 
     const [location, setLocation] = useState<"profile" | "stats">("profile");
@@ -104,22 +105,14 @@ const Profile = () => {
             
             const variables = { input: data };
 
-            const response = await fetch('/api/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ query, variables }),
-            });
-
-            const result = await response.json();
-
-            if (result.errors) {
+            try {
+                const response = await tokenApi.post('/graphql', { query, variables });
+                return response.data.updateProfile;
+            } catch (error) {
+                console.error('Error updating profile:', error);
                 showNotification(t('couldntUpdateProfile'), 'error', 2000);
-                return;
+                return [];
             }
-            return result.data.updateProfile;
         },
         onSuccess: (updatedUser) => {
             dispatch(updateUser(updatedUser));

@@ -5,16 +5,12 @@ interface AuthState {
   user: User | null;
   userAuth: boolean;
   authMode: string | null;
-  token: string | null;
-  expiresAt: number | null;
 }
 
 const initialState: AuthState = {
-    user: null,
+  user: null,
   userAuth: false,
   authMode: null,
-  token: null,
-  expiresAt: null,
 };
 
 function getTokenExpiration(token: string): number | null {
@@ -59,11 +55,7 @@ export const signIn = createAsyncThunk(
     localStorage.setItem('authToken', data.token);
     localStorage.setItem('expiresAt', exp.toString());
 
-    dispatch(setAuth({
-      user: data.user,
-      token: data.token,
-      expiresAt: exp,
-    }));
+    dispatch(setAuth({ user: data.user }));
 
     return true;
   }
@@ -73,7 +65,6 @@ export const logOut = createAsyncThunk(
   'auth/logout',
   async (_, { dispatch }) => {
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
     localStorage.removeItem('expiresAt');
     dispatch(clearAuth());
   }
@@ -84,18 +75,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuth(state, action: PayloadAction<{ user: User; token: string; expiresAt: number }>) {
+    setAuth(state, action: PayloadAction<{ user: User }>) {
       state.user = action.payload.user;
-      state.token = action.payload.token;
       state.userAuth = true;
-      state.expiresAt = action.payload.expiresAt;
     },
     clearAuth(state) {
       state.user = null;
-      state.token = null;
       state.userAuth = false;
       state.authMode = null;
-      state.expiresAt = null;
     },
     updateAuthMode(state, action: PayloadAction<string | null>) {
       state.authMode = action.payload;

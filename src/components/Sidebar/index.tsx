@@ -5,13 +5,14 @@ import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 
 import { User, Group } from '@/data/datatypes';
-import enableAuth from '../AuthHoc';
+import enableAuth from '../AuthHOC';
+import { TFunction } from 'i18next';
+import { tokenApi } from '@/tokenApi';
 
 interface SidebarProps {
-    t: (key: string) => string;
     user: User | null;
-    token: string | null;
     userAuth: boolean;
+    t: TFunction;
 }
 
 interface SidebarState {
@@ -21,7 +22,7 @@ interface SidebarState {
 }
 
 
-const fetchGroups = async (token: string): Promise<Group[]> => {
+const fetchGroups = async (): Promise<Group[]> => {
     const query = `
     query {
       allGroups {
@@ -33,36 +34,24 @@ const fetchGroups = async (token: string): Promise<Group[]> => {
     }
   `;
 
-    const response = await fetch('/api/graphql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ query }),
-    });
-
-    const data = await response.json();
-
-    if (data.errors) {
-        console.error('Error fetching groups:', data.errors);
+    try {
+        const data = await tokenApi.post('/graphql', { query });
+        return data.data.allGroups;
+    } catch (error) {
+        console.error('Error fetching groups:', error);
+        return [];
     }
-    return data.data.allGroups;
 };
 
-const fetchSuggestedUsers = async (token: string): Promise<User[]> => {
-    const response = await fetch('/api/getSuggested', {
-        headers: { Authorization: `Bearer ${token}`, },
-    });
-
-    const data = await response.json();
-
-    if (data.errors) {
-        console.error('Error fetching users:', data.errors);
+const fetchSuggestedUsers = async (): Promise<User[]> => {
+    try {
+        const data = await tokenApi.get('/getSuggested');
+        return data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return [];
     }
-
-    return data;
-}
+};
 
 class Sidebar extends Component<SidebarProps, SidebarState> {
     constructor(props: SidebarProps) {
@@ -75,21 +64,18 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
     }
 
     componentDidMount() {
-        const { token } = this.props;
+        Promise.all([
+            fetchGroups(),
+            fetchSuggestedUsers()
+        ])
+            .then(([groups, suggestedUsers]) => {
+                this.setState({ groups, suggestedUsers, loading: false });
+            })
+            .catch(error => {
+                console.error('HTTP error!', error);
+                this.setState({ loading: false });
+            });
 
-        if (token) {
-            Promise.all([
-                fetchGroups(token),
-                fetchSuggestedUsers(token)
-            ])
-                .then(([groups, suggestedUsers]) => {
-                    this.setState({ groups, suggestedUsers, loading: false });
-                })
-                .catch(error => {
-                    console.error('HTTP error!', error);
-                    this.setState({ loading: false });
-                });
-        }
     }
 
     render() {

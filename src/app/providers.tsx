@@ -2,7 +2,6 @@
 
 import { Provider } from 'react-redux';
 import { store } from '@/store';
-//import { AuthProvider } from '@/context/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { MockProvider } from '@/context/MockProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

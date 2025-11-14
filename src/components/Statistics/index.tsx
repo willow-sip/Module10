@@ -8,10 +8,9 @@ import ChartStats from '../ChartStats';
 import { useTranslation } from 'react-i18next';
 import './style.css';
 
-import { genStats } from '@/data/dummyStats'
-import {Like, Comment} from '@/data/datatypes'
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { genStats } from '@/data/dummyStats';
+import { Like, Comment } from '@/data/datatypes';
+import { tokenApi } from '@/tokenApi';
 
 export interface StatsData {
     likes: { month: string; count: number }[];
@@ -20,7 +19,6 @@ export interface StatsData {
 
 const Statistics = () => {
     const { theme } = useTheme();
-    const { token } = useSelector((state: RootState) => state.auth);
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
     const [stats, setStats] = useState<StatsData | null>(null);
     const [location, setLocation] = useState<"profile" | "stats">("stats");
@@ -63,39 +61,37 @@ const Statistics = () => {
     }
 
     useEffect(() => {
-        if (token) {
-            const fetchStats = async () => {
-                try {
-                    const [likesRes, commentsRes] = await Promise.all([
-                        fetch(`/api/me/likes`, { headers: { Authorization: `Bearer ${token}`} }),
-                        fetch(`/api/me/comments`, { headers: { Authorization: `Bearer ${token}`} }),
-                    ]);
+        const fetchStats = async () => {
+            try {
+                const [likesRes, commentsRes] = await Promise.all([
+                    tokenApi.get(`/me/likes`),
+                    tokenApi.get(`/me/comments`),
+                ]);
 
-                    if (!likesRes.ok || !commentsRes.ok) throw new Error('Fetch failed');
+                if (!likesRes.ok || !commentsRes.ok) throw new Error('Fetch failed');
 
-                    const likesData = await likesRes.json();
-                    const commentsData = await commentsRes.json();
+                const likesData = await likesRes.json();
+                const commentsData = await commentsRes.json();
 
-                    setStats({
-                        likes: transformData(likesData),
-                        comments: transformData(commentsData),
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
-            };
+                setStats({
+                    likes: transformData(likesData),
+                    comments: transformData(commentsData),
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
-            fetchStats();
-        }
-        
-    }, [token]);
+        fetchStats();
+
+    }, []);
 
 
     return (
         <>
             <div className="page-switch">
-                <button className={location === "profile" ? "active" : ""} onClick={() => {router.push('/profile'); setLocation("profile")}}>{t('profileLink')}</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => {router.push('/stats');setLocation("stats")}}>{t('statsLink')}</button>
+                <button className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>{t('profileLink')}</button>
+                <button className={location === "stats" ? "active" : ""} onClick={() => { router.push('/stats'); setLocation("stats") }}>{t('statsLink')}</button>
             </div>
             <div className="general-stats" data-theme={theme}>
                 {genStats.map((stat, index) => (

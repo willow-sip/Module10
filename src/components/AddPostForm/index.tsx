@@ -5,13 +5,12 @@ import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
 import { Envelope, Pencil, UploadFile } from '@/svgs';
-import { useMutation  } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { useMutation } from '@tanstack/react-query';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldErrors, useForm } from 'react-hook-form';
 import './style.css';
+import { tokenApi } from '@/tokenApi';
 
 interface Props {
     close: () => void;
@@ -25,7 +24,6 @@ interface FormInput {
 
 const AddPostForm = ({ close, postCreated }: Props) => {
     const { theme } = useTheme();
-    const { token } = useSelector((state: RootState) => state.auth);
 
     const [file, setFile] = useState<File | null>(null);
     const { t } = useTranslation();
@@ -36,12 +34,12 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     });
 
     const { handleSubmit, register, reset, formState: { errors, isSubmitting } } = useForm<FormInput>({
-    resolver: yupResolver(addPostSchema(t)),
-    defaultValues: {
-      title: '',
-      description: '',
-    },
-  });
+        resolver: yupResolver(addPostSchema(t)),
+        defaultValues: {
+            title: '',
+            description: '',
+        },
+    });
 
 
 
@@ -52,40 +50,20 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                 showNotification(t('fileSizeExceeded'), 'error', 3000);
                 return;
             }
-            
+
             const fileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
             if (!fileTypes.includes(selectedFile.type)) {
                 showNotification(t('invalidFileType'), 'error', 3000);
                 return;
             }
-            
+
             setFile(selectedFile);
         }
     };
 
     const addPostLogic = async (data: FormInput) => {
-        if (!token) {
-            showNotification(t('unAutorized'), 'error', 3000);
-            return;
-        }
-
-        const response = await fetch('/api/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                title: data.title,
-                content: data.description,
-            }),
-        });
-
-        if (!response.ok) {
-            showNotification('Failed to create a post.', 'error', 3000);
-        }
-
-        return response.json();
+        const response = await tokenApi.post('/posts', { title: data.title, content: data.description });
+        return response;
     };
 
     const { mutate } = useMutation({

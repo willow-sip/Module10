@@ -11,7 +11,7 @@ export const restoreAuth = () => {
     const exp = parseInt(savedExp, 10);
     if (Date.now() < exp) {
       const user: User = JSON.parse(savedUser);
-      store.dispatch(setAuth({ user, token: savedToken, expiresAt: exp }));
+      store.dispatch(setAuth({ user }));
     } else {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('authToken');
