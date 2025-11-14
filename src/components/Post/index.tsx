@@ -164,7 +164,6 @@ class Post extends Component<PostProps, PostState> {
                 return res.json();
             })
             .then(data => {
-                console.log(data)
                 if (data) {
                     this.setState(prevState => ({
                         liked: !prevState.liked,
@@ -219,7 +218,6 @@ class Post extends Component<PostProps, PostState> {
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
                     this.setState(() => ({
                         author: data,
                         loading: false

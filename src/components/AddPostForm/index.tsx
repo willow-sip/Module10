@@ -8,6 +8,9 @@ import { Envelope, Pencil, UploadFile } from '@/svgs';
 import { useMutation  } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FieldErrors, useForm } from 'react-hook-form';
 import './style.css';
 
 interface Props {
@@ -15,13 +18,31 @@ interface Props {
     postCreated: () => void;
 }
 
+interface FormInput {
+    title: string;
+    description: string;
+}
+
 const AddPostForm = ({ close, postCreated }: Props) => {
     const { theme } = useTheme();
     const { token } = useSelector((state: RootState) => state.auth);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+
     const [file, setFile] = useState<File | null>(null);
     const { t } = useTranslation();
+
+    const addPostSchema = (t: (key: string) => string) => yup.object({
+        title: yup.string().required(t('inputPostTitle')),
+        description: yup.string().required(t('inputPostDesc')),
+    });
+
+    const { handleSubmit, register, reset, formState: { errors, isSubmitting } } = useForm<FormInput>({
+    resolver: yupResolver(addPostSchema(t)),
+    defaultValues: {
+      title: '',
+      description: '',
+    },
+  });
+
 
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,27 +63,22 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         }
     };
 
-    const addPostLogic = async () => {
+    const addPostLogic = async (data: FormInput) => {
         if (!token) {
             showNotification(t('unAutorized'), 'error', 3000);
             return;
         }
 
-        const formData: { title: string; content: string; image?: File } = {
-            title: title,
-            content: description,
-        };
-
-        if (file) {
-            formData.image = file;
-        }
-        
         const response = await fetch('/api/posts', {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify({
+                title: data.title,
+                content: data.description,
+            }),
         });
 
         if (!response.ok) {
@@ -77,8 +93,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         onSuccess: () => {
             showNotification(t('postCreated'), 'success', 3000);
             postCreated();
-            setTitle('');
-            setDescription('');
+            reset();
             setFile(null);
             close();
         },
@@ -87,19 +102,16 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         }
     });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        if (!title.trim()) {
-            showNotification(t('inputPostTitle'), 'warning', 2000);
-            return;
-        }
-        if (!description.trim()) {
-            showNotification(t('inputPostDesc'), 'warning', 2000);
-            return;
-        }
+    const onSubmit = (data: FormInput) => {
+        mutate(data);
+    };
 
-        mutate();
+    const onError = (errors: FieldErrors<FormInput>) => {
+        Object.values(errors).forEach(error => {
+            if (error?.message) {
+                showNotification(error.message.toString(), 'error', 3000);
+            }
+        });
     };
 
     return (
@@ -110,7 +122,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                     <button className="close-form-button" onClick={close}>×</button>
                 </div>
 
-                <form id="add-post" onSubmit={handleSubmit}>
+                <form id="add-post" onSubmit={handleSubmit(onSubmit, onError)}>
                     <div className="form-group title">
                         <label htmlFor="postTitle">
                             <Envelope />
@@ -120,8 +132,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             id="postTitle"
                             type="text"
                             placeholder={t('postTitlePlaceholder')}
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            {...register('title')}
                         />
                     </div>
 
@@ -133,8 +144,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                         <textarea
                             id="description"
                             placeholder={t('descriptionPlaceholder')}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            {...register('description')}
                             rows={4}
                         />
                     </div>

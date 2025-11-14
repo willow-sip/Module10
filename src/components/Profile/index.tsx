@@ -5,39 +5,49 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Resolver, FieldError, FieldErrors } from "react-hook-form";
 import { useMutation } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
-import { logOut, updateUser } from '@/slices/authSlice'
+import { logOut, updateUser } from '@/slices/authSlice';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
 
 interface FormInput {
     username: string;
     email: string;
-    description: string;
+    description?: string;
     profileImage: string;
-    firstName: string;
-    secondName: string;
+    firstName?: string;
+    secondName?: string;
 }
+
+const profileSchema = (t: (key: string) => string) => yup.object({
+    username: yup.string().required(t('inputUsername')),
+    email: yup.string().email(t('inputValidEmail')).required(t('inputEmail')),
+    description: yup.string().max(200, t('descSize')).optional(),
+    profileImage: yup.string().required(),
+    firstName: yup.string().optional(),
+    secondName: yup.string().optional(),
+}).required();
+
 
 const Profile = () => {
     const { theme, toggleTheme } = useTheme();
     const { user, token } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
-    const [location, setLocation] = useState<"profile" | "stats">("profile");
 
-    const [username, setUsername] = useState(user?.username || '');
-    const [email, setEmail] = useState(user?.email || '');
-    const [description, setDescription] = useState(user?.description || '');
+    const [location, setLocation] = useState<"profile" | "stats">("profile");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
     
     const router = useRouter();
     const { t } = useTranslation();
 
-    const { handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormInput>({
+    const { handleSubmit, register, reset, formState: { errors, isSubmitting } } = useForm<FormInput>({
+        resolver: yupResolver(profileSchema(t)) as Resolver<FormInput>,
         defaultValues: {
             username: user?.username || '',
             email: user?.email || '',
@@ -79,30 +89,6 @@ const Profile = () => {
 
     const updateUserRequest = useMutation({
         mutationFn: async (data: FormInput) => {
-            const { username, email, description } = data;
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!emailRegex.test(email)) {
-                showNotification(t('inputValidEmail'), 'warning', 2000);
-                return;
-            }
-
-            if (!username.trim()) {
-                showNotification(t('inputUsername'), 'warning', 2000);
-                return;
-            }
-
-            if (!email.trim()) {
-                showNotification(t('inputEmail'), 'warning', 2000);
-                return;
-            }
-
-            if (description.trim().length > 200) {
-                showNotification(t('descSize'), 'warning', 2000);
-                return;
-            }
-
             const query = `
                 mutation UpdateProfile($input: UpdateProfileInput!) {
                     updateProfile(input: $input) {
@@ -136,7 +122,7 @@ const Profile = () => {
             return result.data.updateProfile;
         },
         onSuccess: (updatedUser) => {
-             dispatch(updateUser(updatedUser));
+            dispatch(updateUser(updatedUser));
             showNotification(t('updatedProfile'), 'success', 2000);
             reset({
                 username: updatedUser.username,
@@ -160,6 +146,14 @@ const Profile = () => {
         } );
     };
 
+    const onError = (errors: FieldErrors<FormInput>) => {
+        Object.values(errors).forEach(error => {
+            if (error?.message) {
+                showNotification(error.message.toString(), 'error', 3000);
+            }
+        });
+    };
+
     return (
         <>
             <div className="page-switch">
@@ -170,7 +164,7 @@ const Profile = () => {
                 <div className="edit-profile">
                     <h1>{t('editProfile')}</h1>
 
-                    <form id="profile-form" onSubmit={handleSubmit(onSubmit)}>
+                    <form id="profile-form" onSubmit={handleSubmit(onSubmit, onError)}>
                         <div className="profile-header">
                             <img src={previewImage} alt="Profile" className="avatar" />
                             <div className="profile-info">
@@ -194,8 +188,7 @@ const Profile = () => {
                                 type="text"
                                 id="username"
                                 placeholder="@username123"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                {...register('username')}
                             />
                         </div>
 
@@ -208,8 +201,7 @@ const Profile = () => {
                                 type="email"
                                 id="email"
                                 placeholder="email@domain.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                {...register('email')}
                             />
                         </div>
 
@@ -221,8 +213,7 @@ const Profile = () => {
                             <textarea
                                 id="description"
                                 placeholder={t('descriptionPlaceholder')}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                {...register('description')}
                                 maxLength={200}
                                 rows={4}
                             />
