@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { User } from '@/data/datatypes';
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   userAuth: boolean;
   authMode: string | null;
@@ -66,6 +66,7 @@ export const logOut = createAsyncThunk(
   async (_, { dispatch }) => {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('expiresAt');
+    localStorage.removeItem('authToken');
     dispatch(clearAuth());
   }
 );
