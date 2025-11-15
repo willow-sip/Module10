@@ -131,12 +131,17 @@ const Profile = () => {
     });
 
     const onSubmit: SubmitHandler<FormInput> = async (data) => {
-        updateUserRequest.mutate( {
-            ...data,
-            profileImage: user?.profileImage || './imgs/default-avatar.jpg',
-            firstName: user?.firstName || '',
-            secondName: user?.secondName || ''
-        } );
+        try {
+            updateUserRequest.mutate({
+                ...data,
+                profileImage: user?.profileImage || './imgs/default-avatar.jpg',
+                firstName: user?.firstName || '',
+                secondName: user?.secondName || ''
+            });
+        } catch (err) {
+            console.log('Couldnt update profile with error:', err);
+            showNotification(t('couldntUpdateProfile'), 'error', 3000);
+        }
     };
 
     const onError = (errors: FieldErrors<FormInput>) => {
