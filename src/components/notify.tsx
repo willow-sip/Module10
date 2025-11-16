@@ -1,14 +1,17 @@
 import { createRoot } from 'react-dom/client';
 import Notification from '@/components/Notification';
 
-let id = 0;
+const createContainer = () => {
+    const container = document.createElement('div');
+    container.id = `notification-${Date.now()}`;
+    document.getElementById('notification-root')?.appendChild(container);
+    return container;
+};
 
 export const showNotification = (message: string, type: 'success' | 'error' | 'warning', autoHide: number = 4000) => {
-    const container = document.createElement('div');
-    container.id = `notification-${++id}`;
-    document.getElementById('notification-root')?.appendChild(container);
-
+    const container = createContainer();
     const root = createRoot(container);
+
     const close = () => {
         root.unmount();
         container.remove();
