@@ -1,7 +1,6 @@
 import { Poppins } from 'next/font/google';
 import { Providers } from './providers';
 import { Metadata } from 'next';
-import AppContainer from '@/components/AppContainer';
 import './globals.css';
 
 const poppins = Poppins({
@@ -25,7 +24,7 @@ export default function RootLayout({
                 <Providers>
                     <div id="root">
                         <div id="notification-root" />
-                        <AppContainer>{children}</AppContainer>
+                        {children}
                     </div>
                 </Providers>
             </body>

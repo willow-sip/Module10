@@ -11,16 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
 import { logOut } from '@/slices/authSlice'
 
-interface User {
-    name?: string;
-    avatar?: string;
-}
-
-const Header = ({ name, avatar }: User) => {
+const Header = () => {
     const { userAuth } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
     const { theme, toggleTheme } = useTheme();
     const { t } = useTranslation();
+    const { user } = useSelector((state: RootState) => state.auth);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -57,7 +53,7 @@ const Header = ({ name, avatar }: User) => {
                                 {userAuth && (
                                     <div className="drawer-user">
                                         <img
-                                            src={avatar || './imgs/default-avatar.jpg'}
+                                            src={user?.profileImage || './imgs/default-avatar.jpg'}
                                             alt="User avatar"
                                             className="drawer-avatar"
                                         />
@@ -97,8 +93,8 @@ const Header = ({ name, avatar }: User) => {
                                 {theme === 'light' ? <Moon /> : <Sun />}
                             </button>
                             <div className="profile-link" onClick={() => router.push('/profile')}>
-                                <img src={avatar || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
-                                <p>{name}</p>
+                                <img src={user?.profileImage || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
+                                <p>{user?.firstName} {user?.secondName}</p>
                             </div>
                             <button onClick={() => dispatch(logOut())}><Logout /></button>
                         </div>
