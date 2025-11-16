@@ -1,7 +1,7 @@
 'use client';
 
-import { Provider, useSelector } from 'react-redux';
-import { store, RootState} from '@/store';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { MockProvider } from '@/context/MockProvider'
 import { useTheme } from '@/context/ThemeContext';
@@ -33,15 +33,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <AuthProvider>
-            <MockProvider>
-              <div className="app" data-theme={theme}>
-                <Header />
-                {children}
-                <Footer />
-              </div>
-            </MockProvider>
-          </AuthProvider>
+          <MockProvider>
+            <div className="app" data-theme={theme}>
+              <Header />
+              <AuthProvider />
+              {children}
+              <Footer />
+            </div>
+          </MockProvider>
         </ErrorBoundary>
       </QueryClientProvider>
     </Provider>

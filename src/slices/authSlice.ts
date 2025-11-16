@@ -5,17 +5,19 @@ export interface AuthState {
   user: User | null;
   userAuth: boolean;
   authMode: string | null;
+  expiresAt: number | null;
 }
 
 const initialState: AuthState = {
   user: null,
   userAuth: false,
   authMode: null,
+  expiresAt: null,
 };
 
 function getTokenExpiration(token: string): number | null {
   const parts: string[] = token.split('.');
-  if(parts.length === 3){
+  if (parts.length === 3) {
     const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
     return payload.exp ? payload.exp * 1000 : null;
   }
@@ -55,9 +57,31 @@ export const signIn = createAsyncThunk(
     localStorage.setItem('authToken', data.token);
     localStorage.setItem('expiresAt', exp.toString());
 
-    dispatch(setAuth({ user: data.user }));
+    dispatch(setAuth({ user: data.user, expiresAt: exp }));
 
     return true;
+  }
+);
+
+export const restoreAuth = createAsyncThunk(
+  'auth/restoreAuth',
+  async (_, { dispatch }) => {
+    const savedUser = localStorage.getItem('currentUser');
+    const savedToken = localStorage.getItem('authToken');
+    const savedExp = localStorage.getItem('expiresAt');
+
+    if (savedUser && savedToken && savedExp) {
+      const exp = parseInt(savedExp, 10);
+      if (Date.now() < exp) {
+        const user: User = JSON.parse(savedUser);
+        dispatch(setAuth({ user, expiresAt: exp }));
+      } else {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('expiresAt');
+        dispatch(clearAuth());
+      }
+    }
   }
 );
 
@@ -76,14 +100,16 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuth(state, action: PayloadAction<{ user: User }>) {
+    setAuth(state, action: PayloadAction<{ user: User; expiresAt: number }>) {
       state.user = action.payload.user;
       state.userAuth = true;
+      state.expiresAt = action.payload.expiresAt;
     },
     clearAuth(state) {
       state.user = null;
       state.userAuth = false;
       state.authMode = null;
+      state.expiresAt = null;
     },
     updateAuthMode(state, action: PayloadAction<string | null>) {
       state.authMode = action.payload;

@@ -1,40 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { clearAuth } from '@/slices/authSlice';
-import { restoreAuth } from '@/slices/restoreAuth';
+import { restoreAuth } from '@/slices/authSlice';
+import type { AppDispatch } from '@/store';
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const [expiresAt, setExpiresAt] = useState<number | null>(null);
+export function AuthProvider() {
+  const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        restoreAuth();
-        const stored = localStorage.getItem("expiresAt");
-        if (stored) {
-            setExpiresAt(Number(stored));
-        }
-    }, []);
+  useEffect(() => {
+    dispatch(restoreAuth());
+  }, [dispatch]);
 
-    useEffect(() => {
-        if (expiresAt) {
-            const timeout = expiresAt - Date.now();
-
-            if (timeout <= 0) {
-                dispatch(clearAuth());
-                router.push('/');
-            } else {
-                const timer = setTimeout(() => {
-                    dispatch(clearAuth());
-                    router.push('/');
-                }, timeout);
-                return () => clearTimeout(timer);
-            }
-        }
-    }, [expiresAt, dispatch, router]);
-
-    return <>{children}</>;
+  return null;
 }
