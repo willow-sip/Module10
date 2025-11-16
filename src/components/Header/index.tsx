@@ -20,7 +20,7 @@ const Header = () => {
 
     const router = useRouter();
     const pathname = usePathname();
-    const isMainOrProfilePage = pathname === '/' || pathname === '/profile' || pathname === '/stats';
+    const isMainOrProfilePage = pathname === '/' || pathname === '/profile' || pathname === '/statistics';
 
 
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -73,7 +73,7 @@ const Header = () => {
                             ) : (
                                 <>
                                     <button onClick={() => router.push('/profile')}>{t('profileLink')}</button>
-                                    <button onClick={() => router.push('/stats')}>{t('statsLink')}</button>
+                                    <button onClick={() => router.push('/statistics')}>{t('statsLink')}</button>
                                 </>
                             )}
                         </div>

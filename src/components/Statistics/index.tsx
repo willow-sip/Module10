@@ -21,7 +21,7 @@ const Statistics = () => {
     const { theme } = useTheme();
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
     const [stats, setStats] = useState<StatsData | null>(null);
-    const [location, setLocation] = useState<"profile" | "stats">("stats");
+    const [location, setLocation] = useState<"profile" | "statistics">("statistics");
     const router = useRouter();
     const { t } = useTranslation();
 
@@ -67,15 +67,10 @@ const Statistics = () => {
                     tokenApi.get(`/me/likes`),
                     tokenApi.get(`/me/comments`),
                 ]);
-
-                if (!likesRes.ok || !commentsRes.ok) throw new Error('Fetch failed');
-
-                const likesData = await likesRes.json();
-                const commentsData = await commentsRes.json();
-
+                
                 setStats({
-                    likes: transformData(likesData),
-                    comments: transformData(commentsData),
+                    likes: transformData(likesRes),
+                    comments: transformData(commentsRes),
                 });
             } catch (err) {
                 console.error(err);
@@ -91,7 +86,7 @@ const Statistics = () => {
         <>
             <div className="page-switch">
                 <button className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>{t('profileLink')}</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => { router.push('/stats'); setLocation("stats") }}>{t('statsLink')}</button>
+                <button className={location === "statistics" ? "active" : ""} onClick={() => { router.push('/statistics'); setLocation("statistics") }}>{t('statsLink')}</button>
             </div>
             <div className="general-stats" data-theme={theme}>
                 {genStats.map((stat, index) => (

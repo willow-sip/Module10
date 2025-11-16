@@ -10,7 +10,7 @@ import { TFunction } from 'i18next';
 import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
   Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
 import { ArrowDown, ArrowUp, CommentSvg, LikeSvg, Pencil } from '@/svgs';
-import enableAuth from '../ClassComponentsHOC';
+import enableAuth from '../WithAuthAndTranslation';
 import { tokenApi } from '@/tokenApi';
 
 

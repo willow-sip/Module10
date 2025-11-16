@@ -40,7 +40,7 @@ const Profile = () => {
     const { user } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
 
-    const [location, setLocation] = useState<"profile" | "stats">("profile");
+    const [location, setLocation] = useState<"profile" | "statistics">("profile");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState(user?.profileImage || './imgs/default-avatar.jpg');
     
@@ -156,7 +156,7 @@ const Profile = () => {
         <>
             <div className="page-switch">
                 <button className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>Profile Info</button>
-                <button className={location === "stats" ? "active" : ""} onClick={() => { router.push('/stats'); setLocation("stats") }}>Statistics</button>
+                <button className={location === "statistics" ? "active" : ""} onClick={() => { router.push('/statistics'); setLocation("statistics") }}>Statistics</button>
             </div>
             <div className="profile" data-theme={theme}>
                 <div className="edit-profile">
