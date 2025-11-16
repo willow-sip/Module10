@@ -1,14 +1,11 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
-import { MoonLoader } from 'react-spinners';
+import { lazy } from 'react';
+import withMoonLoader from '@/components/MoonLoaderHOC';
 
 const AuthPage = lazy(() => import('@/components/AuthPage'));
+const AuthPageWithLoader = withMoonLoader(AuthPage);
 
 export default function SignInPage() {
-  return (
-    <Suspense fallback={<MoonLoader style={{ 'margin': '0 auto' }} />}>
-      <AuthPage mode="signup" />
-    </Suspense>
-  )
+  return <AuthPageWithLoader mode="signup" />
 }

@@ -1,15 +1,12 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
-import { MoonLoader } from 'react-spinners';
+import { lazy } from 'react';
+import withMoonLoader from '@/components/MoonLoaderHOC';
 
 const Profile = lazy(() => import('@/components/Profile'));
+const ProfileWithLoader = withMoonLoader(Profile);
 
 export default function ProfilePage() {
-    return (
-        <Suspense fallback={<MoonLoader style={{ 'margin': '0 auto' }} />}>
-            <Profile />
-        </Suspense>
-    )
+    return <ProfileWithLoader />;
 }
 
