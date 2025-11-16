@@ -5,7 +5,7 @@ import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 
 import { User, Group } from '@/data/datatypes';
-import enableAuth from '../AuthHOC';
+import enableAuth from '../ClassComponentsHOC';
 import { TFunction } from 'i18next';
 import { tokenApi } from '@/tokenApi';
 
