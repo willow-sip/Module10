@@ -34,7 +34,7 @@ export const tokenApi = {
     return response.json();
   },
 
-  async post(endpoint: string, body: any) {
+  async post(endpoint: string, body: unknown) {
     const token = getStoredToken();
     const res = await fetch(`/api${endpoint}`, {
       method: 'POST',
@@ -57,7 +57,7 @@ export const tokenApi = {
     return res.json();
   },
 
-  async put(endpoint: string, body: any) {
+  async put(endpoint: string, body: unknown) {
     const token = getStoredToken();
     const res = await fetch(`/api${endpoint}`, {
       method: 'PUT',

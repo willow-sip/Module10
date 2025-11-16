@@ -99,7 +99,7 @@ class Post extends Component<PostProps, PostState> {
             text: newComment.trim(),
         };
 
-        tokenApi.put('/comments', commentData)
+        tokenApi.post('/comments', commentData)
             .then(createdComment => {
                 if (user) {
                     const fullComment: CommentType = {
