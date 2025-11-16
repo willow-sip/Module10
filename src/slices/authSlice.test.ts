@@ -10,7 +10,7 @@ import authSlice, {
   AuthState
 } from '@/slices/authSlice';
 import { User } from '@/data/datatypes';
-import { localStorageMock } from './basic_mocks/localStorageMock';
+import { localStorageMock } from '@/tests/basic_mocks/localStorageMock';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;

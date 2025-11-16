@@ -1,7 +1,7 @@
 import { tokenApi } from '@/tokenApi';
 import { store } from '@/store';
 import { clearAuth } from '@/slices/authSlice';
-import {localStorageMock, localStorageSpies} from './basic_mocks/localStorageMock';
+import {localStorageMock, localStorageSpies} from '@/tests/basic_mocks/localStorageMock';
 
 jest.mock('@/store', () => ({
   store: { dispatch: jest.fn() }
