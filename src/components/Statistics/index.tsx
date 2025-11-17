@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import TableStats from '../TableStats';
@@ -20,7 +20,8 @@ export interface StatsData {
 const Statistics = () => {
     const { theme } = useTheme();
     const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
-    const [stats, setStats] = useState<StatsData | null>(null);
+    const [likes, setLikes] = useState<Like[] | null>(null);
+    const [comments, setComments] = useState<Comment[] | null>(null);
     const [location, setLocation] = useState<"profile" | "statistics">("statistics");
     const router = useRouter();
     const { t } = useTranslation();
@@ -28,6 +29,31 @@ const Statistics = () => {
     const handleToggle = () => {
         setActiveTab(prev => (prev === 'table' ? 'chart' : 'table'));
     };
+
+    const stats = React.useMemo(() => {
+        if (!likes || !comments) return null;
+        return {
+            likes: transformData(likes),
+            comments: transformData(comments),
+        };
+    }, [likes, comments]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const [likesRes, commentsRes] = await Promise.all([
+                    tokenApi.get(`/me/likes`),
+                    tokenApi.get(`/me/comments`),
+                ]);
+                setLikes(likesRes);
+                setComments(commentsRes);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchStats();
+    }, []);
 
     function transformData(data: Like[] | Comment[]): { month: string; count: number }[] {
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -59,28 +85,6 @@ const Statistics = () => {
 
         return result;
     }
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const [likesRes, commentsRes] = await Promise.all([
-                    tokenApi.get(`/me/likes`),
-                    tokenApi.get(`/me/comments`),
-                ]);
-                
-                setStats({
-                    likes: transformData(likesRes),
-                    comments: transformData(commentsRes),
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        fetchStats();
-
-    }, []);
-
 
     return (
         <>

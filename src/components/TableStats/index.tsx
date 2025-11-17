@@ -3,12 +3,13 @@
 import { useTranslation } from 'react-i18next';
 import { StatsData } from '../Statistics';
 import './style.css';
+import React from 'react';
 
 interface Props {
     stats: StatsData;
 }
 
-const TableStats = ({ stats }: Props) => {
+const TableStats = React.memo(({ stats }: Props) => {
     const { t } = useTranslation();
     return (
         <div className="statsTable">
@@ -47,6 +48,6 @@ const TableStats = ({ stats }: Props) => {
         </div>
 
     );
-}
+});
 
 export default TableStats;

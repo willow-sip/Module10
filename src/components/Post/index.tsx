@@ -50,6 +50,24 @@ class Post extends Component<PostProps, PostState> {
             addingComment: false,
             animateLike: false,
         };
+        this.editComment = this.editComment.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+    }
+
+    editComment(newText: string, commentId?: number) {
+        this.setState((prev) => ({
+            comments: prev.comments?.map((c) =>
+                c.id === commentId ? { ...c, text: newText } : c
+            ),
+        }));
+        showNotification(this.props.t('updateComment'), 'success', 2000);
+    }
+
+    deleteComment(commentId?: number) {
+        this.setState((prev) => ({
+            comments: prev.comments?.filter((c) => c.id !== commentId),
+        }));
+        showNotification(this.props.t('deleteComment'), 'success', 2000);
     }
 
     calculatePublishTime = (): string => {
@@ -263,20 +281,8 @@ class Post extends Component<PostProps, PostState> {
                                 id={comment.id}
                                 authorId={comment.authorId}
                                 text={comment.text}
-                                edit={(newText) => {
-                                    this.setState((prev) => ({
-                                        comments: prev.comments?.map((prevCom) =>
-                                            prevCom.id === comment.id ? { ...prevCom, text: newText } : prevCom
-                                        ),
-                                    }));
-                                    showNotification(t('updateComment'), 'success', 2000);
-                                }}
-                                deleteComm={() => {
-                                    this.setState((prev) => ({
-                                        comments: prev.comments?.filter((c) => c.id !== comment.id),
-                                    }));
-                                    showNotification(t('deleteComment'), 'success', 2000);
-                                }}
+                                edit={this.editComment}
+                                deleteComm={this.deleteComment}
                             />
                         ))}
 

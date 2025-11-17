@@ -15,12 +15,13 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import './style.css';
+import React from 'react';
 
 interface Props {
     stats: StatsData;
 }
 
-const ChartStats = ({ stats }: Props) => {
+const ChartStats = React.memo(({ stats }: Props) => {
     const { t } = useTranslation();
 
     return (
@@ -110,6 +111,6 @@ const ChartStats = ({ stats }: Props) => {
             </div>
         </div>
     );
-};
+});
 
 export default ChartStats;

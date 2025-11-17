@@ -149,4 +149,4 @@ const AddPostForm = ({ close, postCreated }: Props) => {
     );
 };
 
-export default React.memo(AddPostForm);
+export default AddPostForm;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Paper, Typography, TextField, Button, IconButton, Box, useTheme } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { animated, useSpring, config } from '@react-spring/web';
@@ -15,11 +15,11 @@ interface CommentProps {
     id: number;
     authorId: number;
     text: string;
-    edit?: (newText: string) => void;
-    deleteComm?: () => void;
+    edit?: (newText: string, id?: number) => void;
+    deleteComm?: (id?: number) => void;
 }
 
-const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
+const Comment = React.memo(({ id, authorId, text, edit, deleteComm }: CommentProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(text);
     const { user } = useSelector((state: RootState) => state.auth);
@@ -193,6 +193,6 @@ const Comment = ({ id, authorId, text, edit, deleteComm }: CommentProps) => {
             )}
         </AnimatedPaper>
     );
-};
+});
 
 export default Comment;
