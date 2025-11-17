@@ -1,6 +1,5 @@
 'use client';
 
-import { Suspense } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import AddPost from '@/components/AddPost';
 import Sidebar from '@/components/Sidebar';
@@ -19,7 +18,7 @@ export default function HomePage() {
   const { user, userAuth } = useSelector((state: RootState) => state.auth);
   const { theme } = useTheme();
 
-  const { data: posts = [], refetch } = useQuery({
+  const { data: posts = [], refetch, isLoading, isError } = useQuery({
     queryKey: ['get-posts'],
     queryFn: async () => {
       const response = await tokenApi.get('/posts');
@@ -33,11 +32,11 @@ export default function HomePage() {
       <div className="main-page">
         {userAuth && user && <Sidebar />}
         <div className="posts">
-          <Suspense fallback={<div>Loading posts...</div>}>
-            {posts.map((post: Post) => (
-              <DynamicPost key={post.id} post={post} />
-            ))}
-          </Suspense>
+          {isLoading && <p>Loading posts...</p>}
+          {isError && <p>Could not load posts.</p>}
+          {!isLoading && !isError && posts.map((post: Post) => (
+            <DynamicPost key={post.id} post={post} />
+          ))}
         </div>
       </div>
     </div>

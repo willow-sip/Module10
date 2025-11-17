@@ -1,10 +1,9 @@
 'use client';
 
-import { lazy } from 'react';
+import Statistics from '@/components/Statistics';
 import WithMoonLoader from '@/components/WithMoonLoader';
 
-const Stats = lazy(() => import('@/components/Statistics'));
-const StatsWithLoader = WithMoonLoader(Stats);
+const StatsWithLoader = WithMoonLoader(Statistics);
 
 export default function StatsPage() {
     return <StatsWithLoader />;

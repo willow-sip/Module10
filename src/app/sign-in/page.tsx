@@ -1,9 +1,8 @@
 'use client';
 
-import { lazy } from 'react';
 import WithMoonLoader from '@/components/WithMoonLoader';
+import AuthPage from '@/components/AuthPage';
 
-const AuthPage = lazy(() => import('@/components/AuthPage'));
 const AuthPageWithLoader = WithMoonLoader(AuthPage);
 
 export default function SignInPage() {
