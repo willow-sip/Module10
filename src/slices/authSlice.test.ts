@@ -7,6 +7,7 @@ import authSlice, {
   signUp,
   signIn,
   logOut,
+  restoreAuth,
   AuthState
 } from '@/slices/authSlice';
 import { User } from '@/data/datatypes';
@@ -32,6 +33,7 @@ const createStore = (state: Partial<AuthState> = {}) => {
         user: null,
         userAuth: false,
         authMode: null,
+        expiresAt: null,
         ...state,
       },
     },
@@ -118,10 +120,47 @@ describe('async thunks of authSlice', () => {
   });
 });
 
+describe('restoreAuth thunk', () => {
+  const expireTime = Date.now() + 3600000;
+
+  it('if token is not expired, restores auth data', async () => {
+    localStorageMock.setItem('currentUser', JSON.stringify(mockUser));
+    localStorageMock.setItem('authToken', mockToken);
+    localStorageMock.setItem('expiresAt', expireTime.toString());
+
+    const store = createStore();
+    await store.dispatch(restoreAuth());
+
+    const state = store.getState().auth;
+    expect(state.user).toEqual(mockUser);
+    expect(state.userAuth).toBe(true);
+    expect(state.expiresAt).toBe(expireTime);
+  });
+
+  it('if token is expired deletes auth data', async () => {
+    const expiredTime = Date.now() - 1000;
+    localStorageMock.setItem('currentUser', JSON.stringify(mockUser));
+    localStorageMock.setItem('authToken', mockToken);
+    localStorageMock.setItem('expiresAt', expiredTime.toString());
+
+    const store = createStore();
+    await store.dispatch(restoreAuth());
+
+    const state = store.getState().auth;
+    expect(state.user).toBeNull();
+    expect(state.userAuth).toBe(false);
+    expect(state.expiresAt).toBeNull();
+
+    expect(localStorage.removeItem).toHaveBeenCalledWith('currentUser');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('authToken');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('expiresAt');
+  });
+});
+
 describe('reducers of authSlice', () => {
   it('sets Auth data and state', () => {
     const store = createStore();
-    store.dispatch(setAuth({ user: mockUser }));
+    store.dispatch(setAuth({ user: mockUser, expiresAt: Date.now() + 3600000 }));
     const currentState = store.getState().auth;
     expect(currentState.user).toEqual(mockUser);
     expect(currentState.userAuth).toBe(true);
