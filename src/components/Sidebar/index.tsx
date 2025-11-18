@@ -87,11 +87,12 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
             <aside className="sidebar" data-theme={theme}>
                 <div className="recPeople">
                     <h4>{t('sugPeople')}</h4>
-                    {this.state.loading ? (<p>{t('loadSugPeople')}</p>) : (
+                    {this.state.loading ? (<p data-testid="load-sug-people">{t('loadSugPeople')}</p>) : (
                         <>
                             {suggestedUsers?.map(user => (
                                 <div className="person" key={user.id}>
                                     <img
+                                        data-testid="Person avatar"
                                         src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
                                         alt="Person avatar"
                                         className="avatar"
@@ -107,11 +108,12 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                 </div>
                 <div className="recCommunities">
                     <h4>{t('sugGroups')}</h4>
-                    {this.state.loading ? (<p>{t('loadSugGroups')}</p>) : (
+                    {this.state.loading ? (<p data-testid="load-sug-groups">{t('loadSugGroups')}</p>) : (
                         <>
                             {groups.map(group => (
                                 <div className="community" key={group.id}>
                                     <img
+                                        data-testid="Community avatar"
                                         src={group.photo}
                                         alt="Community avatar"
                                         className="avatar"
@@ -131,3 +133,4 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
 }
 
 export default enableAuth(Sidebar);
+export { Sidebar as UnwrappedSidebar };

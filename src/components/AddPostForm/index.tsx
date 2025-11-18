@@ -41,8 +41,6 @@ const AddPostForm = ({ close, postCreated }: Props) => {
         },
     });
 
-
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
@@ -97,7 +95,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
             <div className="form-container">
                 <div className="form-header">
                     <h2>{t('createNewPost')}</h2>
-                    <button className="close-form-button" onClick={close}>×</button>
+                    <button data-testid="close-form-btn" className="close-form-button" onClick={close}>×</button>
                 </div>
 
                 <form id="add-post" onSubmit={handleSubmit(onSubmit, onError)}>
@@ -107,6 +105,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             <p>{t('postTitle')}</p>
                         </label>
                         <input
+                            data-testid="post-title"
                             id="postTitle"
                             type="text"
                             placeholder={t('postTitlePlaceholder')}
@@ -120,6 +119,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             <p>{t('description')}</p>
                         </label>
                         <textarea
+                            data-testid="description"
                             id="description"
                             placeholder={t('descriptionPlaceholder')}
                             {...register('description')}
@@ -134,6 +134,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                             <p className="file-types">{t('fileTypes')}</p>
                         </div>
                         <input
+                            data-testid="file-input"
                             type="file"
                             accept=".jpg,.png,.pdf"
                             onChange={handleFileChange}
@@ -141,7 +142,7 @@ const AddPostForm = ({ close, postCreated }: Props) => {
                         />
                     </div>
                     <div className="create-post-container">
-                        <button type="submit" className="create-btn">{t('create')}</button>
+                        <button data-testid="create-post-btn" type="submit" className="create-btn">{t('create')}</button>
                     </div>
                 </form>
             </div>

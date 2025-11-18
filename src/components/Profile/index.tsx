@@ -155,8 +155,8 @@ const Profile = () => {
     return (
         <>
             <div className="page-switch">
-                <button className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>Profile Info</button>
-                <button className={location === "statistics" ? "active" : ""} onClick={() => { router.push('/statistics'); setLocation("statistics") }}>Statistics</button>
+                <button data-testid="profile" className={location === "profile" ? "active" : ""} onClick={() => { router.push('/profile'); setLocation("profile") }}>{t('profileLink')}</button>
+                <button data-testid="statistics" className={location === "statistics" ? "active" : ""} onClick={() => { router.push('/statistics'); setLocation("statistics") }}>{t('statsLink')}</button>
             </div>
             <div className="profile" data-theme={theme}>
                 <div className="edit-profile">
@@ -164,11 +164,12 @@ const Profile = () => {
 
                     <form id="profile-form" onSubmit={handleSubmit(onSubmit, onError)}>
                         <div className="profile-header">
-                            <img src={previewImage} alt="Profile" className="avatar" />
+                            <img data-testid="profile-image-preview" src={previewImage} alt="Profile" className="avatar" />
                             <div className="profile-info">
                                 <h3>{user?.firstName} {user?.secondName}</h3>
                                 <label htmlFor="profileImage" className="change-photo">{t('changeProfilePhoto')}</label>
                                 <input
+                                    data-testid="change-photo"
                                     type="file"
                                     id="profileImage"
                                     accept="image/*"
@@ -183,6 +184,7 @@ const Profile = () => {
                                 <p>{t('username')}</p>
                             </label>
                             <input
+                                data-testid="username"
                                 type="text"
                                 id="username"
                                 placeholder="@username123"
@@ -196,6 +198,7 @@ const Profile = () => {
                                 <p>{t('email')}</p>
                             </label>
                             <input
+                                data-testid="email"
                                 type="email"
                                 id="email"
                                 placeholder="email@domain.com"
@@ -209,6 +212,7 @@ const Profile = () => {
                                 <p>{t('description')}</p>
                             </label>
                             <textarea
+                                data-testid="description"
                                 id="description"
                                 placeholder={t('descriptionPlaceholder')}
                                 {...register('description')}
@@ -221,7 +225,7 @@ const Profile = () => {
                             </small>
                         </div>
 
-                        <button type="submit" className="save-btn">{t('saveProfile')}</button>
+                        <button data-testid="update-profile" type="submit" className="save-btn">{t('saveProfile')}</button>
                     </form>
                 </div>
                 <div className="preferences">

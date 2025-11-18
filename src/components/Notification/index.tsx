@@ -35,7 +35,7 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
                     {type === 'warning' && <Warning />}
                 </span>
                 <p className="notification-message">{message}</p>
-                <button className="notification-close" onClick={close}>×</button>
+                <button data-testid="close-button" className="notification-close" onClick={close}>×</button>
             </div>
         </div>
     );

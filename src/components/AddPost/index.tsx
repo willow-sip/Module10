@@ -12,7 +12,6 @@ const AddPostForm = dynamic(() => import('../AddPostForm'), {
     ssr: false, 
 });
 
-
 interface Props {
     avatar?: string;
     postCreated: () => void;
@@ -28,16 +27,17 @@ const AddPost = ({ avatar, postCreated } : Props) => {
         <div id="addPost" data-theme={theme}>
             <div>
                 <img
+                        data-testid="user-avatar"
                         src={avatar || './imgs/default-avatar.jpg'}
                         alt="User avatar"
                         className="avatar"
                     />
-                    <p>{t('whatsHappening')}</p>
+                    <p data-testid="whats-happening">{t('whatsHappening')}</p>
                 </div>
-                <button onClick={() => setShowForm(true)}>{t('tellEveryone')}</button>
+                <button data-testid="tell-everyone" onClick={() => setShowForm(true)}>{t('tellEveryone')}</button>
             </div>
 
-            {showForm && <AddPostForm close={() => setShowForm(false)} postCreated={postCreated}/>}
+            {showForm && <AddPostForm data-testid="add-post-form" close={() => setShowForm(false)} postCreated={postCreated}/>}
         </>
     );
 };

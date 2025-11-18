@@ -175,12 +175,14 @@ const Comment = React.memo(({ id, authorId, text, edit, deleteComm }: CommentPro
                         {canModify && (
                             <Box sx={{ display: 'flex', gap: '8px' }}>
                                 <IconButton
+                                    data-testid="edit-button"
                                     onClick={handleEdit}
                                     sx={{ color: 'var(--text-color)' }}
                                 >
                                     <EditIcon fontSize="small" />
                                 </IconButton>
                                 <IconButton
+                                    data-testid="delete-button"
                                     onClick={handleDelete}
                                     sx={{ color: 'var(--text-color)' }}
                                 >

@@ -117,6 +117,7 @@ const AuthPage = ({ mode }: Mode) => {
                 <p>{t('email')}</p>
               </label>
               <Field
+              data-testid="email"
                 type="email"
                 name="email"
                 id="email"
@@ -128,13 +129,14 @@ const AuthPage = ({ mode }: Mode) => {
                 <p>{t('password')}</p>
               </label>
               <Field
+              data-testid="password"
                 type="password"
                 name="password"
                 id="password"
                 placeholder={t('passwordPlaceholder')}
               />
 
-              <button type="submit" disabled={isSubmitting}>
+              <button data-testid="submit-button" type="submit" disabled={isSubmitting}>
                 {authMode === 'signup' ? t('signUp') : t('signIn')}
               </button>
 

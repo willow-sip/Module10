@@ -222,25 +222,26 @@ class Post extends Component<PostProps, PostState> {
                     <Author>
                         <LoadingAvatar />
                         <AuthorInfo>
-                            <Spinner />
+                            <Spinner data-testid="spinner" />
                         </AuthorInfo>
                     </Author>
                 ) : (
                     <Author>
                         <Avatar
+                            data-testid="avatar"
                             src={profileImage || './imgs/default-avatar.jpg'}
                             alt="Post author avatar"
                         />
                         <AuthorInfo>
-                            <AuthorName>{firstName} {secondName}</AuthorName>
+                            <AuthorName data-testid="author-name">{firstName} {secondName}</AuthorName>
                             <PublishTime>{this.calculatePublishTime()}</PublishTime>
                         </AuthorInfo>
                     </Author>
                 )}
 
-                {image && <PostImage src={image} alt="Post" />}
-                <PostTitle>{title}</PostTitle>
-                <PostContent>{content}</PostContent>
+                {image && <PostImage data-testid="post-img" src={image} alt="Post" />}
+                <PostTitle data-testid="post-title">{title}</PostTitle>
+                <PostContent data-testid="post-content">{content}</PostContent>
 
                 <PostButtons>
                     <Likes>
@@ -292,6 +293,7 @@ class Post extends Component<PostProps, PostState> {
                                 <p>{t('addComment')}</p>
                             </AddCommentHeader>
                             <CommentTextarea
+                                data-testid="comment-textarea"
                                 name="commentText"
                                 id="commentText"
                                 placeholder={t('commentPlaceholder')}
@@ -299,6 +301,7 @@ class Post extends Component<PostProps, PostState> {
                                 onChange={this.handleCommentChange}
                             />
                             <AddCommentButton
+                                data-testid="add-comment-button"
                                 onClick={this.handleAddComment}
                                 disabled={this.state.addingComment}
                                 adding={this.state.addingComment.toString()}
@@ -314,3 +317,4 @@ class Post extends Component<PostProps, PostState> {
 }
 
 export default enableAuth(Post);
+export { Post as UnwrappedPost };

@@ -14,7 +14,7 @@ const TableStats = React.memo(({ stats }: Props) => {
     return (
         <div className="statsTable">
             <div className="stat">
-                <h3>{t('likesStat')}</h3>
+                <h3 data-testid="likes-stat-header">{t('likesStat')}</h3>
                 <table>
                     <thead>
                         <tr>
@@ -25,8 +25,8 @@ const TableStats = React.memo(({ stats }: Props) => {
                     <tbody>
                         {stats.likes.map((like, i) => (
                             <tr key={i}>
-                                <td>{like.month}</td>
-                                <td>{like.count}</td>
+                                <td data-testid="month">{like.month}</td>
+                                <td data-testid="likes-count">{like.count}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -34,12 +34,15 @@ const TableStats = React.memo(({ stats }: Props) => {
             </div>
 
             <div className="stat">
-                <h3>{t('commentsStat')}</h3>
+                <h3 data-testid="comments-stat-header">{t('commentsStat')}</h3>
                 <table>
                     <thead><tr><th>{t('month')}</th><th>{t('commentsCountStats')}</th></tr></thead>
                     <tbody>
                         {stats.comments.map((comment, i) => (
-                            <tr key={i}><td>{comment.month}</td><td>{comment.count}</td></tr>
+                            <tr key={i}>
+                                <td data-testid="month">{comment.month}</td>
+                                <td data-testid="comments-count">{comment.count}</td>
+                            </tr>
                         ))}
                     </tbody>
                 </table></div>
