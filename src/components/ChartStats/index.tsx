@@ -25,7 +25,7 @@ const ChartStats = React.memo(({ stats }: Props) => {
     const { t } = useTranslation();
 
     return (
-        <div className="statsChart">
+        <div className="statsChart" data-testid="chart-stats"> 
             <div className="chartBlock">
                 <h3>{t('likesStat')}</h3>
                 <div>

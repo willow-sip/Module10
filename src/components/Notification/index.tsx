@@ -27,7 +27,7 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
     if (!isVisible) return null;
 
     const notificationElement = (
-        <div className={`notification notification-${type}`}>
+        <div data-testid="notification" className={`notification notification-${type}`}>
             <div className="notification-content">
                 <span className="notification-icon">
                     {type === 'success' && <SuccessCheck />}

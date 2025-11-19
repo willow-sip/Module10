@@ -12,7 +12,7 @@ interface Props {
 const TableStats = React.memo(({ stats }: Props) => {
     const { t } = useTranslation();
     return (
-        <div className="statsTable">
+        <div className="statsTable" data-testid="table-stats">
             <div className="stat">
                 <h3 data-testid="likes-stat-header">{t('likesStat')}</h3>
                 <table>

@@ -54,6 +54,15 @@ const AuthPage = ({ mode }: Mode) => {
   ) => {
 
     const { email, password } = values;
+    const errors = validate(values);
+
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((msg) => {
+        showNotification(msg, 'warning', 3000);
+      });
+      setSubmitting(false);
+      return;
+    }
 
     try {
       if (authMode === 'signup') {
@@ -93,25 +102,10 @@ const AuthPage = ({ mode }: Mode) => {
       <Formik
         initialValues={INITIAL_VALUES}
         onSubmit={handleSubmit}
-        validate={validate}
-        validateOnMount={true}
       >
-        {({ errors, touched, isSubmitting }) => {
-          const prevErrorsRef = useRef(errors);
-
-          useEffect(() => {
-            if (touched.email && errors.email && errors.email !== prevErrorsRef.current.email) {
-              showNotification(errors.email, 'warning', 3000);
-            }
-            if (touched.password && errors.password && errors.password !== prevErrorsRef.current.password) {
-              showNotification(errors.password, 'warning', 3000);
-            }
-            prevErrorsRef.current = { ...errors };
-          }, [errors.email, errors.password, touched.email, touched.password]);
-
-
+        {({ isSubmitting }) => {
           return (
-            <Form className="authBox">
+            <Form className="authBox" noValidate>
               <label htmlFor="email">
                 <Envelope />
                 <p>{t('email')}</p>

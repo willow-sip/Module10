@@ -233,6 +233,7 @@ const Profile = () => {
                     <div className="theme-toggle">
                         <label className="switch">
                             <input
+                                data-testid="theme-toggle"
                                 type="checkbox"
                                 checked={theme === "dark"}
                                 onChange={toggleTheme}

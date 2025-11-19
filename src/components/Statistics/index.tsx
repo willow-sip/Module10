@@ -106,6 +106,7 @@ const Statistics = () => {
                     <p>{t('tableView')}</p>
                     <label className="tabSwitch">
                         <input
+                            data-testid="view-toggle"
                             type="checkbox"
                             checked={activeTab === 'chart'}
                             onChange={handleToggle}
