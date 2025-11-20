@@ -8,6 +8,7 @@ import { User, Group } from '@/data/datatypes';
 import enableAuth from '../WithAuthAndTranslation';
 import { TFunction } from 'i18next';
 import { tokenApi } from '@/tokenApi';
+import Image from 'next/image';
 
 interface SidebarProps {
     user: User | null;
@@ -91,11 +92,13 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                         <>
                             {suggestedUsers?.map(user => (
                                 <div className="person" key={user.id}>
-                                    <img
+                                    <Image
+                                        src={user.profileImage || '/imgs/default-avatar.jpg'}
                                         data-testid="Person avatar"
-                                        src={`${user.profileImage}` || './imgs/default-avatar.jpg'}
-                                        alt="Person avatar"
                                         className="avatar"
+                                        alt="Person avatar"
+                                        width={48}
+                                        height={48}
                                     />
                                     <div className="personalInfo">
                                         <p>{user.firstName} {user.secondName}</p>
@@ -112,11 +115,13 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                         <>
                             {groups.map(group => (
                                 <div className="community" key={group.id}>
-                                    <img
-                                        data-testid="Community avatar"
+                                    <Image
                                         src={group.photo}
-                                        alt="Community avatar"
+                                        data-testid="Community avatar"
                                         className="avatar"
+                                        alt="Community avatar"
+                                        width={48}
+                                        height={48}
                                     />
                                     <div className="communityInfo">
                                         <p>{group.title}</p>

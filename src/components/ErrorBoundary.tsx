@@ -1,15 +1,8 @@
 'use client';
 
 import { Component, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
 import { NextRouter } from 'next/router';
 
-function ErrorWithRouter<T extends object>(Component: React.ComponentType<T>) {
-  return function Wrapper(props: any) {
-    const router = useRouter();
-    return <Component {...props} router={router} />;
-  };
-}
 
 class ErrorBoundary extends Component<{ children: ReactNode; router: NextRouter }> {
     state = {
@@ -22,7 +15,6 @@ class ErrorBoundary extends Component<{ children: ReactNode; router: NextRouter 
 
     componentDidCatch(err: any, info: any) {
         console.log('Something went wrong:', err, info);
-        this.props.router.push('/page-not-found');
     }
 
     render() {
@@ -34,4 +26,4 @@ class ErrorBoundary extends Component<{ children: ReactNode; router: NextRouter 
     }
 }
 
-export default ErrorWithRouter(ErrorBoundary);
+export default ErrorBoundary;

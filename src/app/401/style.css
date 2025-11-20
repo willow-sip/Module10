@@ -6,21 +6,15 @@
     flex-direction: column;
 }
 
-.error-page .error401 {
-    width: 94.39px;
-    height: 94.39px;
-}
-
 .error-page h1 {
     font-size: 60px;
 }
 
 @media (max-width: 768px) {
-    .error-page .error401 {
-        width: 41.95px;
-        height: 41.95px;
+    .error-image{
+        width: 80px;
+        height: 80px;
     }
-
     .error-page h1 {
         font-size: 20px;
     }

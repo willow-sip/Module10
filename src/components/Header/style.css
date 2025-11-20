@@ -8,10 +8,6 @@
   height: 68px;
 }
 
-.logo {
-  width: 6%;
-}
-
 .sign-buttons button,
 .user-info button,
 .header .theme-toggle {
@@ -37,9 +33,7 @@
   margin-right: 15px;
 }
 
-.user-info .avatar {
-  width: 24px;
-  height: 24px;
+.user-info .avatar, .drawer-avatar {
   border-radius: 50%;
   object-fit: cover;
 }
@@ -114,22 +108,11 @@
   width: 100%;
 }
 
-.drawer-logo {
-  width: 16%;
-}
-
 .drawer-user {
   display: flex;
   align-items: center;
   justify-content: space-around;
   gap: 20px;
-}
-
-.drawer-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .drawer.open {
@@ -155,7 +138,8 @@
   }
 
   .header .logo {
-    width: 47.94px;
+    width: 48px;
+    height: 24px;
   }
 
   .sign-buttons,

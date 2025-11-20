@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, usePathname  } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import './style.css';
 import LangToggler from '../LangToggler';
@@ -10,6 +10,7 @@ import { BurgerMenu, Logout, Moon, Sun } from '@/svgs';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
 import { logOut } from '@/slices/authSlice'
+import Image from 'next/image';
 
 const Header = () => {
     const { userAuth } = useSelector((state: RootState) => state.auth);
@@ -37,7 +38,13 @@ const Header = () => {
 
     return (
         <header className="header" data-theme={theme}>
-            <img className="logo" src="./imgs/logo.png" alt="Sidekick-logo" />
+            <Image
+                className="logo"
+                src='/imgs/logo.png'
+                width={96}
+                height={44}
+                alt="Sidekick-logo"
+            />
             <LangToggler />
 
             {isMainOrProfilePage && (
@@ -49,13 +56,21 @@ const Header = () => {
                         {drawerOpen && <div className="drawer-overlay" onClick={() => setDrawerOpen(false)} />}
                         <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
                             <div className="drawer-header">
-                                <img className="drawer-logo" src="./imgs/logo.png" alt="Sidekick-logo" />
+                                <Image
+                                    className="drawer-logo"
+                                    src='/imgs/logo.png'
+                                    width={48}
+                                    height={24}
+                                    alt="Sidekick-logo"
+                                />
                                 {userAuth && (
                                     <div className="drawer-user">
-                                        <img
-                                            src={user?.profileImage || './imgs/default-avatar.jpg'}
-                                            alt="User avatar"
+                                        <Image
                                             className="drawer-avatar"
+                                            src={user?.profileImage || '/imgs/default-avatar.jpg'}
+                                            width={24}
+                                            height={24}
+                                            alt="User avatar"
                                         />
                                         <button onClick={() => dispatch(logOut())}><Logout /></button>
                                     </div>
@@ -87,13 +102,19 @@ const Header = () => {
                             <button onClick={() => router.push('/sign-up')}>{t('signUp')}</button>
                             <button onClick={() => router.push('/sign-in')}>{t('signIn')}</button>
                         </div>
-                    ) : (
+                        ) : (
                         <div className="user-info">
                             <button onClick={toggleTheme} className="theme-toggle">
                                 {theme === 'light' ? <Moon /> : <Sun />}
                             </button>
                             <div className="profile-link" onClick={() => router.push('/profile')}>
-                                <img src={user?.profileImage || './imgs/default-avatar.jpg'} alt="User avatar" className="avatar" />
+                                <Image
+                                    className="avatar"
+                                    src={user?.profileImage || '/imgs/default-avatar.jpg'}
+                                    width={24}
+                                    height={24}
+                                    alt="User avatar"
+                                />
                                 <p>{user?.firstName} {user?.secondName}</p>
                             </div>
                             <button onClick={() => dispatch(logOut())}><Logout /></button>

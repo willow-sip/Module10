@@ -15,6 +15,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import './style.css';
 import { Envelope, Important, Pencil, Person } from '@/svgs';
 import { tokenApi } from '@/tokenApi';
+import Image from 'next/image';
 
 interface FormInput {
     username: string;
@@ -164,7 +165,14 @@ const Profile = () => {
 
                     <form id="profile-form" onSubmit={handleSubmit(onSubmit, onError)}>
                         <div className="profile-header">
-                            <img data-testid="profile-image-preview" src={previewImage} alt="Profile" className="avatar" />
+                            <Image
+                                src={previewImage}
+                                data-testid="profile-image-preview"
+                                className="avatar"
+                                alt="Profile"
+                                width={64}
+                                height={64}
+                            />
                             <div className="profile-info">
                                 <h3>{user?.firstName} {user?.secondName}</h3>
                                 <label htmlFor="profileImage" className="change-photo">{t('changeProfilePhoto')}</label>
