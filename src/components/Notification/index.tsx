@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import './style.css';
 import { Cross, SuccessCheck, Warning } from '@/svgs';
+import styles from './style.module.css';
 
 interface Props {
     message: string;
@@ -26,23 +26,37 @@ const Notification = ({ message, type, isVisible = false, close, autoHide = 4000
 
     if (!isVisible) return null;
 
+    const typeClass =
+        type === 'success'
+            ? styles.success
+            : type === 'error'
+                ? styles.error
+                : styles.warning;
+
     const notificationElement = (
-        <div data-testid="notification" className={`notification notification-${type}`}>
-            <div className="notification-content">
-                <span className="notification-icon">
+        <div data-testid="notification" className={`${styles.notification} ${typeClass}`}>
+            <div className={styles.notificationContent}>
+                <span className={styles.notificationIcon}>
                     {type === 'success' && <SuccessCheck />}
                     {type === 'error' && <Cross />}
                     {type === 'warning' && <Warning />}
                 </span>
-                <p className="notification-message">{message}</p>
-                <button data-testid="close-button" className="notification-close" onClick={close}>×</button>
+                <p className={styles.notificationMessage}>{message}</p>
+                <button
+                    data-testid="close-button"
+                    className={styles.notificationClose}
+                    onClick={close}
+                >
+                    ×
+                </button>
             </div>
         </div>
     );
 
-    const portalRoot = typeof window !== 'undefined'
-        ? document.getElementById('notification-root')
-        : null;
+    const portalRoot =
+        typeof window !== 'undefined'
+            ? document.getElementById('notification-root')
+            : null;
 
     return portalRoot ? createPortal(notificationElement, portalRoot) : null;
 };

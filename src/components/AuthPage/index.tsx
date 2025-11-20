@@ -10,7 +10,7 @@ import { signUp, signIn, updateAuthMode } from '@/slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
 
-import './style.css';
+import styles from './style.module.css';
 import { Envelope, Eye } from '@/svgs';
 
 interface Mode {
@@ -90,68 +90,75 @@ const AuthPage = ({ mode }: Mode) => {
   };
 
   return (
-    <div className="authPage" data-theme={theme}>
-      <div className="mainInfo">
-        <h2>{authMode === 'signup' ? t('createAccount') : t('signInAccount')}</h2>
-        <p>
-          {t('enterEmailPassword')} <br />
+    <div className={styles.authPage} data-theme={theme}>
+      <div className={styles.mainInfo}>
+        <h2 className={styles.mainInfoTitle}>
+          {authMode === 'signup' ? t('createAccount') : t('signInAccount')}
+        </h2>
+        <p className={styles.mainInfoText}>
+          {t('enterEmailPassword')}<br />
           {authMode === 'signup' ? t('toSignUp') : t('toSignIn')} {t('thisApp')}
         </p>
       </div>
 
-      <Formik
-        initialValues={INITIAL_VALUES}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => {
-          return (
-            <Form className="authBox" noValidate>
-              <label htmlFor="email">
-                <Envelope />
-                <p>{t('email')}</p>
-              </label>
-              <Field
+      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+        {({ isSubmitting }) => (
+          <Form className={styles.authBox} noValidate>
+            <label htmlFor="email" className={styles.label}>
+              <Envelope />
+              <p>{t('email')}</p>
+            </label>
+            <Field
               data-testid="email"
-                type="email"
-                name="email"
-                id="email"
-                placeholder={t('emailPlaceholder')}
-              />
+              type="email"
+              name="email"
+              id="email"
+              placeholder={t('emailPlaceholder')}
+              className={styles.input}
+            />
 
-              <label htmlFor="password">
-                <Eye />
-                <p>{t('password')}</p>
-              </label>
-              <Field
+            <label htmlFor="password" className={styles.label}>
+              <Eye />
+              <p>{t('password')}</p>
+            </label>
+            <Field
               data-testid="password"
-                type="password"
-                name="password"
-                id="password"
-                placeholder={t('passwordPlaceholder')}
-              />
+              type="password"
+              name="password"
+              id="password"
+              placeholder={t('passwordPlaceholder')}
+              className={styles.input}
+            />
 
-              <button data-testid="submit-button" type="submit" disabled={isSubmitting}>
-                {authMode === 'signup' ? t('signUp') : t('signIn')}
-              </button>
+            <button
+              data-testid="submit-button"
+              type="submit"
+              disabled={isSubmitting}
+              className={styles.button}
+            >
+              {authMode === 'signup' ? t('signUp') : t('signIn')}
+            </button>
 
-              {authMode === 'signup' && (
-                <small>
-                  {t('termsAgreement')} <span>{t('termsOfService')}</span><br />
-                  {t('and')} <span>{t('privacyPolicy')}</span>
-                </small>
-              )}
+            {authMode === 'signup' && (
+              <small className={styles.smallText}>
+                {t('termsAgreement')} <span>{t('termsOfService')}</span><br />
+                {t('and')} <span>{t('privacyPolicy')}</span>
+              </small>
+            )}
 
-              <p className="switchLink" onClick={() => {
+            <p
+              className={styles.switchLink}
+              onClick={() => {
                 router.push(authMode === 'signup' ? '/sign-in' : '/sign-up');
-                updateAuthMode(authMode === 'signup' ? 'signin' : 'signup');
-              }}>
-                {authMode === 'signup'
-                  ? <>{t('alreadyHaveAccount')} <span>{t('signInLink')}</span></>
-                  : <>{t('dontHaveAccount')} <span>{t('signUpLink')}</span></>}
-              </p>
-            </Form>
-          )
-        }}
+                dispatch(updateAuthMode(authMode === 'signup' ? 'signin' : 'signup'));
+              }}
+            >
+              {authMode === 'signup'
+                ? <>{t('alreadyHaveAccount')} <span>{t('signInLink')}</span></>
+                : <>{t('dontHaveAccount')} <span>{t('signUpLink')}</span></>}
+            </p>
+          </Form>
+        )}
       </Formik>
     </div>
   );

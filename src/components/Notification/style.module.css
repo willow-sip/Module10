@@ -22,7 +22,7 @@
   }
 }
 
-.notification-content {
+.notificationContent {
   display: flex;
   align-items: center;
   padding: 16px;
@@ -30,32 +30,32 @@
   border-radius: 8px;
 }
 
-.notification-success .notification-content {
+.success .notificationContent {
   background: #4CAF50;
 }
 
-.notification-error .notification-content {
+.error .notificationContent {
   background: #F44336;
 }
 
-.notification-warning .notification-content {
+.warning .notificationContent {
   background: #FF9800;
 }
 
-.notification-icon {
+.notificationIcon {
   font-size: 1.5rem;
   margin-right: 12px;
   flex-shrink: 0;
 }
 
-.notification-message {
+.notificationMessage {
   margin: 0;
   font-size: 1rem;
   flex-grow: 1;
   word-break: break-word;
 }
 
-.notification-close {
+.notificationClose {
   background: none;
   border: none;
   color: white;
@@ -72,7 +72,7 @@
   transition: background 0.2s;
 }
 
-.notification-close:hover {
+.notificationClose:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 

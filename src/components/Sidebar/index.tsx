@@ -1,8 +1,8 @@
 'use client';
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import './style.css';
+import styles from './style.module.css';
 
 import { User, Group } from '@/data/datatypes';
 import enableAuth from '../WithAuthAndTranslation';
@@ -85,22 +85,24 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
         const theme = useTheme.getState().theme;
 
         return (
-            <aside className="sidebar" data-theme={theme}>
-                <div className="recPeople">
+            <aside className={styles.sidebar} data-theme={theme}>
+                <div className={styles.recPeople}>
                     <h4>{t('sugPeople')}</h4>
-                    {this.state.loading ? (<p data-testid="load-sug-people">{t('loadSugPeople')}</p>) : (
+                    {this.state.loading ? (
+                        <p data-testid="load-sug-people">{t('loadSugPeople')}</p>
+                    ) : (
                         <>
                             {suggestedUsers?.map(user => (
-                                <div className="person" key={user.id}>
+                                <div className={styles.person} key={user.id}>
                                     <Image
                                         src={user.profileImage || '/imgs/default-avatar.jpg'}
                                         data-testid="Person avatar"
-                                        className="avatar"
+                                        className={styles.avatar}
                                         alt="Person avatar"
                                         width={48}
                                         height={48}
                                     />
-                                    <div className="personalInfo">
+                                    <div className={styles.personalInfo}>
                                         <p>{user.firstName} {user.secondName}</p>
                                         <small>@{user.username}</small>
                                     </div>
@@ -109,21 +111,23 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                         </>
                     )}
                 </div>
-                <div className="recCommunities">
+                <div className={styles.recCommunities}>
                     <h4>{t('sugGroups')}</h4>
-                    {this.state.loading ? (<p data-testid="load-sug-groups">{t('loadSugGroups')}</p>) : (
+                    {this.state.loading ? (
+                        <p data-testid="load-sug-groups">{t('loadSugGroups')}</p>
+                    ) : (
                         <>
                             {groups.map(group => (
-                                <div className="community" key={group.id}>
+                                <div className={styles.community} key={group.id}>
                                     <Image
                                         src={group.photo}
                                         data-testid="Community avatar"
-                                        className="avatar"
+                                        className={styles.avatar}
                                         alt="Community avatar"
                                         width={48}
                                         height={48}
                                     />
-                                    <div className="communityInfo">
+                                    <div className={styles.communityInfo}>
                                         <p>{group.title}</p>
                                         <small>{group.membersCount} {t('members')}</small>
                                     </div>

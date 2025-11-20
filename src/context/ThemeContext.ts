@@ -7,21 +7,15 @@ type ThemeState = {
 }
 
 export const useTheme = create<ThemeState>()((set, get) => {
-    let initialTheme = 'dark';
-
-    if (typeof window !== 'undefined') {
-        const savedTheme = localStorage.getItem('theme');
-        initialTheme = savedTheme || 'dark';
-        document.body.setAttribute('data-theme', initialTheme);
-    }
-
     return {
-        theme: initialTheme,
+        theme: 'dark',
 
         updateTheme: (newTheme: string) => {
             set({ theme: newTheme });
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage?.setItem('theme', newTheme);
+            if (typeof window !== 'undefined') {
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
         },
 
         toggleTheme: () => {

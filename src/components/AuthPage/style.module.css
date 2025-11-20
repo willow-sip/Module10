@@ -24,22 +24,29 @@
     margin-bottom: 18px;
 }
 
-.mainInfo h2 {
+.mainInfoTitle {
     font-size: 18px;
     margin: 0;
     text-align: center;
 }
 
-.mainInfo p {
+.mainInfoText {
     font-size: 14px;
     text-align: center;
 }
 
-.authBox label {
+.label {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+    height: 20px;
+    font-weight: 500;
     font-size: 14px;
+    color: var(--text-color);
 }
 
-.authBox input {
+.input {
     height: 48px;
     padding: 10px 12px;
     border: 2px solid var(--border-color);
@@ -48,15 +55,15 @@
     font-size: 14px;
 }
 
-.authBox input:focus {
+.input:focus {
     outline: none;
 }
 
-.authBox input::placeholder {
+.input::placeholder {
     color: var(--border-color);
 }
 
-.authBox button {
+.button {
     height: 44px;
     background-color: #FF8811;
     color: var(--text-color);
@@ -68,18 +75,18 @@
     transition: background-color 0.2s ease;
 }
 
-.authBox button:hover {
+.button:hover {
     background-color: #e65c00;
 }
 
-.authBox small {
+.smallText {
     font-size: 12px;
     text-align: center;
     color: var(--small-text-color);
     margin-top: 18px;
 }
 
-.authBox small span {
+.smallText span {
     color: var(--text-color);
     cursor: pointer;
 }
@@ -97,23 +104,12 @@
     font-weight: 500;
 }
 
-.authBox label {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-    align-items: center;
-    height: 20px;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-color);
-}
-
 @media (max-width: 768px) {
     .authPage {
         width: 100%;
     }
 
-    .authBox button {
+    .button {
         height: 44px;
     }
 }
