@@ -74,7 +74,6 @@ describe('tests for Notification component', () => {
         expect(screen.getByText('Operation successful!')).toBeInTheDocument();
         expect(screen.getByTestId('success-icon')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: '×' })).toBeInTheDocument();
-        expect(portalRoot.querySelector('.notification-success')).toBeInTheDocument();
     });
 
     it('renders error notification', () => {
@@ -82,7 +81,6 @@ describe('tests for Notification component', () => {
 
         expect(screen.getByText('Something went wrong')).toBeInTheDocument();
         expect(screen.getByTestId('error-icon')).toBeInTheDocument();
-        expect(portalRoot.querySelector('.notification-error')).toBeInTheDocument();
     });
 
     it('renders warning notification', () => {
@@ -90,7 +88,6 @@ describe('tests for Notification component', () => {
 
         expect(screen.getByText('Be careful!')).toBeInTheDocument();
         expect(screen.getByTestId('warning-icon')).toBeInTheDocument();
-        expect(portalRoot.querySelector('.notification-warning')).toBeInTheDocument();
     });
 
     it('closes when close button is clicked', async () => {

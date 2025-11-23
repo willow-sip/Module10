@@ -77,7 +77,7 @@ describe('tests for Profile component', () => {
         email: 'admin@mail.ru',
         password: '12345',
         description: "Some test description",
-        profileImage: 'assets/test.png'
+        profileImage: '/assets/test.png'
     };
 
     beforeEach(() => {
@@ -94,7 +94,7 @@ describe('tests for Profile component', () => {
         expect(screen.getByTestId('username')).toHaveValue("admin");
         expect(screen.getByTestId('email')).toHaveValue("admin@mail.ru");
         expect(screen.getByTestId('description')).toHaveValue("Some test description");
-        expect(screen.getByTestId('profile-image-preview')).toHaveAttribute('src', 'assets/test.png');
+        expect(screen.getByTestId('profile-image-preview')).toHaveAttribute('src', expect.stringContaining('assets%2Ftest.png'));
     });
 
     it('submits changes in data', async () => {
@@ -152,7 +152,7 @@ describe('tests for Profile component', () => {
 
         const validFile = new File(['its a photo i swear'], 'avatar.png', { type: 'image/png' });
         fireEvent.change(fileInput, { target: { files: [validFile] } });
-        expect(screen.getByTestId('profile-image-preview')).toHaveAttribute('src', 'blob:test-url');
+        expect(screen.getByTestId('profile-image-preview')).toHaveAttribute('src', expect.stringContaining('blob:test-url'));
 
         const invalidFile = new File(['its not a photo'], 'text.txt', { type: 'text/plain' });
         fireEvent.change(fileInput, { target: { files: [invalidFile] } });

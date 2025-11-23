@@ -70,14 +70,14 @@ describe('tests for Header component', () => {
         renderWithStore({
             auth: {
                 userAuth: true,
-                user: { id: 0, username: "blaba", firstName: 'Diana', secondName: 'Loyuk', profileImage: 'avatar.jpg' },
+                user: { id: 0, username: "blaba", firstName: 'Diana', secondName: 'Loyuk', profileImage: '/avatar.jpg' },
                 authMode: null,
                 expiresAt: Date.now(),
             },
         });
 
         expect(screen.getByText('Diana Loyuk')).toBeInTheDocument();
-        expect(screen.getByAltText('User avatar')).toHaveAttribute('src', 'avatar.jpg');
+        expect(screen.getByAltText('User avatar')).toHaveAttribute('src', expect.stringContaining('avatar.jpg'));
         expect(screen.getByTestId('logout')).toBeInTheDocument();
     });
 

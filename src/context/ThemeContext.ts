@@ -6,9 +6,21 @@ type ThemeState = {
     toggleTheme: () => void;
 }
 
+const getInitialTheme = (): string => {
+    if (typeof window === 'undefined') return 'dark';
+    const saved = localStorage.getItem('theme');
+    return saved === 'light' || saved === 'dark' ? saved : 'dark';
+};
+
+
 export const useTheme = create<ThemeState>()((set, get) => {
+    const initialTheme = getInitialTheme();
+    if (typeof window !== 'undefined') {
+        document.body.setAttribute('data-theme', initialTheme);
+    }
+
     return {
-        theme: 'dark',
+        theme: initialTheme,
 
         updateTheme: (newTheme: string) => {
             set({ theme: newTheme });

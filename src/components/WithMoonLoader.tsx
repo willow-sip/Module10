@@ -3,8 +3,14 @@
 import { Box, CircularProgress } from '@mui/material';
 import { Suspense } from 'react';
 
-function WithMoonLoader<T extends object>(WrappedComponent: React.ComponentType<T>) {
-    return function VerificationComponent(props: T) {
+interface Props {
+    props: {
+        authMode: "signin" | "signup";
+    } | null;
+}
+
+function WithMoonLoader(WrappedComponent: React.ComponentType<Props>) {
+    return function VerificationComponent(props: Props) {
         return (
             <Suspense fallback={
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>

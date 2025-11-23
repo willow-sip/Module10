@@ -30,7 +30,7 @@ const AddPost = ({ avatar, postCreated }: Props) => {
                     <Image
                         data-testid="user-avatar"
                         className="avatar"
-                        src={avatar || './imgs/default-avatar.jpg'}
+                        src={avatar || '/imgs/default-avatar.jpg'}
                         width={64}
                         height={64}
                         alt="User avatar"

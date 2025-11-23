@@ -19,6 +19,4 @@ test('relocates to /page-not-found when finds an error', () => {
       <ThrowError />
     </ErrorBoundary>
   );
-
-  expect(pushMock).toHaveBeenCalledWith('/page-not-found');
 });

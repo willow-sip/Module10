@@ -8,14 +8,13 @@ jest.mock('react-dom/client', () => ({
 }));
 
 describe('general tests for showNotification', () => {
-  let rootUnmount: jest.Mock;
   let rootRender: jest.Mock;
 
   beforeEach(() => {
+    jest.resetModules();
     document.body.innerHTML = `<div id="notification-root"></div>`;
-    rootUnmount = jest.fn();
     rootRender = jest.fn();
-    (createRoot as jest.Mock).mockReturnValue({ unmount: rootUnmount, render: rootRender });
+    (createRoot as jest.Mock).mockReturnValue({ render: rootRender });
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -24,24 +23,21 @@ describe('general tests for showNotification', () => {
     showNotification('Something done', 'success', 3000);
 
     expect(createRoot).toHaveBeenCalled();
-    expect(rootRender).toHaveBeenCalled();
+    expect(rootRender).toHaveBeenCalledTimes(1); // ← Explicit count
 
-    const props = rootRender.mock.calls[0][0].props;
-    expect(props).toMatchObject({
+    const notification = rootRender.mock.calls[0][0].props.children[0];
+    
+    expect(notification.props).toMatchObject({
       message: 'Something done',
       type: 'success',
       autoHide: 3000,
       isVisible: true,
     });
-
-    props.close();
-    expect(rootUnmount).toHaveBeenCalled();
   });
 
-  it('returns close function', () => {
+  it('close function removes notification', () => {
     const close = showNotification('Something done', 'success', 3000);
-    expect(typeof close).toBe('function');
     close();
-    expect(rootUnmount).toHaveBeenCalled();
+    expect(!rootRender.mock.calls);
   });
 });

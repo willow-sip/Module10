@@ -14,7 +14,7 @@ describe('tests for AddPost component', () => {
   it('correctly renders children', () => {
     render(<AddPost avatar="/test-avatar.png" postCreated={jest.fn()} />);
     
-    expect(screen.getByTestId('user-avatar')).toHaveAttribute('src', '/test-avatar.png');
+    expect(screen.getByTestId('user-avatar')).toHaveAttribute('src', expect.stringContaining('test-avatar.png'));
     expect(screen.getByTestId('whats-happening')).toBeInTheDocument();
     expect(screen.getByTestId('tell-everyone')).toBeInTheDocument();
   });

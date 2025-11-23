@@ -54,7 +54,7 @@ const Profile = () => {
             username: user?.username || '',
             email: user?.email || '',
             description: user?.description || '',
-            profileImage: user?.profileImage || './imgs/default-avatar.jpg',
+            profileImage: user?.profileImage || '/imgs/default-avatar.jpg',
             firstName: user?.firstName || '',
             secondName: user?.secondName || ''
         },
@@ -68,7 +68,7 @@ const Profile = () => {
         } else if (user?.profileImage) {
             setPreviewImage(user.profileImage);
         } else {
-            setPreviewImage('./imgs/default-avatar.jpg');
+            setPreviewImage('/imgs/default-avatar.jpg');
         }
     }, [selectedFile, user?.profileImage]);
 
@@ -135,7 +135,7 @@ const Profile = () => {
         try {
             updateUserRequest.mutate({
                 ...data,
-                profileImage: user?.profileImage || './imgs/default-avatar.jpg',
+                profileImage: user?.profileImage || '/imgs/default-avatar.jpg',
                 firstName: user?.firstName || '',
                 secondName: user?.secondName || ''
             });

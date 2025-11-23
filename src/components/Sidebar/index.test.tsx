@@ -87,7 +87,7 @@ describe('tests for Sidebar component', () => {
         });
 
         expect(screen.getAllByTestId('Person avatar')).toHaveLength(2);
-        expect(screen.getByTestId('Community avatar')).toHaveAttribute('src', '/other/img/path.png');
+        expect(screen.getByTestId('Community avatar')).toHaveAttribute('src', expect.stringContaining('%2Fother%2Fimg%2Fpath.png'));
 
         expect(tokenApi.post).toHaveBeenCalledWith('/graphql', expect.objectContaining({
             query: expect.stringContaining('allGroups'),

@@ -1,31 +1,59 @@
 import { createRoot } from 'react-dom/client';
 import Notification from '@/components/Notification';
 
-const createContainer = () => {
-    const container = document.createElement('div');
-    container.id = `notification-${Date.now()}`;
-    document.getElementById('notification-root')?.appendChild(container);
+let container: HTMLElement | null = null;
+let root: ReturnType<typeof createRoot> | null = null;
+
+let notifications: Array<{
+    id: number;
+    message: string;
+    type: 'success' | 'error' | 'warning';
+    autoHide: number;
+}> = [];
+
+const getContainer = () => {
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        document.getElementById('notification-root')?.appendChild(container);
+    }
     return container;
 };
 
-export const showNotification = (message: string, type: 'success' | 'error' | 'warning', autoHide: number = 4000) => {
-    const container = createContainer();
-    const root = createRoot(container);
+const render = () => {
+    const container = getContainer();
 
-    const close = () => {
-        root.unmount();
-        container.remove();
-    };
+    if (!root) {
+        root = createRoot(container);
+    }
 
     root.render(
-        <Notification
-            message={message}
-            type={type}
-            isVisible={true}
-            close={close}
-            autoHide={autoHide}
-        />
+        <>
+            {notifications.map(notification => (
+                <Notification
+                    key={notification.id}
+                    message={notification.message}
+                    type={notification.type}
+                    isVisible={true}
+                    autoHide={notification.autoHide}
+                    close={() => {
+                        notifications = notifications.filter(x => x.id !== notification.id);
+                        render();
+                    }}
+                />
+            ))}
+        </>
     );
+};
 
-    return close;
+export const showNotification = (message: string, type: 'success' | 'error' | 'warning', autoHide: number = 4000) => {
+    const id = Date.now();
+    notifications.push({ id, message, type, autoHide });
+
+    render();
+
+    return () => {
+        notifications = notifications.filter(n => n.id !== id);
+        render();
+    };
 };
