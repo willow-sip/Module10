@@ -28,6 +28,10 @@ jobs:
 
       - name: Build Next.js static export
         run: npm run build
+      - name: Copy mockServiceWorker.js to root of out/ (for MSW)
+        run: |
+          cp out/Module10/mockServiceWorker.js out/mockServiceWorker.js
+          touch out/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -37,19 +41,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-    
-      - name: Copy MSW worker from public to out
-        run: |
-          cp public/mockServiceWorker.js out/mockServiceWorker.js
-          mkdir -p out/Module10
-          cp public/mockServiceWorker.js out/Module10/mockServiceWorker.js
-          touch out/.nojekyll
-          
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
