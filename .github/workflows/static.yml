@@ -27,15 +27,11 @@ jobs:
       - name: Build Next.js static export
         run: npm run build
 
-      - run: touch out/.nojekyll
-
-      - run: cp -r public/* out/ || true
-
-      - name: Ensure mockServiceWorker.js exists in both locations
-        run: |
-          cp public/mockServiceWorker.js out/ || echo "No worker in public/"
-          mkdir -p out/Module10
-          cp public/mockServiceWorker.js out/Module10/ || echo "No worker in public/"
+      - name: Fix MSW Service Worker placement
+        run: touch out/.nojekyll
+        run: cp public/mockServiceWorker.js out/mockServiceWorker.js
+        run: mkdir -p out/Module10
+        run: cp public/mockServiceWorker.js out/Module10/mockServiceWorker.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
