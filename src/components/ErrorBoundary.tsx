@@ -1,10 +1,8 @@
 'use client';
 
 import { Component, ReactNode } from 'react';
-import { NextRouter } from 'next/router';
 
-
-class ErrorBoundary extends Component<{ children: ReactNode; router: NextRouter }> {
+class ErrorBoundary extends Component<{ children: ReactNode }> {
     state = {
         hasError: false
     };

@@ -14,7 +14,7 @@ import styles from './style.module.css';
 import { Envelope, Eye } from '@/svgs';
 
 interface Mode {
-  mode: 'signup' | 'signin';
+  mode?: 'signup' | 'signin';
 }
 
 const INITIAL_VALUES = { email: '', password: '' };
@@ -27,7 +27,7 @@ const AuthPage = ({ mode }: Mode) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(updateAuthMode(mode));
+    dispatch(updateAuthMode(mode ?? "signin"));
   }, [mode, dispatch]);
 
   const validate = (values: { email: string; password: string }) => {

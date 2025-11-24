@@ -7,8 +7,10 @@ import { showNotification } from '@/components/notify';
 import { Post as PostType, User, Comment as CommentType } from '@/data/datatypes';
 import { TFunction } from 'i18next';
 
-import { PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
-  Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart} from './Post.styles';
+import {
+    PostContainer, Author, Avatar, LoadingAvatar, AuthorInfo, AuthorName, PublishTime, PostImage, PostTitle, PostContent, PostButtons,
+    Button, Likes, Comments, CommentSection, AddComment, AddCommentHeader, CommentTextarea, AddCommentButton, Spinner, AnimatedHeart
+} from './Post.styles';
 import { ArrowDown, ArrowUp, CommentSvg, LikeSvg, Pencil } from '@/svgs';
 import enableAuth from '../WithAuthAndTranslation';
 import { tokenApi } from '@/tokenApi';
@@ -202,8 +204,10 @@ class Post extends Component<PostProps, PostState> {
         this.loadCommentsAndAuthor();
     }
 
-    componentDidUpdate() {
-        this.loadCommentsAndAuthor();
+    componentDidUpdate(prevProps: PostProps) {
+        if (prevProps.post.id !== this.props.post.id) {
+            this.loadCommentsAndAuthor();
+        }
     }
 
 

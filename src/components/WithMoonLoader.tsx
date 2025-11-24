@@ -3,11 +3,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import { Suspense } from 'react';
 
-interface Props {
-    props: {
-        authMode: "signin" | "signup";
-    } | null;
-}
+type Props = { mode?: 'signin' | 'signup' };
 
 function WithMoonLoader(WrappedComponent: React.ComponentType<Props>) {
     return function VerificationComponent(props: Props) {

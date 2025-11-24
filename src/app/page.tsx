@@ -3,19 +3,19 @@
 import { useTheme } from '@/context/ThemeContext';
 import AddPost from '@/components/AddPost';
 import Sidebar from '@/components/Sidebar';
-import { Post } from '@/data/datatypes';
-import dynamic from 'next/dynamic';
+import { Post as PostType } from '@/data/datatypes';
+import React, { Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { tokenApi } from '@/tokenApi';
+import { useTranslation } from 'react-i18next';
 
-const DynamicPost = dynamic(() => import('@/components/Post'), {
-  loading: () => <p>Loading post...</p>,
-});
+const LazyPost = React.lazy(() => import('@/components/Post'));
 
 export default function HomePage() {
   const { user, userAuth } = useSelector((state: RootState) => state.auth);
+  const { t } = useTranslation();
   const { theme } = useTheme();
 
   const { data: posts = [], refetch, isLoading, isError } = useQuery({
@@ -34,9 +34,17 @@ export default function HomePage() {
         <div className="posts">
           {isLoading && <p>Loading posts...</p>}
           {isError && <p>Could not load posts.</p>}
-          {!isLoading && !isError && posts.map((post: Post) => (
-            <DynamicPost key={post.id} post={post} />
-          ))}
+          <Suspense fallback={<p>Loading post...</p>}>
+            {posts.map((post: PostType) => (
+              <LazyPost
+                key={post.id}
+                post={post}
+                user={user}
+                userAuth={userAuth}
+                t={t}
+              />
+            ))}
+          </Suspense>
         </div>
       </div>
     </div>

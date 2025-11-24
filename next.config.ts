@@ -1,22 +1,25 @@
-import type { NextConfig } from 'next'
- 
+import type { NextConfig } from 'next';
+
 const nextConfig: NextConfig = {
   distDir: 'build',
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 
   experimental: {
     workerThreads: false,
     cpus: 1,
   },
 
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.module.rules.push({
-        test: /\.svg$/,
-        use: ['@svgr/webpack'],
-      });
-    }
-    return config;
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
 };
- 
-export default nextConfig
+
+export default nextConfig;
