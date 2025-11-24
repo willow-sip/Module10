@@ -28,9 +28,10 @@ jobs:
 
       - name: Build Next.js static export
         run: npm run build
-      - name: Copy mockServiceWorker.js to root of out/ (for MSW)
+
+      - name: Ensure mockServiceWorker.js is in root (for safety)
         run: |
-          cp out/Module10/mockServiceWorker.js out/mockServiceWorker.js
+          cp public/mockServiceWorker.js out/mockServiceWorker.js
           touch out/.nojekyll
 
       - name: Upload artifact
