@@ -1,3 +1,14 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [stage2]  # ← обязательно указать вашу ветку
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
