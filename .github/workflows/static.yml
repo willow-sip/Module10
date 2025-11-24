@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [stage2]  # ← обязательно указать вашу ветку
+    branches: [stage2]
 
 permissions:
   contents: read
@@ -21,17 +21,14 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
 
-      - name: Build static site
-        run: npm run build  # ← next.config.js содержит output: 'export'
+      - run: cp -r public/* out/
 
-      - name: Copy public assets (optional but safe)
-        run: cp -r public/* out/ || echo "No public assets to copy"
+      - run: cp public/mockServiceWorker.js out/ || echo "mockServiceWorker.js not found"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
@@ -42,6 +39,4 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
