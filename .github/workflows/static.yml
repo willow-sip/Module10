@@ -28,10 +28,13 @@ jobs:
         run: npm run build
 
       - name: Fix MSW Service Worker placement
-        run: touch out/.nojekyll
-        run: cp public/mockServiceWorker.js out/mockServiceWorker.js
-        run: mkdir -p out/Module10
-        run: cp public/mockServiceWorker.js out/Module10/mockServiceWorker.js
+        run: |
+          touch out/.nojekyll
+          
+          cp public/mockServiceWorker.js out/mockServiceWorker.js
+          
+          mkdir -p out/Module10
+          cp public/mockServiceWorker.js out/Module10/mockServiceWorker.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
