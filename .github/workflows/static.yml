@@ -24,9 +24,9 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - run: mkdir -p out/Module10
-      # - run: cp -r out/* out/Module10/
-      - run: cp public/mockServiceWorker.js out/ 
+      - run: cp -r public/* out/
+
+      - run: cp public/mockServiceWorker.js out/ || echo "mockServiceWorker.js not found"
 
       - uses: actions/upload-pages-artifact@v3
         with:

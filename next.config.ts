@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'export',
   trailingSlash: false,
+  basePath: '/Module10',
 
   typescript: {
     ignoreBuildErrors: true,
