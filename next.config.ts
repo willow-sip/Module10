@@ -1,7 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  distDir: 'build',
+  output: 'export',
+  trailingSlash: false,
 
   typescript: {
     ignoreBuildErrors: true,
@@ -11,7 +12,7 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     cpus: 1,
   },
-
+  
   turbopack: {
     rules: {
       '*.svg': {
