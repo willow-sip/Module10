@@ -25,7 +25,7 @@ jobs:
       - run: npm run build
 
       - run: mkdir -p out/Module10
-      - run: cp -r out/* out/Module10/
+      # - run: cp -r out/* out/Module10/
       - run: cp public/mockServiceWorker.js out/ 
 
       - uses: actions/upload-pages-artifact@v3
