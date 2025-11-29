@@ -197,7 +197,7 @@ class Post extends Component<PostProps, PostState> {
                         commentLength: 0,
                         addingComment: false,
                     }));
-                    showNotification('Comment updated!', 'success', 2000);
+                    showNotification(this.props.t('createComment'), 'success', 2000);
                 }
             }).catch(err => console.error(err));
     };
@@ -228,7 +228,7 @@ class Post extends Component<PostProps, PostState> {
             })
             .catch(err => {
                 console.error('Error toggling like:', err);
-                showNotification('Network error', 'error', 2000);
+                showNotification(this.props.t('networkError'), 'error', 2000);
             });
     };
 
