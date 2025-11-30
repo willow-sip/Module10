@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import Comment from '../Comment';
 import { useTheme } from '@/context/ThemeContext';
 import { showNotification } from '@/components/notify';
@@ -63,6 +63,9 @@ class Post extends Component<PostProps, PostState> {
         this.deleteComment = this.deleteComment.bind(this);
     }
 
+    commentBlockRef = createRef<HTMLDivElement>();
+    commentWrapperRef = createRef<HTMLDivElement>();
+
     editComment(newText: string, commentId?: number) {
         this.setState((prev) => ({
             comments: prev.comments?.map((c) =>
@@ -83,9 +86,32 @@ class Post extends Component<PostProps, PostState> {
     }
 
     toggleShowComments = () => {
-        this.setState(prevState => ({
-            showComments: !prevState.showComments
-        }));
+        const content = this.commentBlockRef.current;
+        const wrapper = this.commentWrapperRef.current;
+        if (!content || !wrapper){
+            return;
+        }
+
+        if (!this.state.showComments) {
+            wrapper.style.height = content.scrollHeight + "px";
+            this.setState({ showComments: true });
+        } else {
+            wrapper.style.height = content.scrollHeight + "px";
+            void wrapper.offsetHeight;
+            wrapper.style.height = "0px";
+            this.setState({ showComments: false });
+        }
+    };
+    handleTransitionEnd = () => {
+        const content = this.commentBlockRef.current;
+        const wrapper = this.commentWrapperRef.current;
+        if (!content || !wrapper){
+            return;
+        }
+
+        if (this.state.showComments) {
+            wrapper.style.height = "auto";
+        }
     };
 
     handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -294,8 +320,8 @@ class Post extends Component<PostProps, PostState> {
                     )}
                 </PostButtons>
 
-                <AnimatedCommentSection height={showComments ? "1000px" : "0"}>
-                    <CommentSection >
+                <AnimatedCommentSection ref={this.commentWrapperRef} onTransitionEnd={this.handleTransitionEnd}>
+                    <CommentSection ref={this.commentBlockRef}>
                         {comments?.map((comment) => (
                             <Comment
                                 key={comment.id}

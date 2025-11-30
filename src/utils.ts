@@ -1,3 +1,5 @@
+import { RefObject } from "react";
+
 export const calculatePublishTime = (creationDate: string): { num: number, timeType: string } => {
     const now = new Date();
     const published = new Date(creationDate);
@@ -64,4 +66,10 @@ export const mapEndings = (lCount: number, cCount: number): { likesEnding: strin
     }
 
     return result;
+}
+
+export const calculateHeight = (ref: RefObject<HTMLDivElement | null>, visible?: boolean) => {
+    const element = ref.current;
+    if (!element) return "0";
+    return visible ? `${element.scrollHeight}px` : "0";
 }

@@ -7,6 +7,7 @@ import { MockProvider } from '@/context/MockProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import i18n from '@/i18next';
+import { AuthProvider } from '@/context/AuthProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -29,7 +30,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
           <MockProvider>
-              {children}
+            <AuthProvider />
+            {children}
           </MockProvider>
         </ErrorBoundary>
       </QueryClientProvider>

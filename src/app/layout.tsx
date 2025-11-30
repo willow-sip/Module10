@@ -27,7 +27,6 @@ export default function RootLayout({
                 <Providers>
                     <div className="app" data-theme="dark">
                         <Header />
-                        <AuthProvider />
                         <div id="root">
                             <div id="notification-root" />
                             {children}
