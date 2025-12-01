@@ -2,8 +2,8 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/Module10',
-  assetPrefix: '/Module10/',
+  basePath: process.env.NODE_ENV === 'production' ? '/Module10' : '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_URL || '',
 
   typescript: {
     ignoreBuildErrors: true,
@@ -16,6 +16,27 @@ const nextConfig: NextConfig = {
 
   images: {
     unoptimized: true,
+  },
+  async redirects() {
+    return [
+      {
+        source: '/mockServiceWorker.js',
+        destination: '/Module10/mockServiceWorker.js',
+        permanent: true,
+        basePath: false,
+      },
+    ]
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/mockServiceWorker.js',
+          destination: '/Module10/mockServiceWorker.js',
+          basePath: false,
+        },
+      ],
+    }
   },
   
   turbopack: {
