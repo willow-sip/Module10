@@ -29,12 +29,23 @@ jobs:
       - name: Build Next.js static export
         run: npm run build
 
-      - name: Prepare deploy folder
+      - run: touch out/.nojekyll
+
+      - run: cp -r public/* out/ || true
+
+      - name: Ensure mockServiceWorker.js exists in both locations
         run: |
-          mkdir -p deploy
-          cp -r public/* deploy/
-          cp -r .next deploy/.next
-          touch deploy/.nojekyll
-      - name: Deploy
-        run: echo "Deploy your 'deploy/' folder here"
-        
+          cp public/mockServiceWorker.js out/ || echo "No worker in public/"
+          mkdir -p out/Module10
+          cp public/mockServiceWorker.js out/Module10/ || echo "No worker in public/"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+    jobs:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
