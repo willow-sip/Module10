@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
 
   images: {
     unoptimized: true,
+    path: '/Module10'
   },
   
   turbopack: {
