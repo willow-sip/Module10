@@ -2,8 +2,8 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/Module10' : '',
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_URL || '',
+  basePath: '/Module10',
+  assetPrefix: '/Module10/',
 
   typescript: {
     ignoreBuildErrors: true,
