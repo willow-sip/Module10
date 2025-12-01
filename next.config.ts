@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/Module10',
+  basePath: 'https://willow-sip.github.io/Module10/',
   assetPrefix: '/Module10/',
 
   typescript: {
