@@ -31,7 +31,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.MODULE_GITHUB_TOKEN }}
-          publish_dir: ./out 
+          publish_dir: ./deploy 
           user_name: willow-sip
           user_email: wyrrrth.sip@gmail.com
           force_orphan: true
