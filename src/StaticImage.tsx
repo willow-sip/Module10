@@ -6,6 +6,6 @@ interface Props {
 }
 
 export default function StaticImage({ src, alt, width, height, ...props }: Props) {
-  const fixedSrc = src.startsWith('/') ? `/Module10/${src}` : src;
+  const fixedSrc = src.startsWith('/') ? `/Module10${src}` : src;
   return <img src={fixedSrc} alt={alt} width={width} height={height} {...props} />;
 }
