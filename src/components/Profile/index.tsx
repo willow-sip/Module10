@@ -164,7 +164,8 @@ const Profile = () => {
                     <form id="profile-form" onSubmit={handleSubmit(onSubmit, onError)}>
                         <div className="profile-header">
                             <Image
-                                src={previewImage}
+                                src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                    + (previewImage)}
                                 data-testid="profile-image-preview"
                                 className="avatar"
                                 alt="Profile"

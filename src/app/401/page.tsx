@@ -11,7 +11,7 @@ export default function Unauthorized() {
     <div className="error-page">
       <Image
         className="error-image"
-        src="/imgs/401error.png"
+        src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "") + "/imgs/401error.png"}
         width={150}
         height={150}
         alt="Image of error 401"

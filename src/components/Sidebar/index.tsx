@@ -95,7 +95,8 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                             {suggestedUsers?.map(user => (
                                 <div className={styles.person} key={user.id}>
                                     <Image
-                                        src={user.profileImage || '/imgs/default-avatar.jpg'}
+                                        src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                            + (user.profileImage || '/imgs/default-avatar.jpg')}
                                         data-testid="Person avatar"
                                         className={styles.avatar}
                                         alt="Person avatar"
@@ -120,7 +121,8 @@ class Sidebar extends Component<SidebarProps, SidebarState> {
                             {groups.map(group => (
                                 <div className={styles.community} key={group.id}>
                                     <Image
-                                        src={group.photo}
+                                        src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                            + (group.photo)}
                                         data-testid="Community avatar"
                                         className={styles.avatar}
                                         alt="Community avatar"

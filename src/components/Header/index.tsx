@@ -46,7 +46,8 @@ const Header = () => {
                 onClick={() => { router.push('/')}}
                 style={{cursor: 'pointer'}}
                 className="logo"
-                src={theme === "dark" ? '/imgs/logo.png' : '/imgs/logo-light-theme.png'}
+                src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                    + (theme === "dark" ? '/imgs/logo.png' : '/imgs/logo-light-theme.png')}
                 width={96}
                 height={44}
                 alt="Sidekick-logo"
@@ -63,10 +64,11 @@ const Header = () => {
                         <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
                             <div className="drawer-header">
                                 <Image
-                                    onClick={() => { router.push('/')}}
-                                    style={{cursor: 'pointer'}}
+                                    onClick={() => { router.push('/') }}
+                                    style={{ cursor: 'pointer' }}
                                     className="drawer-logo"
-                                    src={theme === "dark" ? '/imgs/logo.png' : '/imgs/logo-light-theme.png'}
+                                    src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                        + (theme === "dark" ? '/imgs/logo.png' : '/imgs/logo-light-theme.png')}
                                     width={48}
                                     height={24}
                                     alt="Sidekick-logo"
@@ -75,7 +77,8 @@ const Header = () => {
                                     <div className="drawer-user">
                                         <Image
                                             className="drawer-avatar"
-                                            src={user?.profileImage || '/imgs/default-avatar.jpg'}
+                                            src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                                + (user?.profileImage || '/imgs/default-avatar.jpg')}
                                             width={24}
                                             height={24}
                                             alt="User avatar"
@@ -121,7 +124,8 @@ const Header = () => {
                             <div className="profile-link" onClick={() => router.push('/profile')}>
                                 <Image
                                     className="avatar"
-                                    src={user?.profileImage || '/imgs/default-avatar.jpg'}
+                                    src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                        + (user?.profileImage || '/imgs/default-avatar.jpg')}
                                     width={24}
                                     height={24}
                                     alt="User avatar"

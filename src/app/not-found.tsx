@@ -10,7 +10,7 @@ export default function NotFound() {
     <div className="error-page">
       <Image
         className="error-image"
-        src="/imgs/404error.png"
+        src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "") + "/imgs/404error.png"}
         width={150}
         height={150}
         alt="Image of error 404"
