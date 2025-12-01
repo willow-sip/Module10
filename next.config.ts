@@ -27,17 +27,6 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/mockServiceWorker.js',
-          destination: '/Module10/mockServiceWorker.js',
-          basePath: false,
-        },
-      ],
-    }
-  },
   
   turbopack: {
     rules: {
