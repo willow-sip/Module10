@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
 
   images: {
     unoptimized: true,
-    path: '/Module10'
   },
   
   turbopack: {
@@ -26,9 +25,6 @@ const nextConfig: NextConfig = {
         as: '*.js',
       },
     },
-    // resolveAlias: {
-    //   'next/image': ('@components/StaticImage.tsx'),
-    // },
   },
 };
 
