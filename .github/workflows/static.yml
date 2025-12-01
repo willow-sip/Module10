@@ -27,9 +27,12 @@ jobs:
           cp -r out/* deploy/
           cp -r public/* deploy/ || true
           touch deploy/.nojekyll
+      - name: Configure git
+        run: |
+          git config --global willow-sip "github-actions[bot]"
+          git config --global wyrrrth.sip@gmail.com "github-actions[bot]@users.noreply.github.com"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
-          force_orphan: true
