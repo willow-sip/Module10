@@ -21,19 +21,18 @@ jobs:
         run: npm ci
       - name: Build Next.js static export
         run: npm run build
-      - name: Initialize MSW in Module10
-        run: npx msw init out/Module10 --save
       - name: Prepare deploy folder
         run: |
           mkdir -p deploy
           cp -r out/* deploy/
           cp -r public/* deploy/ || true
+          npx msw init deploy/Module10 --save
           touch deploy/.nojekyll
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.MODULE_GITHUB_TOKEN }}
-          publish_dir: ./out 
+          publish_dir: ./deploy 
           user_name: willow-sip
           user_email: wyrrrth.sip@gmail.com
           force_orphan: true
