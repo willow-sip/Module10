@@ -275,7 +275,8 @@ class Post extends Component<PostProps, PostState> {
                     <Author>
                         <Avatar
                             data-testid="avatar"
-                            src={profileImage || './imgs/default-avatar.jpg'}
+                            src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                                + (profileImage || './imgs/default-avatar.jpg')}
                             alt="Post author avatar"
                         />
                         <AuthorInfo>
@@ -285,7 +286,9 @@ class Post extends Component<PostProps, PostState> {
                     </Author>
                 )}
 
-                {image && <PostImage data-testid="post-img" src={image} alt="Post" />}
+                {image && <PostImage data-testid="post-img"
+                    src={((typeof location !== "undefined" && location.pathname.includes("Module10")) ? "/Module10" : "")
+                        + (image)} alt="Post" />}
                 <PostTitle data-testid="post-title">{title}</PostTitle>
                 <PostContent data-testid="post-content">{content}</PostContent>
 
