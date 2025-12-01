@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "export": "next export"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

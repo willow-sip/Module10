@@ -29,23 +29,12 @@ jobs:
       - name: Build Next.js static export
         run: npm run build
 
-      - name: Ensure mockServiceWorker.js is in root (for safety)
+      - name: Prepare deploy folder
         run: |
-          cp public/mockServiceWorker.js out/mockServiceWorker.js
-          touch out/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          mkdir -p deploy
+          cp -r public/* deploy/
+          cp -r .next deploy/.next
+          touch deploy/.nojekyll
+      - name: Deploy
+        run: echo "Deploy your 'deploy/' folder here"
+        
