@@ -2,8 +2,8 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/Module10',
-  assetPrefix: '/Module10',
+  basePath: (typeof location !== "undefined" && location.pathname.includes("Module10")) ? '/Module10' : '',
+  assetPrefix: (typeof location !== "undefined" && location.pathname.includes("Module10")) ? '/Module10/' : '',
 
   typescript: {
     ignoreBuildErrors: true,
