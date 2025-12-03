@@ -28,10 +28,12 @@ jobs:
           cp -r public/* deploy/ || true
           npx msw init deploy/ --save
           touch deploy/.nojekyll
-      - name: Add service-worker-allowed header
+          
+      - name: Create symlink
         run: |
-          echo "/*" > deploy/_headers
-          echo " Service-Worker-Allowed: /" >> deploy/_headers
+          cd deploy
+          echo '<script>window.location="/Module10/mockServiceWorker.js"</script>' > mockServiceWorker.js
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
