@@ -19,10 +19,6 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-
-      - name: Create Service Worker with no basePath
-        run: SW_GEN=true npx msw init public/ --no-save
-        
       - name: Build Next.js static export
         run: npm run build
       - name: Prepare deploy folder
@@ -31,6 +27,8 @@ jobs:
           cp -r out/* deploy/
           cp -r public/* deploy/ || true
           npx msw init deploy/ --save
+          cp deploy/mockServiceWorker.js mockServiceWorker.js
+          cp mockServiceWorker.js deploy/
           touch deploy/.nojekyll
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
