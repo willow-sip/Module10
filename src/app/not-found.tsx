@@ -1,11 +1,12 @@
 'use client';
 
-import './401/style.css';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
+import './401/style.css';
 
 export default function NotFound() {
   const { t } = useTranslation();
+  
   return (
     <div className="error-page">
       <Image
