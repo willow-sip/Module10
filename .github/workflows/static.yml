@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [main]
+    branches: [stage2]
 permissions:
   contents: read
   pages: write
@@ -26,6 +26,9 @@ jobs:
           mkdir -p deploy
           cp -r out/* deploy/
           cp -r public/* deploy/ || true
+          npx msw init deploy/ --save
+          cp deploy/mockServiceWorker.js mockServiceWorker.js
+          cp mockServiceWorker.js deploy/
           touch deploy/.nojekyll
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

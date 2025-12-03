@@ -17,6 +17,16 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/mockServiceWorker.js',
+        destination: '/Module10/mockServiceWorker.js',
+        permanent: true,
+        basePath: false,
+      },
+    ]
+  },
   
   turbopack: {
     rules: {
@@ -24,9 +34,6 @@ const nextConfig: NextConfig = {
         loaders: ['@svgr/webpack'],
         as: '*.js',
       },
-    },
-    resolveAlias: {
-      'next/image': ('@components/StaticImage.tsx'),
     },
   },
 };
