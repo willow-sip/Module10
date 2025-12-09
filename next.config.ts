@@ -25,9 +25,6 @@ const nextConfig: NextConfig = {
         as: '*.js',
       },
     },
-    resolveAlias: {
-      'next/image': ('@components/StaticImage.tsx'),
-    },
   },
 };
 
