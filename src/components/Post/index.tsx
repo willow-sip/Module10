@@ -183,7 +183,7 @@ class Post extends Component<PostProps, PostState> {
             })
             .catch(err => {
                 console.error('Error toggling like:', err);
-                showNotification(this.props.t('networkError'), 'error', 2000);
+                showNotification(this.props.t('unauthorized'), 'error', 2000);
             });
     };
 
