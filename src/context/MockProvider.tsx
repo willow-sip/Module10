@@ -9,7 +9,7 @@ export const MockProvider = ({ children }: PropsWithChildren) => {
 
             if (shouldEnableMocking) {
                 const { startMockingSocial } = await import('@sidekick-monorepo/internship-backend');
-                await startMockingSocial("Module10/Module10");
+                await startMockingSocial("");
 
                 enableMocking(true);
             }
