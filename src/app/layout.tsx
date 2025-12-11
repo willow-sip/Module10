@@ -1,4 +1,4 @@
-import { Poppins } from 'next/font/google';
+import { Poppins, Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { Metadata } from 'next';
 import Header from '@/components/Header';
@@ -6,6 +6,10 @@ import Footer from '@/components/Footer';
 import './globals.css';
 
 const poppins = Poppins({
+    weight: ['300', '400', '500', '600', '700'],
+    subsets: ['latin'],
+});
+const inter = Inter({
     weight: ['300', '400', '500', '600', '700'],
     subsets: ['latin'],
 });

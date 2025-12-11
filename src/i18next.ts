@@ -59,7 +59,7 @@ const resources = {
       updateComment: 'Comment updated',
       deleteComment: 'Comment deleted',
       createComment: 'Comment created',
-      networkError: 'Network error',
+      unauthorized: 'Authorize to like',
 
       whatsHappening: "What's happening?",
       tellEveryone: 'Tell everyone',
@@ -187,7 +187,7 @@ const resources = {
       updateComment: 'Комментарий обновлен',
       deleteComment: 'Комментарий удален',
       createComment: 'Комментарий создан',
-      networkError: 'Не удалось выполнить',
+      unauthorized: 'Авторизуйтесь, чтобы поставить лайк',
 
       whatsHappening: "Что нового?",
       tellEveryone: 'Поделиться',

@@ -183,7 +183,7 @@ class Post extends Component<PostProps, PostState> {
             })
             .catch(err => {
                 console.error('Error toggling like:', err);
-                showNotification(this.props.t('networkError'), 'error', 2000);
+                showNotification(this.props.t('unauthorized'), 'error', 2000);
             });
     };
 
@@ -201,18 +201,18 @@ class Post extends Component<PostProps, PostState> {
                 .catch(error => {
                     console.error(error);
                 });
-
-            tokenApi.get(`/users/${this.props.post.authorId}`)
-                .then(data => {
-                    this.setState(() => ({
-                        author: data,
-                        loading: false
-                    }));
-                })
-                .catch(error => {
-                    console.error(error);
-                });
         }
+
+        tokenApi.get(`/users/${this.props.post.authorId}`)
+            .then(data => {
+                this.setState(() => ({
+                    author: data,
+                    loading: false
+                }));
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     componentDidMount(): void {

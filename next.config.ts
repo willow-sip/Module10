@@ -3,7 +3,14 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'export',
   basePath: '/Module10',
-  assetPrefix: '/Module10/',
+  async rewrites() {
+    return [
+      {
+        source: '/Module10/mockServiceWorker.js',
+        destination: '/mockServiceWorker.js',
+      },
+    ];
+  },
 
   typescript: {
     ignoreBuildErrors: true,
