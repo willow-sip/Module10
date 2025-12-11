@@ -7,11 +7,11 @@
   --error: #ff554A;
   --warning: #FFC14A;
   --active-input: #7A44FF;
+  --slider-circle: #FF8811;
 }
 
 [data-theme='dark'] * {
   --text-color: #fff;
-  --slider-circle: #FF8811;
   --gray-900: #0E1223;
   --gray-800: #151A2D;
   --gray-700: #1B2037;
@@ -24,7 +24,6 @@
 
 [data-theme='light'] * {
   --text-color: #000;
-  --slider-circle: #FFFFFF;
   --gray-900: #FAFAFA;
   --gray-800: #F0F1F3;
   --gray-700: #E0E2E7;
